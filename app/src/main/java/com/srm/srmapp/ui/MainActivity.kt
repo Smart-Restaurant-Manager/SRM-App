@@ -10,6 +10,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.srm.srmapp.Utils
 import com.srm.srmapp.databinding.ActivityMainBinding
 import com.srm.srmapp.ui.booking.BookingFragment
+import com.srm.srmapp.ui.login.LoginFragment
 import com.srm.srmapp.ui.menu.MenuFragment
 import com.srm.srmapp.ui.report.ReportFragment
 import com.srm.srmapp.ui.stock.StockFragment
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         Timber.d("Setup Viewpager")
 
         val fragmentArray = arrayOf(
+            LoginFragment(),
             BookingFragment(),
             MenuFragment(),
             ReportFragment(),
@@ -58,7 +60,6 @@ class MainActivity : AppCompatActivity() {
             TabLayoutMediator(this, pager) { tab, position ->
                 Timber.d("Fragment $position ${fragmentArray[position].getName()}")
                 tab.text = fragmentArray[position].getName()
-
             }.attach()
         }
     }

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SRMapp</string>
+    <string name="user_mail">Usuario o Email (admin)</string>
+    <string name="password">Contraseña (1234)</string>
+    <string name="login">Entrar</string>
+    <string name="loginLoading">Loading...</string>
 </resources>
