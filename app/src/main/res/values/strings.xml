@@ -1,7 +1,17 @@
 <resources>
     <string name="app_name">SRMapp</string>
-    <string name="user_mail">Usuario o Email (admin)</string>
-    <string name="password">Contraseña (1234)</string>
+    <string name="user_mail">Usuario o Email</string>
+    <string name="password">Contraseña</string>
     <string name="login">Entrar</string>
-    <string name="loginLoading">Loading...</string>
+    <string name="loginLoading">Loading…</string>
+    <string name="pref_key_token">PREF_KEY_USER_TOKEN</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password_check">Repite la contraseña</string>
+    <string name="signup">Signup</string>
+    <string name="form_toggle">Form Toggle</string>
+    <string name="logout">Logout</string>
+    <string name="singupLoading">Signup Loading …</string>
+    <string name="login_signup_status">Login/Signup Status</string>
+    <string name="status">Status</string>
 </resources>
