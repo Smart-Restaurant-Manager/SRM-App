@@ -6,11 +6,9 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 
 object Utils {
     fun requestRuntimePermissions(activity: Activity) {
@@ -38,19 +36,14 @@ object Utils {
         }
     }
 
-    val exceptionHandler = CoroutineExceptionHandler { _, ex ->
-        Timber.e("CoroutineScope", "Caught ${Log.getStackTraceString(ex)}")
-    }
 
-    fun CoroutineScope.launchException(block: suspend CoroutineScope.() -> Unit): Job {
-        return if (BuildConfig.DEBUG) {
-            this.launch(exceptionHandler) {
-                block()
-            }
-        } else {
-            this.launch {
-                block()
-            }
+    fun CoroutineScope.launchException(coroutineContext: CoroutineContext = Dispatchers.IO, call: suspend CoroutineScope.() -> Unit): Job {
+        val exceptionHandler = CoroutineExceptionHandler() { context, ex ->
+            Timber.e("${ex.message} \n${Log.getStackTraceString(ex)}")
+        }
+
+        return this.launch(exceptionHandler + coroutineContext) {
+            call()
         }
     }
 }
