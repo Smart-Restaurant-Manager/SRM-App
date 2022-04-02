@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class LogoutResponse(
     @SerializedName("data")
-    val data: LogoutData
+    val data: LogoutData,
 )

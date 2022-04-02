@@ -10,7 +10,6 @@ import com.srm.srmapp.data.models.User
 import com.srm.srmapp.repository.authentication.AuthInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import timber.log.Timber
 import javax.inject.Inject
 
 

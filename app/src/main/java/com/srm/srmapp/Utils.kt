@@ -38,7 +38,7 @@ object Utils {
 
 
     fun CoroutineScope.launchException(coroutineContext: CoroutineContext = Dispatchers.IO, call: suspend CoroutineScope.() -> Unit): Job {
-        val exceptionHandler = CoroutineExceptionHandler() { context, ex ->
+        val exceptionHandler = CoroutineExceptionHandler { context, ex ->
             Timber.e("${ex.message} \n${Log.getStackTraceString(ex)}")
         }
 
