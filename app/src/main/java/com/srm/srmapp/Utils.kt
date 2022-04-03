@@ -3,9 +3,12 @@ package com.srm.srmapp
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
+import kotlinx.coroutines.*
 import timber.log.Timber
+import kotlin.coroutines.CoroutineContext
 
 object Utils {
     fun requestRuntimePermissions(activity: Activity) {
@@ -30,6 +33,17 @@ object Utils {
             if (ps != null && ps.isNotEmpty()) ps else arrayOf()
         } catch (e: Exception) {
             arrayOf()
+        }
+    }
+
+
+    fun CoroutineScope.launchException(coroutineContext: CoroutineContext = Dispatchers.IO, call: suspend CoroutineScope.() -> Unit): Job {
+        val exceptionHandler = CoroutineExceptionHandler { context, ex ->
+            Timber.e("${ex.message} \n${Log.getStackTraceString(ex)}")
+        }
+
+        return this.launch(exceptionHandler + coroutineContext) {
+            call()
         }
     }
 }

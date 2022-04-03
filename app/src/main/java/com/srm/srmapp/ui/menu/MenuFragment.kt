@@ -1,15 +1,15 @@
 package com.srm.srmapp.ui.menu
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.srm.srmapp.R
 import com.srm.srmapp.ui.MainActivity
 
-class MenuFragment : Fragment(),MainActivity.FragmentName {
+class MenuFragment : Fragment(), MainActivity.FragmentName {
 
     companion object {
         fun newInstance() = MenuFragment()
