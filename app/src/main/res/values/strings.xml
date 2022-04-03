@@ -14,4 +14,14 @@
     <string name="singupLoading">Signup Loading …</string>
     <string name="login_signup_status">Login/Signup Status</string>
     <string name="status">Status</string>
+    <string name="stock_1">Alimentos carnicos</string>
+    <string name="stock_2">Lacteos</string>
+    <string name="stock_3">Especias</string>
+    <string name="stock_4">Vegetales</string>
+    <string name="stock_5">Cereales</string>
+    <string name="stock_6">Mariscos</string>
+    <string name="quantity">Cantidad</string>
+    <string name="lot">Lote</string>
+    <string name="caducidad">Caducidad</string>
+    <string name="add_stock">Añadir Stock</string>
 </resources>

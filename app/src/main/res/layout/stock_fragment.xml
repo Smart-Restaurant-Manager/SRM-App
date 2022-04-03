@@ -5,10 +5,59 @@
         android:layout_height="match_parent"
         tools:context=".ui.stock.StockFragment">
 
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Stock"
-            android:textSize="40dp"/>
+
+    <Button
+        android:id="@+id/stock1"
+        android:layout_width="149dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="#291B1B"
+        android:text="@string/stock_1" />
+
+    <Button
+        android:id="@+id/stock2"
+        android:layout_width="149dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="240dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="#291B1B"
+        android:text="@string/stock_2" />
+
+    <Button
+        android:id="@+id/stock3"
+        android:layout_width="149dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="150dp"
+        android:backgroundTint="#291B1B"
+        android:text="@string/stock_3" />
+
+    <Button
+        android:id="@+id/stock4"
+        android:layout_width="149dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="240dp"
+        android:layout_marginTop="150dp"
+        android:backgroundTint="#291B1B"
+        android:text="@string/stock_4" />
+
+    <Button
+        android:id="@+id/stock5"
+        android:layout_width="149dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="260dp"
+        android:backgroundTint="#291B1B"
+        android:text="@string/stock_5" />
+
+    <Button
+        android:id="@+id/stock6"
+        android:layout_width="149dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="240dp"
+        android:layout_marginTop="260dp"
+        android:backgroundTint="#291B1B"
+        android:text="@string/stock_6" />
 
 </FrameLayout>

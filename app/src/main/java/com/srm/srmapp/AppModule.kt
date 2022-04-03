@@ -1,6 +1,7 @@
 package com.srm.srmapp
 
 import android.content.Context
+import androidx.viewbinding.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.srm.srmapp.data.UserSession
