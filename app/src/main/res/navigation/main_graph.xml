@@ -41,6 +41,9 @@
         <action
                 android:id="@+id/action_stockListFragment_to_stockListItemFragment"
                 app:destination="@id/stockListItemFragment" />
+        <action
+                android:id="@+id/action_stockListFragment_to_stockAddFragment"
+                app:destination="@id/stockAddFragment" />
     </fragment>
     <fragment
             android:id="@+id/stockMainFragment"
@@ -64,6 +67,12 @@
         <action
                 android:id="@+id/action_managerFragment_to_stockMainFragment"
                 app:destination="@id/stockMainFragment" />
+    </fragment>
+    <fragment
+            android:id="@+id/stockAddFragment"
+            android:name="com.srm.srmapp.ui.stock.StockAddFragment"
+            android:label="StockAddFragment"
+            tools:layout="@layout/fragment_stock_add">
     </fragment>
 
 </navigation>

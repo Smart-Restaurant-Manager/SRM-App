@@ -3,7 +3,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="20dp">
 
 
     <Button
@@ -13,25 +14,25 @@
             android:text="@string/placeholder_find"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintEnd_toStartOf="@+id/textView6"
-            app:layout_constraintTop_toTopOf="@+id/textView6" />
+            app:layout_constraintEnd_toStartOf="@+id/tvStockTitle"
+            app:layout_constraintTop_toTopOf="@+id/tvStockTitle" />
 
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btAdd"
             android:text="@string/placeholder_add"
-            app:layout_constraintStart_toEndOf="@+id/textView6"
+            app:layout_constraintStart_toEndOf="@+id/tvStockTitle"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView6" />
+            app:layout_constraintTop_toTopOf="@+id/tvStockTitle" />
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/title_size"
             android:text="@string/template_title"
-            android:id="@+id/textView6"
+            android:id="@+id/tvStockTitle"
             app:layout_constraintStart_toEndOf="@+id/btnFind"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintEnd_toStartOf="@+id/btAdd"
@@ -39,17 +40,17 @@
 
     <TextView
             android:text="@string/cantidad"
-            android:layout_width="102dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/textView"
             app:layout_constraintStart_toEndOf="@+id/textView3"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintEnd_toStartOf="@+id/textView4"
-            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+            app:layout_constraintTop_toBottomOf="@+id/tvStockTitle" />
 
     <TextView
             android:text="@string/lote"
-            android:layout_width="101dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/textView3"
             app:layout_constraintStart_toEndOf="@+id/textView2"
@@ -59,18 +60,16 @@
 
     <TextView
             android:text="@string/nombre"
-            android:layout_width="101dp"
             android:layout_height="wrap_content"
+            android:layout_width="0dp"
             android:id="@+id/textView2"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="4dp"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintEnd_toStartOf="@+id/textView3"
-            app:layout_constraintTop_toTopOf="@+id/textView3" />
+            app:layout_constraintTop_toTopOf="@+id/textView3"
+            app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
             android:text="@string/caducidad"
-            android:layout_width="102dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView4"
             app:layout_constraintStart_toEndOf="@+id/textView"

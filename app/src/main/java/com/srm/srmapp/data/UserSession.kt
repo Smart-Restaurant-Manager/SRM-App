@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.srm.srmapp.R
 import com.srm.srmapp.Utils.launchException
-import com.srm.srmapp.data.dto.auth.toUser
+import com.srm.srmapp.data.dto.auth.response.toUser
 import com.srm.srmapp.data.models.User
 import com.srm.srmapp.repository.authentication.AuthInterface
 import kotlinx.coroutines.CoroutineName

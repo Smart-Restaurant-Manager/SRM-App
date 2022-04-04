@@ -1,4 +1,4 @@
-package com.srm.srmapp.data.dto.auth
+package com.srm.srmapp.data.dto.auth.response
 
 import java.util.*
 

@@ -1,6 +1,11 @@
 package com.srm.srmapp.repository.authentication
 
-import com.srm.srmapp.data.dto.auth.*
+import com.srm.srmapp.data.dto.auth.body.LoginObject
+import com.srm.srmapp.data.dto.auth.body.SignupObject
+import com.srm.srmapp.data.dto.auth.response.LoginResponse
+import com.srm.srmapp.data.dto.auth.response.LogoutResponse
+import com.srm.srmapp.data.dto.auth.response.SignupResponse
+import com.srm.srmapp.data.dto.auth.response.UserResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

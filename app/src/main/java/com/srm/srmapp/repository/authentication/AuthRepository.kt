@@ -2,8 +2,8 @@ package com.srm.srmapp.repository.authentication
 
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.UserSession
-import com.srm.srmapp.data.dto.auth.LoginObject
-import com.srm.srmapp.data.dto.auth.SignupObject
+import com.srm.srmapp.data.dto.auth.body.LoginObject
+import com.srm.srmapp.data.dto.auth.body.SignupObject
 import com.srm.srmapp.repository.BaseRepository
 import timber.log.Timber
 import javax.inject.Inject

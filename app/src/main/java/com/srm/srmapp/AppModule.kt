@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.repository.authentication.AuthInterface
+import com.srm.srmapp.repository.stock.StockInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +15,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import timber.log.Timber
 import javax.inject.Singleton
 
 @Module
@@ -52,7 +52,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuthInterface(retrofit: Retrofit): AuthInterface {
-        Timber.d("Create api client")
         return retrofit.create(AuthInterface::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideStockInterface(retrofit: Retrofit): StockInterface {
+        return retrofit.create(StockInterface::class.java)
     }
 }
