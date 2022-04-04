@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+    <!--    TODO add back button -->
+
+    <TextView
+            android:id="@+id/tvTitleStock"
+            android:text="@string/title_stock"
+            android:textSize="@dimen/title_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    <Button
+            android:id="@+id/btCarne"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/carne" />
+
+
+    <Button
+            android:id="@+id/btLacteos"
+            android:text="@string/lacteos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    <Button
+            android:id="@+id/btEspecias"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/especias" />
+
+
+    <Button
+            android:id="@+id/btVegetales"
+            android:text="@string/vegetales"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    <Button
+            android:id="@+id/btCereales"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cereales" />
+
+    <Button
+            android:id="@+id/btMariscos"
+            android:text="@string/mariscos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+</LinearLayout>

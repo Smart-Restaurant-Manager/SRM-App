@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.UserSession
-import com.srm.srmapp.databinding.LoginFragmentBinding
+import com.srm.srmapp.databinding.FragmentLoginBinding
 import com.srm.srmapp.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -18,7 +18,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListener {
 
-    private lateinit var binding: LoginFragmentBinding
+    private lateinit var binding: FragmentLoginBinding
     private val viewModel by viewModels<LoginViewModel>()
 
     @Inject
@@ -28,14 +28,14 @@ class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListene
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = LoginFragmentBinding.inflate(inflater, container, false)
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
         setupView()
         setupObservables()
         return binding.root
     }
 
     private fun setupView() {
-        binding.bLogin.setOnClickListener(this)
+        binding.btLogin.setOnClickListener(this)
         binding.btFormToggle.setOnClickListener(this)
         binding.btSignup.setOnClickListener(this)
         binding.btLogout.setOnClickListener(this)
@@ -75,10 +75,12 @@ class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListene
         userSession.getUser().observe(requireActivity()) {
             Timber.d("User updated")
             if (it != null) {
-                binding.tvLoginStatus.text = "Logged in ${it.email}"
                 binding.btLogout.isEnabled = true
+                binding.btLogin.isEnabled = false
+                binding.tvLoginStatus.text = "Logged in ${it.email}"
             } else {
                 binding.btLogout.isEnabled = false
+                binding.btLogin.isEnabled = true
                 binding.tvLoginStatus.text = "Not logged in"
             }
         }
@@ -86,7 +88,7 @@ class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListene
 
     override fun onClick(p0: View) {
         when (p0.id) {
-            R.id.bLogin -> {
+            R.id.btLogin -> {
                 val user = binding.edUsername.text.toString().ifBlank { "frank@srm.com" }
                 val password = binding.edPassword.text.toString().ifBlank { "frank.srm" }
                 viewModel.login(user, password)
