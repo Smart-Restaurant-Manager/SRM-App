@@ -1,5 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/main_graph">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main_graph"
+        app:startDestination="@id/walcomeFragment">
+
+    <fragment
+            android:id="@+id/walcomeFragment"
+            android:name="com.srm.srmapp.ui.WalcomeFragment"
+            android:label="WalcomeFragment"
+            tools:layout="@layout/fragment_walcome">
+        <action
+                android:id="@+id/action_walcomeFragment_to_loginFragment"
+                app:destination="@id/loginFragment"
+                app:popUpTo="@id/walcomeFragment"
+                app:popUpToInclusive="true" />
+        <action
+                android:id="@+id/action_walcomeFragment_to_managerFragment"
+                app:destination="@id/managerFragment"
+                app:popUpToInclusive="true"
+                app:popUpTo="@id/walcomeFragment" />
+    </fragment>
+
+    <fragment
+            android:id="@+id/loginFragment"
+            android:name="com.srm.srmapp.ui.login.LoginFragment"
+            android:label="LoginFragment"
+            tools:layout="@layout/fragment_login">
+        <action
+                android:id="@+id/action_loginFragment_to_managerFragment"
+                app:destination="@id/managerFragment"
+                app:popUpTo="@id/loginFragment"
+                app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+            android:id="@+id/stockListFragment"
+            android:name="com.srm.srmapp.ui.stock.StockListFragment"
+            android:label="StockListFragment"
+            tools:layout="@layout/fragment_stock_list">
+        <action
+                android:id="@+id/action_stockListFragment_to_stockListItemFragment"
+                app:destination="@id/stockListItemFragment" />
+    </fragment>
+    <fragment
+            android:id="@+id/stockMainFragment"
+            android:name="com.srm.srmapp.ui.stock.StockMainFragment"
+            android:label="StockMainFragment"
+            tools:layout="@layout/fragment_stock_main">
+        <action
+                android:id="@+id/action_stockMainFragment_to_stockListFragment"
+                app:destination="@id/stockListFragment" />
+    </fragment>
+    <fragment
+            android:id="@+id/stockListItemFragment"
+            android:name="com.srm.srmapp.ui.stock.StockListItemFragment"
+            android:label="StockListItemFragment"
+            tools:layout="@layout/fragment_stock_list_item" />
+    <fragment
+            android:id="@+id/managerFragment"
+            android:name="com.srm.srmapp.ui.ManagerFragment"
+            android:label="ManagerFragment"
+            tools:layout="@layout/fragment_manager">
+        <action
+                android:id="@+id/action_managerFragment_to_stockMainFragment"
+                app:destination="@id/stockMainFragment" />
+    </fragment>
 
 </navigation>

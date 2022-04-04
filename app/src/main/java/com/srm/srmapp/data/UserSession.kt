@@ -8,6 +8,7 @@ import com.srm.srmapp.Utils.launchException
 import com.srm.srmapp.data.dto.auth.toUser
 import com.srm.srmapp.data.models.User
 import com.srm.srmapp.repository.authentication.AuthInterface
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -17,6 +18,7 @@ class UserSession @Inject constructor(context: Context, private val authInterfac
     private val prefs = context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
     private val prefKey = context.getString(R.string.pref_key_token)
     private var userObject: MutableLiveData<User?> = MutableLiveData(null)
+    private val scope = CoroutineName(javaClass.simpleName)
 
     init {
         refresUser()
@@ -29,18 +31,24 @@ class UserSession @Inject constructor(context: Context, private val authInterfac
         }
     }
 
-    fun getToken() = prefs.getString(prefKey, "") ?: ""
+    fun isLoggedIn() = (prefs.getString(prefKey, "") ?: "").isNotBlank()
 
     fun getBearerToken() = "Bearer ${prefs.getString(prefKey, "")}"
 
     fun logout() {
-        userObject.postValue(null)
-        setToken("")
+        if (isLoggedIn()) {
+            CoroutineScope(scope).launchException(Dispatchers.IO) {
+                authInterface.logout(getBearerToken())
+            }.invokeOnCompletion {
+                userObject.postValue(null)
+                setToken("")
+            }
+        }
     }
 
     fun refresUser() {
-        if (getToken().isNotBlank()) {
-            CoroutineScope(Dispatchers.IO).launchException(Dispatchers.IO) {
+        if (isLoggedIn()) {
+            CoroutineScope(scope).launchException(Dispatchers.IO) {
                 val res = authInterface.getUser(getBearerToken())
                 if (res.isSuccessful) {
                     userObject.postValue(res.body()?.toUser())

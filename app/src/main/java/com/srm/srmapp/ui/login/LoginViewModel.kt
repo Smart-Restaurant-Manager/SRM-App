@@ -47,10 +47,4 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
             Timber.d("${res.data}")
         }
     }
-
-    fun logout() {
-        viewModelScope.launchException(Dispatchers.IO) {
-            repository.logout()
-        }
-    }
 }

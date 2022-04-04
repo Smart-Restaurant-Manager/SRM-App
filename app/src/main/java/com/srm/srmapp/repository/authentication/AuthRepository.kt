@@ -22,14 +22,6 @@ class AuthRepository @Inject constructor(private val api: AuthInterface, private
         }
     }
 
-    suspend fun logout(): Resource<String> {
-        return safeApiCall({
-            api.logout(userSession.getBearerToken())
-        }) { response ->
-            userSession.logout()
-            response.toString()
-        }
-    }
 
     suspend fun signup(email: String, name: String, password: String, passwordConfirmation: String): Resource<String> {
         return safeApiCall({

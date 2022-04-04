@@ -38,4 +38,5 @@
     <string name="placeholder_caducidad">Caducidad</string>
     <string name="header_title">Title</string>
     <string name="clear_history">Limpiar Historico</string>
+    <string name="tap_to_enter">Tap to enter</string>
 </resources>

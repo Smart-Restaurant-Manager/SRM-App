@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.databinding.FragmentLoginBinding
-import com.srm.srmapp.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListener {
+class LoginFragment : Fragment(), View.OnClickListener {
 
     private lateinit var binding: FragmentLoginBinding
     private val viewModel by viewModels<LoginViewModel>()
@@ -78,6 +78,7 @@ class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListene
                 binding.btLogout.isEnabled = true
                 binding.btLogin.isEnabled = false
                 binding.tvLoginStatus.text = "Logged in ${it.email}"
+                findNavController().navigate(R.id.action_loginFragment_to_managerFragment)
             } else {
                 binding.btLogout.isEnabled = false
                 binding.btLogin.isEnabled = true
@@ -115,12 +116,8 @@ class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListene
                 }
             }
             R.id.btLogout -> {
-                viewModel.logout()
+                userSession.logout()
             }
         }
-    }
-
-    override fun getName(): String {
-        return "Login"
     }
 }
