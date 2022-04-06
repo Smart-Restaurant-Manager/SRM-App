@@ -22,7 +22,7 @@
             android:inputType="text"
             android:id="@+id/edName"
             android:importantForAutofill="no"
-            android:textAlignment="center"/>
+            android:textAlignment="center" />
 
 
     <EditText
@@ -34,18 +34,24 @@
             android:background="@drawable/edit_text_border"
             android:id="@+id/edQuantity"
             android:importantForAutofill="no"
-            android:textAlignment="center"/>
+            android:textAlignment="center" />
 
-    <EditText
-        android:id="@+id/editTextDate"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_marginTop="30dp"
-        android:hint="Fecha de Caducidad"
-        android:background="@drawable/edit_text_border"
-        android:textAlignment="center"
-        android:inputType="date" />
+    <TextView
+            android:id="@+id/editTextDate"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_marginTop="30dp"
+            android:hint="Fecha de Caducidad"
+            android:background="@drawable/edit_text_border"
+            android:textAlignment="center" />
+
+    <DatePicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:datePickerMode="spinner"
+            android:calendarViewShown="false"
+            android:id="@+id/dpFecha" />
 
     <Button
             android:layout_width="wrap_content"
@@ -53,6 +59,6 @@
             android:text="Añadir"
             android:layout_marginTop="30dp"
             android:id="@+id/btAdd"
-            android:backgroundTint="#291B1B"/>
+            android:backgroundTint="#291B1B" />
 
 </LinearLayout>
