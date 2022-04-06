@@ -27,7 +27,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
     fun getStockLiveData() = _stock as LiveData<Resource<Stock>>
 
 
-    fun refreshStockList() {
+    fun refreshStockList(/*TODO filter list by type, add get range */) {
         _stockLisst.value = Resource.Loading()
         viewModelScope.launchException() {
             val stock = stockRepository.getStock()
@@ -35,7 +35,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         }
     }
 
-    fun refreshFoodList() {
+    fun refreshFoodList(/*TODO filter list by type, add get range*/) {
         _foodList.value = Resource.Loading()
         viewModelScope.launchException() {
             val food = stockRepository.getFood()

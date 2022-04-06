@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.srm.srmapp.R
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.databinding.FragmentStockListItemBinding
@@ -38,7 +39,7 @@ class StockListItemFragment : Fragment() {
             Stock(4, 23.0f, Calendar.getInstance().time),
             Stock(2, 22.0f, Calendar.getInstance().time),
             Stock(11, 23.0f, Calendar.getInstance().time),
-        ), { view ->
+        ), R.layout.rv_item_stock, { view ->
             RvItemStockBinding.bind(view)
         }, { itemBinding, item -> // seyup child views
             itemBinding.apply {
@@ -48,7 +49,6 @@ class StockListItemFragment : Fragment() {
             }
         })
         binding.rvHistory.layoutManager = LinearLayoutManager(activity)
-
 
 
     }

@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.srm.srmapp.R
+import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.databinding.FragmentStockListBinding
 import com.srm.srmapp.databinding.RvItemStockBinding
@@ -29,9 +30,30 @@ class StockListFragment : Fragment() {
         binding = FragmentStockListBinding.inflate(inflater, container, false)
         val title = arguments?.getString("title")
         val id = arguments?.getInt("id")
-        if (title != null && id != null)
+        if (title != null && id != null) {
             setupView(title, id)
+            setupObservers()
+        }
         return binding.root
+    }
+
+    private fun setupObservers() {
+        viewmodel.refreshFoodList()
+        viewmodel.getFoodListLiveData().observe(requireActivity()) {
+            when (it) {
+                is Resource.Error -> TODO()
+                is Resource.Loading -> {
+                    binding.srFoodRefresh.isRefreshing = true;
+                }
+                is Resource.Success -> {
+                    binding.srFoodRefresh.isRefreshing = false;
+                    it.data?.let { list ->
+                        adapter.updateItems(list)
+                    }
+                }
+                else -> {}
+            }
+        }
     }
 
     private fun setupView(title: String, id: Int) {
@@ -39,7 +61,7 @@ class StockListFragment : Fragment() {
             return
 
         binding.tvStockTitle.text = title
-        adapter = Adapter(emptyList(), { view ->
+        adapter = Adapter(emptyList(), R.layout.rv_item_stock, { view ->
             RvItemStockBinding.bind(view)
         }, { itemBinding, item -> // setup child views
             itemBinding.apply {
@@ -54,19 +76,14 @@ class StockListFragment : Fragment() {
             arg.putString("title", title)
             findNavController().navigate(R.id.action_stockListFragment_to_stockListItemFragment, arg)
         }
+        binding.rvItems.adapter = adapter
         binding.rvItems.layoutManager = LinearLayoutManager(activity)
         binding.btAdd.setOnClickListener {
             findNavController().navigate(R.id.action_stockListFragment_to_stockAddFragment)
         }
-
-        binding.rvItems.adapter = adapter
-        viewmodel.getFoodListLiveData().observe(requireActivity()) {
-            val list = it.data
-            if (list != null) {
-                adapter.updateItems(list)
-            }
+        binding.srFoodRefresh.setOnRefreshListener {
+            viewmodel.refreshFoodList()
         }
-
-        viewmodel.refreshFoodList()
+        binding.srFoodRefresh.isEnabled = true
     }
 }
