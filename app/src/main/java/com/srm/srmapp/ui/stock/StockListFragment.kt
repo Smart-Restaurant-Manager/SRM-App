@@ -19,21 +19,18 @@ import dagger.hilt.android.AndroidEntryPoint
 class StockListFragment : Fragment() {
     private lateinit var binding: FragmentStockListBinding
     private val viewmodel by viewModels<StockViewmodel>()
-    private val validIds = arrayListOf(R.id.btCarne, R.id.btCereales,
-        R.id.btMariscos, R.id.btEspecias,
-        R.id.btVegetales, R.id.btLacteos)
     private lateinit var adapter: Adapter<RvItemStockBinding, Food>
+    private lateinit var argTitle: String
+    private lateinit var argFoodType: Food.FoodType
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentStockListBinding.inflate(inflater, container, false)
-        val title = arguments?.getString("title")
-        val id = arguments?.getInt("id")
-        if (title != null && id != null) {
-            setupView(title, id)
-            setupObservers()
-        }
+        argTitle = arguments?.getString("title") ?: "ERROR"
+        argFoodType = Food.parseId(arguments?.getInt("id") ?: -1)
+        setupView(argTitle, argFoodType)
+        setupObservers()
         return binding.root
     }
 
@@ -56,10 +53,7 @@ class StockListFragment : Fragment() {
         }
     }
 
-    private fun setupView(title: String, id: Int) {
-        if (id !in validIds)
-            return
-
+    private fun setupView(title: String, id: Food.FoodType) {
         binding.tvStockTitle.text = title
         adapter = Adapter(emptyList(), R.layout.rv_item_stock, { view ->
             RvItemStockBinding.bind(view)
@@ -79,7 +73,10 @@ class StockListFragment : Fragment() {
         binding.rvItems.adapter = adapter
         binding.rvItems.layoutManager = LinearLayoutManager(activity)
         binding.btAdd.setOnClickListener {
-            findNavController().navigate(R.id.action_stockListFragment_to_stockAddFragment)
+            findNavController().navigate(R.id.action_stockListFragment_to_stockAddFragment, Bundle().let {
+                it.putSerializable("type", id)
+                it
+            })
         }
         binding.srFoodRefresh.setOnRefreshListener {
             viewmodel.refreshFoodList(/* TODO ADD Type */)

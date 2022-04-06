@@ -57,6 +57,18 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         }
     }
 
+    fun addFood(food: Food) {
+        viewModelScope.launchException {
+            // TODO
+        }
+    }
+
+    fun addStock(stock: Stock) {
+        viewModelScope.launchException {
+            // TODO
+        }
+    }
+
 
     fun getFoodById(id: Int) {
         val res = _foodList.value
