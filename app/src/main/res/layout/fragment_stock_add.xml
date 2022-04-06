@@ -9,34 +9,50 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/title_size"
+            android:textColor="@color/black"
+            android:textAllCaps="true"
             android:text="Añadir stock" />
 
     <EditText
-            android:layout_width="wrap_content"
+            android:layout_marginTop="70dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="Nombre"
+            android:background="@drawable/edit_text_border"
             android:inputType="text"
             android:id="@+id/edName"
-            android:importantForAutofill="no" />
+            android:importantForAutofill="no"
+            android:textAlignment="center"/>
 
 
     <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
+            android:layout_marginTop="30dp"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
             android:hint="Cantidad"
+            android:background="@drawable/edit_text_border"
             android:id="@+id/edQuantity"
-            android:importantForAutofill="no" />
+            android:importantForAutofill="no"
+            android:textAlignment="center"/>
 
-    <CalendarView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/cvFecha" />
+    <EditText
+        android:id="@+id/editTextDate"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginTop="30dp"
+        android:hint="Fecha de Caducidad"
+        android:background="@drawable/edit_text_border"
+        android:textAlignment="center"
+        android:inputType="date" />
 
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Añadir"
-            android:id="@+id/btAdd" />
+            android:layout_marginTop="30dp"
+            android:id="@+id/btAdd"
+            android:backgroundTint="#291B1B"/>
 
 </LinearLayout>

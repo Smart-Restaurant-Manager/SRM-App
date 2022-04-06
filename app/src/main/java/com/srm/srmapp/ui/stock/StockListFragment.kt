@@ -1,9 +1,11 @@
 package com.srm.srmapp.ui.stock
 
+import android.media.Image
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +16,7 @@ import com.srm.srmapp.databinding.FragmentStockListBinding
 
 class StockListFragment : Fragment() {
     private lateinit var binding: FragmentStockListBinding
+
     private val validIds = arrayListOf(R.id.btCarne, R.id.btCereales,
         R.id.btMariscos, R.id.btEspecias,
         R.id.btVegetales, R.id.btLacteos)
@@ -55,6 +58,7 @@ class StockListFragment : Fragment() {
             findNavController().navigate(R.id.action_stockListFragment_to_stockListItemFragment, arg)
         }
         binding.rvItems.layoutManager = LinearLayoutManager(activity)
+
         binding.btAdd.setOnClickListener {
             findNavController().navigate(R.id.action_stockListFragment_to_stockAddFragment)
         }
