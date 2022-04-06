@@ -12,44 +12,66 @@
             android:text="@string/title_stock"
             android:textSize="@dimen/title_size"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textColor="#291B1B"
+            android:textAllCaps="true"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"/>
 
     <Button
             android:id="@+id/btCarne"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginStart="-100dp"
+            android:backgroundTint="#291B1B"
             android:text="@string/carne" />
 
 
     <Button
             android:id="@+id/btLacteos"
             android:text="@string/lacteos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="-80dp"
+            android:layout_marginStart="100dp"
+            android:backgroundTint="#291B1B"
+        />
 
     <Button
             android:id="@+id/btEspecias"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="-100dp"
+            android:backgroundTint="#291B1B"
             android:text="@string/especias" />
 
 
     <Button
             android:id="@+id/btVegetales"
             android:text="@string/vegetales"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="-80dp"
+            android:layout_marginStart="100dp"
+            android:backgroundTint="#291B1B"/>
 
     <Button
             android:id="@+id/btCereales"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="-100dp"
+            android:backgroundTint="#291B1B"
             android:text="@string/cereales" />
 
     <Button
             android:id="@+id/btMariscos"
             android:text="@string/mariscos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="-80dp"
+            android:layout_marginStart="100dp"
+            android:backgroundTint="#291B1B"/>
 
 </LinearLayout>

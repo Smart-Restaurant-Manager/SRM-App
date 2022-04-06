@@ -11,8 +11,8 @@
             android:label="WalcomeFragment"
             tools:layout="@layout/fragment_walcome">
         <action
-                android:id="@+id/action_walcomeFragment_to_loginFragment"
-                app:destination="@id/loginFragment"
+                android:id="@+id/action_walcomeFragment_to_loginregisterFragment"
+                app:destination="@id/loginRegisterFragment"
                 app:popUpTo="@id/walcomeFragment"
                 app:popUpToInclusive="true" />
         <action
@@ -22,6 +22,16 @@
                 app:popUpTo="@id/walcomeFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/loginRegisterFragment"
+        android:name="com.srm.srmapp.ui.login.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login_register">
+        <action
+            android:id="@+id/action_registerlogin_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
             android:id="@+id/loginFragment"
             android:name="com.srm.srmapp.ui.login.LoginFragment"

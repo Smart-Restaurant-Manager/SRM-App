@@ -14,7 +14,7 @@
     <string name="singupLoading">Signup Loading …</string>
     <string name="login_signup_status">Login/Signup Status</string>
     <string name="status">Status</string>
-    <string name="title_stock">Stock</string>
+    <string name="title_stock">STOCK</string>
     <string name="carne">Alimentos Carnicos</string>
     <string name="lacteos">Lacteos</string>
     <string name="especias">Especias</string>
@@ -39,6 +39,15 @@
     <string name="header_title">Title</string>
     <string name="clear_history">Limpiar Historico</string>
     <string name="tap_to_enter">Tap to enter</string>
-    <string name="fecha_de_caducidad">Fecha de caducidad</string>
-    <string name="add_stock">Añadir stock</string>
+    <string name="login_register_improve_business">Mejora tu negocio</string>
+    <string name="description">Mejora tu negocio con nuestros servicios de predicción, de gestión del stock y muchos más</string>
+    <string name="login_account">¿Ya tienes una cuenta?</string>
+    <string name="login_user">Inicia sesión</string>
+    <string name="register">Registrate</string>
+    <string name="login2">Inicio de sesión</string>
+    <string name="forget_password">¿Has olvidado la contraseña?</string>
+    <string name="session_login">Iniciar sesión</string>
+    <string name="forget_account">¿Has olvidado tu cuenta?</string>
+    <string name="new_account">Crear cuenta</string>
+    <string name="terms_conditions">Acepto los terminos y condiciones y las Políticas de Privacidad</string>
 </resources>

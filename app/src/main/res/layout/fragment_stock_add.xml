@@ -6,45 +6,53 @@
         android:layout_height="match_parent">
 
     <TextView
-            android:id="@+id/tvTitleAddStock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/title_size"
-            android:text="@string/add_stock" />
+            android:textColor="@color/black"
+            android:textAllCaps="true"
+            android:text="Añadir stock" />
 
     <EditText
-            android:layout_width="wrap_content"
+            android:layout_marginTop="70dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:hint="@string/nombre"
+            android:hint="Nombre"
+            android:background="@drawable/edit_text_border"
             android:inputType="text"
             android:id="@+id/edName"
-            android:importantForAutofill="no" />
+            android:importantForAutofill="no"
+            android:textAlignment="center"/>
 
 
     <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
+            android:layout_marginTop="30dp"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
-            android:hint="@string/cantidad"
+            android:hint="Cantidad"
+            android:background="@drawable/edit_text_border"
             android:id="@+id/edQuantity"
-            android:importantForAutofill="no" />
+            android:importantForAutofill="no"
+            android:textAlignment="center"/>
 
-    <TextView
-            android:text="@string/fecha_de_caducidad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    <DatePicker
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:datePickerMode="spinner"
-            android:calendarViewShown="false"
-            android:id="@+id/dpFecha" />
+    <EditText
+        android:id="@+id/editTextDate"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_marginTop="30dp"
+        android:hint="Fecha de Caducidad"
+        android:background="@drawable/edit_text_border"
+        android:textAlignment="center"
+        android:inputType="date" />
 
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Añadir"
-            android:id="@+id/btAdd" />
+            android:layout_marginTop="30dp"
+            android:id="@+id/btAdd"
+            android:backgroundTint="#291B1B"/>
 
 </LinearLayout>
