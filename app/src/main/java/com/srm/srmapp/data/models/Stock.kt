@@ -5,4 +5,4 @@ import kotlinx.parcelize.Parcelize
 import java.util.*
 
 @Parcelize
-data class Stock(val id: Int, val quantity: Float, val expirationDate: Date, val lote: Int) : Parcelable
+data class Stock(val id: Int, val quantity: Float, val expirationDate: Date) : Parcelable

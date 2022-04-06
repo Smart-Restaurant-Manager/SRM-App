@@ -5,19 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.srm.srmapp.R
 import com.srm.srmapp.data.models.Food
-import com.srm.srmapp.data.models.FoodType
 import com.srm.srmapp.databinding.FragmentStockListBinding
+import com.srm.srmapp.databinding.RvItemStockBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class StockListFragment : Fragment() {
     private lateinit var binding: FragmentStockListBinding
+    private val viewmodel by viewModels<StockViewmodel>()
     private val validIds = arrayListOf(R.id.btCarne, R.id.btCereales,
         R.id.btMariscos, R.id.btEspecias,
         R.id.btVegetales, R.id.btLacteos)
-
+    private lateinit var adapter: Adapter<RvItemStockBinding, Food>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -35,18 +39,14 @@ class StockListFragment : Fragment() {
             return
 
         binding.tvStockTitle.text = title
-        binding.rvItems.adapter = Adapter(listOf(
-            Food(FoodType.CARNE, 0, "Name1", "kg"),
-            Food(FoodType.CARNE, 1, "Name2", "kg"),
-            Food(FoodType.CARNE, 2, "Name3", "kg"),
-            Food(FoodType.CARNE, 3, "Name4", "kg"),
-            Food(FoodType.CARNE, 4, "Name5", "kg"),
-        ), { itemBinding, item -> // setup child views
+        adapter = Adapter(emptyList(), { view ->
+            RvItemStockBinding.bind(view)
+        }, { itemBinding, item -> // setup child views
             itemBinding.apply {
-                tvLote.text = "TODO"
-                tvQuantity.text = "TODO ${item.units}"
+                tvLote.text = item.name
+                tvQuantity.text = item.units
                 tvName.text = item.name
-                tvCaducidad.text = "TODO"
+                tvCaducidad.text = ""
             }
         }) { view, item -> // on item click
             val arg = Bundle()
@@ -58,5 +58,15 @@ class StockListFragment : Fragment() {
         binding.btAdd.setOnClickListener {
             findNavController().navigate(R.id.action_stockListFragment_to_stockAddFragment)
         }
+
+        binding.rvItems.adapter = adapter
+        viewmodel.getFoodListLiveData().observe(requireActivity()) {
+            val list = it.data
+            if (list != null) {
+                adapter.updateItems(list)
+            }
+        }
+
+        viewmodel.refreshFoodList()
     }
 }
