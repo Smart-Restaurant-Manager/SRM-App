@@ -68,7 +68,7 @@ class StockListFragment : Fragment() {
                 tvLote.text = item.name
                 tvQuantity.text = item.units
                 tvName.text = item.name
-                tvCaducidad.text = ""
+                tvCaducidad.visibility = View.GONE
             }
         }) { view, item -> // on item click
             val arg = Bundle()
@@ -82,7 +82,7 @@ class StockListFragment : Fragment() {
             findNavController().navigate(R.id.action_stockListFragment_to_stockAddFragment)
         }
         binding.srFoodRefresh.setOnRefreshListener {
-            viewmodel.refreshFoodList()
+            viewmodel.refreshFoodList(/* TODO ADD Type */)
         }
         binding.srFoodRefresh.isEnabled = true
     }

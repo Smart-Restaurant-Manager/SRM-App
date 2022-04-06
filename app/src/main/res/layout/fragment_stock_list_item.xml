@@ -12,22 +12,27 @@
             android:layout_height="wrap_content"
             android:text="@string/header_title"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/rvHistory"
+            app:layout_constraintBottom_toTopOf="@+id/srStockRefresh"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0.5" />
 
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvHistory"
-            android:layout_width="0dp"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/srStockRefresh"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:listitem="@layout/rv_item_stock"
-            tools:itemCount="3"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-            app:layout_constraintBottom_toTopOf="@+id/btClearHistory" />
+            app:layout_constraintBottom_toTopOf="@+id/btClearHistory">
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/rv_item_stock"
+                tools:itemCount="3" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <Button
             android:id="@+id/btClearHistory"
@@ -36,7 +41,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rvHistory"
+            app:layout_constraintTop_toBottomOf="@+id/srStockRefresh"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintBottom_toTopOf="@+id/flPlot" />
 

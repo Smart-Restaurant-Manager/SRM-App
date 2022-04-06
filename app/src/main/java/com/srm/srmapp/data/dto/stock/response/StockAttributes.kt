@@ -4,7 +4,7 @@ import java.util.*
 
 data class StockAttributes(
     val created_at: String,
-    val expiration_date: Date,
+    val expiration_date: String,
     val expired: Boolean,
     val food_id: Int,
     val quantity: Int,
