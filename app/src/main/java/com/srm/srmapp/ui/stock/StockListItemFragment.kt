@@ -36,7 +36,7 @@ class StockListItemFragment : Fragment() {
     }
 
     private fun setupObservables() {
-        viewmodel.getStockListLiveData().observe(requireActivity()) {
+        viewmodel.getStockListLiveData().observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Error -> TODO()
                 is Resource.Loading -> {

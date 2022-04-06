@@ -36,7 +36,7 @@ class StockListFragment : Fragment() {
 
     private fun setupObservers() {
         viewmodel.refreshFoodList()
-        viewmodel.getFoodListLiveData().observe(requireActivity()) {
+        viewmodel.getFoodListLiveData().observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Error -> TODO()
                 is Resource.Loading -> {
