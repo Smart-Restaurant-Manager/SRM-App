@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
@@ -19,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class StockListItemFragment : Fragment() {
     private lateinit var binding: FragmentStockListItemBinding
     private lateinit var adapter: Adapter<RvItemStockBinding, Stock>
-    private val viewmodel by viewModels<StockViewmodel>()
+    private val viewmodel by activityViewModels<StockViewmodel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +53,8 @@ class StockListItemFragment : Fragment() {
                 else -> {}
             }
         }
-        viewmodel.refreshStockList()
+        if (viewmodel.getStockListLiveData().value == null)
+            viewmodel.refreshStockList()
     }
 
     private fun setupView(food: Food, title: String) {

@@ -10,10 +10,14 @@ import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.stock.StockRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class StockViewmodel @Inject constructor(private val stockRepository: StockRepository) : ViewModel() {
+    init {
+        Timber.d("INIT")
+    }
     private val _foodList: MutableLiveData<Resource<List<Food>>> = MutableLiveData()
     fun getFoodListLiveData() = _foodList as LiveData<Resource<List<Food>>>
 

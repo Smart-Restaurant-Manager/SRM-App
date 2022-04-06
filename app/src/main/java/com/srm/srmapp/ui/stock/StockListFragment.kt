@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class StockListFragment : Fragment() {
     private lateinit var binding: FragmentStockListBinding
-    private val viewmodel by viewModels<StockViewmodel>()
+    private val viewmodel by activityViewModels<StockViewmodel>()
     private lateinit var adapter: Adapter<RvItemStockBinding, Food>
     private lateinit var argTitle: String
     private lateinit var argFoodType: Food.FoodType
@@ -35,7 +36,6 @@ class StockListFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewmodel.refreshFoodList()
         viewmodel.getFoodListLiveData().observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Error -> TODO()
@@ -51,6 +51,8 @@ class StockListFragment : Fragment() {
                 else -> {}
             }
         }
+        if (viewmodel.getFoodListLiveData().value == null)
+            viewmodel.refreshFoodList()
     }
 
     private fun setupView(title: String, id: Food.FoodType) {
