@@ -12,13 +12,13 @@ interface StockInterface {
     suspend fun getFood(): Response<FoodListResponse>
 
     @POST("api/fake/food")
-    suspend fun postFood(): Response<Unit>
+    suspend fun postFood(): Response<Unit>// TODO BODY
 
     @GET("api/fake/food/{food}")
     suspend fun getFood(@Path("food") id: Int): Response<FoodResponse>
 
     @PUT("api/fake/food/{food}")
-    suspend fun modifyFood(@Path("food") id: Int): Response<Unit>
+    suspend fun modifyFood(@Path("food") id: Int): Response<Unit> // TODO BODY
 
     @DELETE("api/fake/food/{food}")
     suspend fun deleteFood(@Path("food") id: Int): Response<Unit>
@@ -30,7 +30,7 @@ interface StockInterface {
     suspend fun getStock(): Response<StockListResponse>
 
     @POST("api/fake/stocks")
-    suspend fun postStock(): Response<StockListResponse>
+    suspend fun postStock(): Response<StockListResponse> // TODO BODY
 
     @GET("api/fake/stocks/{stock}")
     suspend fun getStock(@Path("stock") id: Int): Response<StockResponse>
@@ -39,5 +39,5 @@ interface StockInterface {
     suspend fun deleteStock(@Path("stock") id: Int): Response<Unit>
 
     @PUT("api/fake/stocks/{stock}")
-    suspend fun modifyStock(@Path("stock") id: Int): Response<Unit>
+    suspend fun modifyStock(@Path("stock") id: Int): Response<Unit> // TODO BODY
 }

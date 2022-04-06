@@ -30,7 +30,7 @@ class WalcomeFragment : Fragment() {
     }
 
     private fun setupView() {
-        userSession.getUser().observe(requireActivity()) { user ->
+        userSession.getUser().observe(viewLifecycleOwner) { user ->
             binding.apply {
                 if (user == null) { // not logged in
                     btLogout.isEnabled = false

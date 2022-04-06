@@ -7,5 +7,5 @@ data class StockData(
     val id: Int,
     val type: String,
 ) {
-    fun toStock() = Stock(id = id, quantity = attributes.quantity.toFloat(), expirationDate = attributes.expiration_date, lote = id /*TODO Fix ME*/)
+    fun toStock() = Stock(id = id, quantity = attributes.quantity.toFloat(), expirationDate = attributes.expiration_date)
 }

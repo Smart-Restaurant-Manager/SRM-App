@@ -42,14 +42,14 @@ class LoginFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setupObservables() {
-        viewModel.getLoginState().observe(requireActivity()) { response ->
+        viewModel.getLoginState().observe(viewLifecycleOwner) { response ->
             Timber.d("LoginState updated $response.m")
             when (response) {
                 is Resource.Success -> {
                     binding.tvStatus.text = "${response.data}"
                 }
                 is Resource.Loading -> {
-                    binding.tvStatus.text = requireActivity().getString(R.string.loginLoading)
+                    binding.tvStatus.text = getString(R.string.loginLoading)
                 }
                 is Resource.Error -> {
                     binding.tvStatus.text = response.message
@@ -57,7 +57,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        viewModel.getSignupState().observe(requireActivity()) { response ->
+        viewModel.getSignupState().observe(viewLifecycleOwner) { response ->
             Timber.d("Sign up updated $response.m")
             when (response) {
                 is Resource.Success -> {
@@ -72,7 +72,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        userSession.getUser().observe(requireActivity()) {
+        userSession.getUser().observe(viewLifecycleOwner) {
             Timber.d("User updated")
             if (it != null) {
                 binding.btLogout.isEnabled = true
