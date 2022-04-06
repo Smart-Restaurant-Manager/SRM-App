@@ -4,12 +4,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.srm.srmapp.R
 
 class Adapter<B, T>(
     private var list: List<T>,
+    // Layout id
+    private var resourceId: Int,
+    // Layout data Binding
     private val bindSetup: (View) -> B,
-    private val holderSetup: (B, T) -> Unit = { _, _ -> },
+    // Item Layout view setup
+    private val itemViewSetup: (B, T) -> Unit,
+    // Item on click listener
     private val onClick: (View, T) -> Unit = { _, _ -> },
 ) : RecyclerView.Adapter<Adapter.Holder<B, T>>() {
 
@@ -21,13 +25,13 @@ class Adapter<B, T>(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder<B, T> {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.rv_item_stock, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(resourceId, parent, false)
         return Holder(view, bindSetup)
     }
 
     override fun onBindViewHolder(holder: Holder<B, T>, position: Int) {
         val item = list[position]
-        holder.bind(item, holderSetup)
+        holder.bind(item, itemViewSetup)
         holder.itemView.setOnClickListener {
             onClick.invoke(it, item)
         }
