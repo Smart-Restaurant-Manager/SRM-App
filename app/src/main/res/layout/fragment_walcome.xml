@@ -7,7 +7,7 @@
 
     <ImageView
         android:layout_width="422dp"
-        android:layout_height="410dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
         android:layout_marginTop="82dp"
         android:layout_marginEnd="81dp"
@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.461" />
 
     <Button
         android:id="@+id/btTapToEnter"

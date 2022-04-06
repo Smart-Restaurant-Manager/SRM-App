@@ -35,7 +35,7 @@ class WalcomeFragment : Fragment() {
                 if (user == null) { // not logged in
                     btLogout.isEnabled = false
                     btTapToEnter.setOnClickListener {
-                        findNavController().navigate(R.id.action_walcomeFragment_to_loginregisterFragment)
+                        findNavController().navigate(R.id.action_walcomeFragment_to_loginFragment)
                     }
                 } else { // logged in
                     btLogout.isEnabled = true

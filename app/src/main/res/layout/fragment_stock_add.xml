@@ -42,8 +42,9 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:layout_marginTop="30dp"
-            android:hint="Fecha de Caducidad"
-            android:background="@drawable/edit_text_border"
+            android:text="Fecha de Caducidad"
+            android:textStyle="normal"
+            android:textColor="@color/black"
             android:textAlignment="center" />
 
     <DatePicker
