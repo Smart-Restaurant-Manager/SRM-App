@@ -6,15 +6,16 @@
         android:layout_height="match_parent">
 
     <TextView
+            android:id="@+id/tvTitleAddStock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/title_size"
-            android:text="Añadir stock" />
+            android:text="@string/add_stock" />
 
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Nombre"
+            android:hint="@string/nombre"
             android:inputType="text"
             android:id="@+id/edName"
             android:importantForAutofill="no" />
@@ -24,14 +25,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
-            android:hint="Cantidad"
+            android:hint="@string/cantidad"
             android:id="@+id/edQuantity"
             android:importantForAutofill="no" />
 
-    <CalendarView
+    <TextView
+            android:text="@string/fecha_de_caducidad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    <DatePicker
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cvFecha" />
+            android:datePickerMode="spinner"
+            android:calendarViewShown="false"
+            android:id="@+id/dpFecha" />
 
     <Button
             android:layout_width="wrap_content"

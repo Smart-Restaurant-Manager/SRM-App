@@ -39,9 +39,7 @@ class Adapter<B, T>(
 
     override fun getItemCount(): Int = list.size
 
-    fun find(predicate: (T) -> Boolean): Int {
-        return list.indexOfFirst(predicate)
-    }
+    fun getList() = list
 
     fun updateItems(other: List<T>) {
         list = other

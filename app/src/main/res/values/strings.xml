@@ -39,4 +39,6 @@
     <string name="header_title">Title</string>
     <string name="clear_history">Limpiar Historico</string>
     <string name="tap_to_enter">Tap to enter</string>
+    <string name="fecha_de_caducidad">Fecha de caducidad</string>
+    <string name="add_stock">Añadir stock</string>
 </resources>

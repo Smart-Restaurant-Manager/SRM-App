@@ -29,4 +29,8 @@ data class Food(val type: FoodType, val id: Int, val name: String, val units: St
             }
         }
     }
+
+    override fun toString(): String {
+        return "$name $units $id"
+    }
 }

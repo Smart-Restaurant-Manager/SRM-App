@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.srm.srmapp.data.models.Food
+import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.databinding.FragmentStockAddBinding
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class StockAddFragment : Fragment() {
@@ -19,7 +22,7 @@ class StockAddFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentStockAddBinding.inflate(inflater, container, false)
-        argFoodType = arguments?.getSerializable("id") as Food.FoodType
+        argFoodType = arguments?.getSerializable("type") as Food.FoodType
         setupView()
         return binding.root
     }
@@ -27,13 +30,26 @@ class StockAddFragment : Fragment() {
     private fun setupView() {
         binding.btAdd.setOnClickListener {
             binding.apply {
-                val name = edName.text.toString()
-                val quantity = edQuantity.text.toString()
-                val date = cvFecha.date.toString()
-                val units = "TODO"
-                viewmodel.addFood(Food(argFoodType, -1, name, units))
+                val name = edName.text.toString().ifEmpty {
+                    Snackbar.make(it, "Invalid Name", Snackbar.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                val quantity = edQuantity.text.toString().ifEmpty {
+                    Snackbar.make(it, "Invalid Quantity", Snackbar.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }.toFloat()
+                val date = dpFecha.toString().ifEmpty {
+                    Snackbar.make(it, "Invalid Date", Snackbar.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                val units = "TODO".toString().ifEmpty { // TODO
+                    Snackbar.make(it, "Invalid Unit", Snackbar.LENGTH_LONG).show()
+                    return@setOnClickListener
+                }
+                val food = Food(argFoodType, -1, name, units, listOf(Stock(-1, quantity = quantity, date)))
+                viewmodel.addFood(food)
+                findNavController().popBackStack()
             }
-            findNavController().popBackStack()
         }
     }
 }
