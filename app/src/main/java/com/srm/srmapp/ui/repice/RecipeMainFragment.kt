@@ -1,0 +1,8 @@
+package com.srm.srmapp.ui.repice
+
+import androidx.fragment.app.Fragment
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
+class RecipeMainFragment : Fragment() {
+}
