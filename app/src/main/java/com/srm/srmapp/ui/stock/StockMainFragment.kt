@@ -36,5 +36,8 @@ class StockMainFragment : Fragment() {
                 }
             }
         }
+        binding.btback.setOnClickListener {
+            findNavController().navigate(R.id.action_stockMainFragment_to_managerFragment)
+        }
     }
 }

@@ -3,9 +3,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="30dp"
+    >
 
-    <!--    TODO add back button -->
+    <ImageButton
+        android:id="@+id/btback"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="150dp"
+        android:layout_marginTop="-80dp"
+        android:backgroundTint="#FFFFFF"
+        android:src="@drawable/back_arrow"
+        />
 
     <TextView
             android:id="@+id/tvTitleStock"
@@ -14,6 +24,7 @@
             android:layout_width="wrap_content"
             android:textColor="#291B1B"
             android:textAllCaps="true"
+            android:layout_marginTop="20dp"
             android:layout_height="wrap_content"
             android:textStyle="bold"/>
 

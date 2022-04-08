@@ -122,5 +122,8 @@ class StockListFragment : Fragment() {
             viewmodel.refreshFoodList(/* TODO ADD Type */)
         }
         binding.srFoodRefresh.isEnabled = true
+        binding.btback.setOnClickListener {
+            findNavController().navigate(R.id.action_stockListFragment_to_stockMainFragment)
+        }
     }
 }

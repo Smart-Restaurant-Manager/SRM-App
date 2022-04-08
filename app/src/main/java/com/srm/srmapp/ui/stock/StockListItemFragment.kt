@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.srm.srmapp.R
@@ -75,5 +76,8 @@ class StockListItemFragment : Fragment() {
             viewmodel.refreshStockList(/* TODO ADD type */)
         }
         binding.srStockRefresh.isEnabled = true
+        binding.btback.setOnClickListener {
+            findNavController().navigate(R.id.action_stockListItemFragment_to_stockListFragment)
+        }
     }
 }
