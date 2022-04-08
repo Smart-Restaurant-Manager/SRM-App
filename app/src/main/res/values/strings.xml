@@ -50,4 +50,15 @@
     <string name="forget_account">¿Has olvidado tu cuenta?</string>
     <string name="new_account">Crear cuenta</string>
     <string name="terms_conditions">Acepto los terminos y condiciones y las Políticas de Privacidad</string>
+    <string name="_1r_plato">1R PLATO</string>
+    <string name="entrantes">Entrantes</string>
+    <string name="_2o_plato">2O PLATO</string>
+    <string name="postres">Postres</string>
+    <string name="bebidas">Bebidas</string>
+    <string name="complementos">Complementos</string>
+    <string name="carta">CARTA</string>
+    <string name="search_title" />
+    <string name="search">Search</string>
+    <string name="namme">NAmme</string>
+    <string name="go_back">GO_BACK</string>
 </resources>

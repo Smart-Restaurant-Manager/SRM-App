@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <Button
+        android:id="@+id/btAdd3"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="72dp"
+        android:backgroundTint="#FFFFFF"
+        android:text="@string/go_back"
+        android:textColor="#291B1B"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btAdd2"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="104dp"
+        android:backgroundTint="#FFFFFF"
+        android:text="@string/placeholder_add"
+        android:textColor="#291B1B"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <SearchView
+        android:id="@+id/searchView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="168dp"
+        android:background="@drawable/searchView"
+        android:iconifiedByDefault="false"
+        android:queryBackground="@android:color/transparent"
+        android:queryHint="SearchFood"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="963dp"
+        android:layout_height="1113dp"
+        android:layout_marginTop="176dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView">
+
+        <LinearLayout
+            android:layout_width="950dp"
+            android:layout_height="150dp"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginLeft="100dp"
+                android:src="@color/black"
+                app:layout_constraintEnd_toStartOf="@+id/image2"
+                app:layout_constraintHorizontal_bias="0.136"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/Edit1"
+                android:layout_marginTop="258dp"
+                android:layout_marginLeft="-50dp"
+                android:paddingLeft="20dp"
+                android:layout_width="50dp"
+                android:drawableBottom="@mipmap/edit"
+                android:layout_height="50dp"></Button>
+
+            <TextView
+                android:id="@+id/txtName"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                android:layout_marginTop="250dp"
+                android:layout_marginLeft="-250dp"
+                android:layout_width="215dp"
+                android:layout_height="25dp"
+                android:text="Food Name"
+                app:layout_constraintEnd_toEndOf="@+id/image"
+                app:layout_constraintStart_toStartOf="@+id/image"
+                tools:layout_editor_absoluteY="281dp" />
+
+            <ImageView
+                android:id="@+id/image2"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginLeft="300dp"
+                android:contentDescription="TODO"
+                android:src="@color/black"
+                app:layout_constraintEnd_toEndOf=""
+                app:layout_constraintTop_toTopOf="" />
+
+            <Button
+                android:id="@+id/Edit2"
+                android:layout_marginTop="258dp"
+                android:layout_marginLeft="-50dp"
+                android:paddingLeft="20dp"
+                android:layout_width="50dp"
+                android:drawableBottom="@mipmap/edit"
+                android:layout_height="50dp"></Button>
+
+            <TextView
+                android:id="@+id/txtName2"
+
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+                android:layout_width="215dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="250dp"
+                android:layout_marginLeft="-250dp"
+                android:text="Food Name"
+                app:layout_constraintEnd_toEndOf="@+id/image2"
+                app:layout_constraintStart_toStartOf="@+id/image2"
+                tools:layout_editor_absoluteY="279dp" />
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
