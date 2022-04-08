@@ -22,11 +22,6 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
     private val _signupState: MutableLiveData<Resource<String>> = MutableLiveData()
     fun getSignupState() = _signupState as LiveData<Resource<String>>
 
-    private var formToggle = true
-    fun getFormtoggle() = formToggle
-    fun toggleForm() {
-        formToggle = !formToggle
-    }
 
     fun login(username: String, password: String) {
         Timber.d("login $username $password")

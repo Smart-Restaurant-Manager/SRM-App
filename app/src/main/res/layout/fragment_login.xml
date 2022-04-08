@@ -11,7 +11,7 @@
             android:layout_height="500dp"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="gone">
 
         <TextView
                 android:layout_width="match_parent"
@@ -52,6 +52,25 @@
                 android:text="@string/forget_password"
                 android:textColor="#3D4545" />
 
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginStart="-30dp"
+                android:text="@string/forget_account"
+                android:textAlignment="center" />
+
+        <Button
+                android:id="@+id/btGoToSignUp"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:layout_marginTop="-35dp"
+                android:backgroundTint="#FFFFFF"
+                android:text="@string/login2"
+                android:textAllCaps="false"
+                android:textColor="@color/black" />
+
         <Button
                 android:id="@+id/btLogin"
                 android:layout_width="wrap_content"
@@ -61,26 +80,6 @@
                 android:text="@string/session_login"
                 android:textAllCaps="false" />
 
-        <TextView
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:layout_marginStart="-30dp"
-                android:text="@string/forget_account"
-                android:textAlignment="center" />
-
-        <Button
-                android:id="@+id/btFormToggle"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="100dp"
-                android:layout_marginTop="-35dp"
-                android:backgroundTint="#FFFFFF"
-                android:text="@string/register"
-                android:textAllCaps="false"
-                android:textColor="@color/black"
-
-                />
     </LinearLayout>
 
     <LinearLayout
@@ -88,7 +87,7 @@
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="300dp"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_height="500dp">
 
         <TextView
@@ -146,12 +145,31 @@
                 android:textAlignment="center" />
 
         <CheckBox
-                android:id="@+id/checkbox"
+                android:id="@+id/cbTerms"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/terms_conditions"
                 android:layout_marginTop="30dp"
                 android:textColor="#646161" />
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginStart="-30dp"
+                android:text="@string/forget_account"
+                android:textAlignment="center" />
+
+        <Button
+                android:id="@+id/btGoToLogin"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="-35dp"
+                android:backgroundTint="#FFFFFF"
+                android:text="@string/register"
+                android:textAllCaps="false"
+                android:textColor="@color/black" />
 
         <Button
                 android:layout_width="wrap_content"

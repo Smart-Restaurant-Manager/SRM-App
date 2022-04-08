@@ -36,9 +36,13 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     private fun setupView() {
         binding.btLogin.setOnClickListener(this)
-        binding.btFormToggle.setOnClickListener(this)
+        binding.btGoToLogin.setOnClickListener(this)
+        binding.btGoToSignUp.setOnClickListener(this)
         binding.btSignup.setOnClickListener(this)
         binding.btLogout.setOnClickListener(this)
+        binding.cbTerms.setOnCheckedChangeListener { compoundButton, b ->
+            binding.btSignup.isEnabled = b
+        }
     }
 
     private fun setupObservables() {
@@ -95,15 +99,14 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 viewModel.login(user, password)
             }
 
-            R.id.btFormToggle -> {
-                if (viewModel.getFormtoggle()) {
-                    binding.formLogin.visibility = View.GONE
-                    binding.formSignup.visibility = View.VISIBLE
-                } else {
-                    binding.formLogin.visibility = View.VISIBLE
-                    binding.formSignup.visibility = View.GONE
-                }
-                viewModel.toggleForm()
+            R.id.btGoToSignUp -> {
+                binding.formLogin.visibility = View.GONE
+                binding.formSignup.visibility = View.VISIBLE
+            }
+
+            R.id.btGoToLogin -> {
+                binding.formLogin.visibility = View.VISIBLE
+                binding.formSignup.visibility = View.GONE
             }
 
             R.id.btSignup -> {
