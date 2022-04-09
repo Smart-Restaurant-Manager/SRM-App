@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
@@ -22,6 +25,7 @@ class StockListItemFragment : Fragment() {
     private lateinit var adapter: Adapter<RvItemStockBinding, Stock>
     private lateinit var plotView: PlotView
     private val viewmodel by activityViewModels<StockViewmodel>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -86,5 +90,8 @@ class StockListItemFragment : Fragment() {
             viewmodel.refreshStockList(/* TODO ADD type */)
         }
         binding.srStockRefresh.isEnabled = true
+        binding.btback.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 }

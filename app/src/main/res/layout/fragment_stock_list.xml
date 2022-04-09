@@ -4,49 +4,65 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="20dp">
+        android:padding="30dp">
 
+    <ImageButton
+        android:id="@+id/btback"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginBottom="7dp"
+        android:layout_marginEnd="70dp"
+        android:backgroundTint="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/btnFind"
+        app:layout_constraintEnd_toStartOf="@+id/tvStockTitle"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/btnFind"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.24000001"
+        app:srcCompat="@drawable/back_arrow" />
 
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+    <ImageButton
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:id="@+id/btnFind"
-            android:text="@string/placeholder_find"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             android:backgroundTint="#FFFFFF"
             android:textColor="#291B1B"
+            android:src="@drawable/search"
+            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toStartOf="@+id/tvStockTitle"
             app:layout_constraintTop_toTopOf="@+id/tvStockTitle" />
 
-    <Button
+    <ImageButton
             android:id="@+id/btAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="10dp"
             android:backgroundTint="#FFFFFF"
             android:textColor="#291B1B"
-            android:text="@string/placeholder_add"
+            android:src="@drawable/add"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/tvStockTitle"
             app:layout_constraintTop_toTopOf="@+id/tvStockTitle" />
 
     <TextView
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="@string/carne"
-            android:id="@+id/tvStockTitle"
-            app:layout_constraintStart_toEndOf="@+id/btnFind"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintEnd_toStartOf="@+id/btAdd"
-            android:background="#291B1B"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="true"
-            android:textAlignment="center"
-            android:textStyle="normal"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/tvStockTitle"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:background="@drawable/rounded_textview"
+        android:text="@string/carne"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toStartOf="@+id/btAdd"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnFind"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
             android:text="@string/cantidad"

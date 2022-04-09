@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
+import com.srm.srmapp.R
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.databinding.FragmentStockAddBinding
@@ -50,6 +51,9 @@ class StockAddFragment : Fragment() {
                 viewmodel.addFood(food)
                 findNavController().popBackStack()
             }
+        }
+        binding.btback.setOnClickListener {
+            findNavController().navigate(R.id.action_stockAddFragment_to_stockListFragment)
         }
     }
 }
