@@ -1,13 +1,12 @@
 package com.srm.srmapp.ui.stock
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
@@ -21,13 +20,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class StockListItemFragment : Fragment() {
     private lateinit var binding: FragmentStockListItemBinding
     private lateinit var adapter: Adapter<RvItemStockBinding, Stock>
+    private lateinit var plotView: PlotView
     private val viewmodel by activityViewModels<StockViewmodel>()
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentStockListItemBinding.inflate(inflater, container, false)
+        plotView = binding.pvPlot
         val food = arguments?.getParcelable<Food>("item")
         val title = arguments?.getString("title")
         if (food != null && title != null) {
@@ -47,8 +47,19 @@ class StockListItemFragment : Fragment() {
                 is Resource.Success -> {
                     binding.srStockRefresh.isRefreshing = false
                     val data = it.data
-                    if (data != null)
+                    if (data != null) {
                         adapter.updateItems(data)
+                        plotView.apply {
+                            setDate(data.map { it.quantity }, data.map { it.quantity.toString() })
+                            setOnDownListener { idx ->
+                                val item = data[idx]
+                                AlertDialog.Builder(requireContext()).apply {
+                                    setMessage("${item.id} ${item.expirationDate} ${item.quantity}")
+                                    show()
+                                }
+                            }
+                        }
+                    }
                 }
                 else -> {}
             }

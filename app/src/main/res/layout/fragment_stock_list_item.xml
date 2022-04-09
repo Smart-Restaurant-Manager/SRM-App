@@ -20,12 +20,13 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/srStockRefresh"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             app:layout_constraintBottom_toTopOf="@+id/btClearHistory">
+
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvHistory"
                 android:layout_width="wrap_content"
@@ -43,10 +44,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/srStockRefresh"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintBottom_toTopOf="@+id/flPlot" />
+            app:layout_constraintBottom_toTopOf="@+id/pvPlot" />
 
-    <FrameLayout
-            android:id="@+id/flPlot"
+    <com.srm.srmapp.ui.stock.PlotView
+            android:id="@+id/pvPlot"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"
