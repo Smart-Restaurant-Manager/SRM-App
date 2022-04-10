@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="30dp">
+
+    <ImageView
+        android:id="@+id/iv_item4"
+        android:layout_width="170dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_item2"
+        app:srcCompat="@drawable/lis_imagen_1" />
+
+    <TextView
+        android:id="@+id/tvListitem4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="210dp"
+        android:layout_marginTop="-50dp"
+        android:layout_marginBottom="110dp"
+        android:text="Pollo a la naranja"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_item3"
+        app:layout_constraintVertical_bias="0.246"
+        tools:ignore="MissingConstraints" />
+
+
+    <ImageButton
+        android:id="@+id/btModificate1"
+        android:layout_width="29dp"
+        android:layout_height="0dp"
+        android:background="#FFFFFF"
+        android:src="@drawable/modificar"
+        android:layout_marginTop="-35dp"
+        android:layout_marginLeft="-22dp"
+        app:layout_constraintStart_toEndOf="@+id/iv_item3"
+        app:layout_constraintTop_toBottomOf="@+id/iv_item1"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <ImageButton
+        android:id="@+id/btModificate2"
+        android:layout_width="29dp"
+        android:layout_height="0dp"
+        android:background="#FFFFFF"
+        android:src="@drawable/modificar"
+        android:layout_marginTop="-35dp"
+        android:layout_marginLeft="152dp"
+        app:layout_constraintStart_toEndOf="@+id/iv_item3"
+        app:layout_constraintTop_toBottomOf="@+id/iv_item1"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <ImageButton
+        android:id="@+id/btModificate3"
+        android:layout_width="29dp"
+        android:layout_height="0dp"
+        android:background="#FFFFFF"
+        android:src="@drawable/modificar"
+        android:layout_marginTop="160dp"
+        android:layout_marginLeft="-22dp"
+        app:layout_constraintStart_toEndOf="@+id/iv_item3"
+        app:layout_constraintTop_toBottomOf="@+id/iv_item1"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <ImageButton
+        android:id="@+id/btModificate4"
+        android:layout_width="29dp"
+        android:layout_height="0dp"
+        android:background="#FFFFFF"
+        android:src="@drawable/modificar"
+        android:layout_marginTop="160dp"
+        android:layout_marginLeft="152dp"
+        app:layout_constraintStart_toEndOf="@+id/iv_item3"
+        app:layout_constraintTop_toBottomOf="@+id/iv_item1"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <ImageView
+        android:id="@+id/iv_item3"
+        android:layout_width="170dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="3dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_item1"
+        app:srcCompat="@drawable/lis_imagen_1" />
+
+
+    <TextView
+        android:id="@+id/tvListitem3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="-50dp"
+        android:layout_marginBottom="110dp"
+        android:text="Pollo a la naranja"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_item3"
+        app:layout_constraintVertical_bias="0.246"
+        tools:ignore="MissingConstraints" />
+
+    <ImageButton
+        android:id="@+id/btback"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#FFFFFF"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/back_arrow"
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="76dp"
+        android:background="@drawable/searchview"
+        android:iconifiedByDefault="false"
+        android:queryBackground="@android:color/transparent"
+        android:queryHint="SearchFood"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btAdd"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="85dp"
+        android:layout_marginEnd="5dp"
+        android:backgroundTint="#FFFFFF"
+        android:src="@drawable/add"
+        android:textColor="#291B1B"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/searchView"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="170dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView"
+        app:srcCompat="@drawable/lis_imagen_1"
+        />
+
+
+
+    <ImageView
+        android:id="@+id/iv_item1"
+        android:layout_width="170dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView"
+        app:srcCompat="@drawable/lis_imagen_1"
+        />
+
+    <TextView
+        android:id="@+id/tvList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-70dp"
+        android:layout_marginBottom="3dp"
+        android:text="Pollo a la naranja"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/iv_item3"
+        app:layout_constraintTop_toBottomOf="@+id/iv_item1"
+        app:layout_constraintVertical_bias="0.709"
+        tools:layout_editor_absoluteX="30dp"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/iv_item2"
+        android:layout_width="170dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchView"
+        app:srcCompat="@drawable/lis_imagen_1" />
+
+    <TextView
+        android:id="@+id/tvListitem2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-70dp"
+        android:layout_marginBottom="3dp"
+        android:text="Pollo a la naranja"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/iv_item3"
+        app:layout_constraintTop_toBottomOf="@+id/iv_item1"
+        app:layout_constraintVertical_bias="0.705"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="211dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

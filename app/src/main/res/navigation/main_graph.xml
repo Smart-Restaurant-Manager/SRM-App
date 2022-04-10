@@ -44,9 +44,6 @@
         <action
             android:id="@+id/action_stockListFragment_to_stockAddFragment"
             app:destination="@id/stockAddFragment" />
-        <action
-            android:id="@+id/action_stockListFragment_to_stockMainFragment"
-            app:destination="@+id/stockMainFragment" />
     </fragment>
     <fragment
         android:id="@+id/stockMainFragment"
@@ -56,19 +53,12 @@
         <action
             android:id="@+id/action_stockMainFragment_to_stockListFragment"
             app:destination="@id/stockListFragment" />
-        <action
-            android:id="@+id/action_stockMainFragment_to_managerFragment"
-            app:destination="@id/managerFragment"/>
     </fragment>
     <fragment
         android:id="@+id/stockListItemFragment"
         android:name="com.srm.srmapp.ui.stock.StockListItemFragment"
         android:label="StockListItemFragment"
-        tools:layout="@layout/fragment_stock_list_item">
-        <action
-            android:id="@+id/action_stockListItemFragment_to_stockListFragment"
-            app:destination="@id/stockListFragment"/>
-    </fragment>
+        tools:layout="@layout/fragment_stock_list_item" />
     <fragment
         android:id="@+id/managerFragment"
         android:name="com.srm.srmapp.ui.ManagerFragment"
@@ -77,15 +67,35 @@
         <action
             android:id="@+id/action_managerFragment_to_stockMainFragment"
             app:destination="@id/stockMainFragment" />
+        <action
+            android:id="@+id/action_managerFragment_to_receiptMainFragment"
+            app:destination="@id/receiptMainFragment" />
     </fragment>
     <fragment
         android:id="@+id/stockAddFragment"
         android:name="com.srm.srmapp.ui.stock.StockAddFragment"
         android:label="StockAddFragment"
         tools:layout="@layout/fragment_stock_add">
-        <action
-            android:id="@+id/action_stockAddFragment_to_stockListFragment"
-            app:destination="@id/stockListFragment"/>
     </fragment>
+    <fragment
+        android:id="@+id/receiptMainFragment"
+        android:name="com.srm.srmapp.ui.repice.RecipeMainFragment"
+        android:label="ReceiptMainFragment"
+        tools:layout="@layout/fragment_receipt_main">
+        <action
+            android:id="@+id/action_receiptMainFragment_to_menuCardList"
+            app:destination="@id/menuCardList">
+
+        </action>
+
+    </fragment>
+    <fragment
+        android:id="@+id/menuCardList"
+        android:name="com.srm.srmapp.ui.repice.RecipeMainFragment"
+        android:label="ReceiptMainFragment"
+        tools:layout="@layout/fragment_menu_card_list">
+
+    </fragment>
+
 
 </navigation>

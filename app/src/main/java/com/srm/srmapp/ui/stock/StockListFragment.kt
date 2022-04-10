@@ -123,7 +123,7 @@ class StockListFragment : Fragment() {
         }
         binding.srFoodRefresh.isEnabled = true
         binding.btback.setOnClickListener {
-            findNavController().navigate(R.id.action_stockListFragment_to_stockMainFragment)
+            findNavController().popBackStack()
         }
     }
 }

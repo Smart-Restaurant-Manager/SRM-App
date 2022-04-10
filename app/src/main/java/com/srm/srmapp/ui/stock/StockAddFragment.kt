@@ -53,7 +53,7 @@ class StockAddFragment : Fragment() {
             }
         }
         binding.btback.setOnClickListener {
-            findNavController().navigate(R.id.action_stockAddFragment_to_stockListFragment)
+            findNavController().popBackStack()
         }
     }
 }

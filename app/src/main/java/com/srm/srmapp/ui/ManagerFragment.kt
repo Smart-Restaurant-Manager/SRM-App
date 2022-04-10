@@ -19,6 +19,9 @@ class ManagerFragment : Fragment() {
         binding.btStock.setOnClickListener {
             findNavController().navigate(R.id.action_managerFragment_to_stockMainFragment)
         }
+        binding.btMenu.setOnClickListener {
+            findNavController().navigate(R.id.action_managerFragment_to_receiptMainFragment)
+        }
         return binding.root
     }
 }
