@@ -18,6 +18,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
     init {
         Timber.d("INIT")
     }
+
     private val _foodList: MutableLiveData<Resource<List<Food>>> = MutableLiveData()
     fun getFoodListLiveData() = _foodList as LiveData<Resource<List<Food>>>
 
@@ -33,7 +34,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
 
     fun refreshStockList(/*TODO filter list by type, add get range */) {
         _stockLisst.value = Resource.Loading()
-        viewModelScope.launchException() {
+        viewModelScope.launchException {
             val stock = stockRepository.getStock()
             _stockLisst.postValue(stock)
         }
@@ -41,7 +42,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
 
     fun refreshFoodList(/*TODO filter list by type, add get range*/) {
         _foodList.value = Resource.Loading()
-        viewModelScope.launchException() {
+        viewModelScope.launchException {
             val food = stockRepository.getFood()
             _foodList.postValue(food)
         }

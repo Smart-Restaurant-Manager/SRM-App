@@ -15,8 +15,8 @@ import timber.log.Timber
 
 
 /**
-* View used to plot data 
-*/
+ * View used to plot data
+ */
 class PlotView(context: Context, attributes: AttributeSet) : View(context, attributes), GestureDetector.OnGestureListener {
     private val gesture = GestureDetectorCompat(context, this)
     private val paint: Paint = Paint().apply {

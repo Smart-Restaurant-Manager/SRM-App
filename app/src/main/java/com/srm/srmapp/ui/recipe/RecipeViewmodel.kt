@@ -42,7 +42,7 @@ class RecipeViewmodel @Inject constructor(private val RecipeRepository: RecipeRe
     fun refreshRecipeList() {
         Timber.d("Call refresh")
         _recipeList.value = Resource.Loading()
-        viewModelScope.launchException() {
+        viewModelScope.launchException {
             val recipe = RecipeRepository.getRecipes()
             _recipeList.postValue(recipe)
         }

@@ -1,7 +1,5 @@
 package com.srm.srmapp.data.dto.stock.response
 
-import java.util.*
-
 data class StockAttributes(
     val created_at: String,
     val expiration_date: String,

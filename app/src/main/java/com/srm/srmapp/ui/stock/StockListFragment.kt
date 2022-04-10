@@ -48,10 +48,10 @@ class StockListFragment : Fragment() {
             when (it) {
                 is Resource.Error -> TODO()
                 is Resource.Loading -> {
-                    binding.srFoodRefresh.isRefreshing = true;
+                    binding.srFoodRefresh.isRefreshing = true
                 }
                 is Resource.Success -> {
-                    binding.srFoodRefresh.isRefreshing = false;
+                    binding.srFoodRefresh.isRefreshing = false
                     it.data?.let { list ->
                         adapter.updateItems(list)
                     }
