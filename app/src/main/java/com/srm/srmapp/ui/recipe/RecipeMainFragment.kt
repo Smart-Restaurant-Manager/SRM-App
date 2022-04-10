@@ -1,4 +1,4 @@
-package com.srm.srmapp.ui.repice
+package com.srm.srmapp.ui.recipe
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.srm.srmapp.R
 import com.srm.srmapp.databinding.FragmentReceiptMainBinding
-import com.srm.srmapp.databinding.FragmentStockMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -26,6 +25,21 @@ class RecipeMainFragment : Fragment() {
     }
 
     private fun setupView() {
+        val bts = binding.btEntrantes as ViewGroup
+        for (i in 0 until bts.childCount) {
+            val v = bts.getChildAt(i)
+            if (v is Button) {
+                Timber.d("${v.text}")
+                v.setOnClickListener {
+                    val arg = Bundle()
+                    arg.putInt("id", it.id)
+                    arg.putString("title", (it as Button).text.toString())
+                    findNavController().navigate(R.id.action_receiptMainFragment_to_menuCardList, args = arg)
+                }
+            }
+        }
+
+
         binding.btback.setOnClickListener {
             findNavController().popBackStack()
         }

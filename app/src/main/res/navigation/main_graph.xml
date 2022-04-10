@@ -79,7 +79,7 @@
     </fragment>
     <fragment
         android:id="@+id/receiptMainFragment"
-        android:name="com.srm.srmapp.ui.repice.RecipeMainFragment"
+        android:name="com.srm.srmapp.ui.recipe.RecipeMainFragment"
         android:label="ReceiptMainFragment"
         tools:layout="@layout/fragment_receipt_main">
         <action
@@ -91,7 +91,7 @@
     </fragment>
     <fragment
         android:id="@+id/menuCardList"
-        android:name="com.srm.srmapp.ui.repice.RecipeMainFragment"
+        android:name="com.srm.srmapp.ui.recipe.RecipeMainFragment"
         android:label="ReceiptMainFragment"
         tools:layout="@layout/fragment_menu_card_list">
 

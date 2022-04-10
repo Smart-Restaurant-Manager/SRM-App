@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.repository.authentication.AuthInterface
+import com.srm.srmapp.repository.recipes.RecipeInterface
 import com.srm.srmapp.repository.stock.StockInterface
 import dagger.Module
 import dagger.Provides
@@ -59,5 +60,11 @@ object AppModule {
     @Singleton
     fun provideStockInterface(retrofit: Retrofit): StockInterface {
         return retrofit.create(StockInterface::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecipeInterface(retrofit: Retrofit): RecipeInterface {
+        return retrofit.create(RecipeInterface::class.java)
     }
 }
