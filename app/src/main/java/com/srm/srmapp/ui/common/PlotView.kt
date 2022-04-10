@@ -1,4 +1,4 @@
-package com.srm.srmapp.ui.stock
+package com.srm.srmapp.ui.common
 
 import android.annotation.SuppressLint
 import android.content.Context

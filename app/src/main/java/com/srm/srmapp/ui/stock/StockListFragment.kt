@@ -17,6 +17,7 @@ import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.databinding.FragmentStockListBinding
 import com.srm.srmapp.databinding.RvItemStockBinding
 import com.srm.srmapp.databinding.SearchDialogBinding
+import com.srm.srmapp.ui.common.Adapter
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 

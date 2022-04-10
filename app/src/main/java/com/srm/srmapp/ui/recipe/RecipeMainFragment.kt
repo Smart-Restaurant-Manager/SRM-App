@@ -25,7 +25,7 @@ class RecipeMainFragment : Fragment() {
     }
 
     private fun setupView() {
-        val bts = binding.btEntrantes as ViewGroup
+        val bts = binding.root as ViewGroup
         for (i in 0 until bts.childCount) {
             val v = bts.getChildAt(i)
             if (v is Button) {

@@ -6,16 +6,15 @@ import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 
 @Parcelize
-data class Recipe(val type:RecipeType, val id: Int, val name:String, val price: Float, val food: List<Food>? = null): Parcelable {
-   enum class  RecipeType{
-       NONE,ENTRANTE,FIRST_PLATE,
-       SECOND_PLATE,DESERT,DRINK,
-       COMPLEMENTS
-
-   }
+data class Recipe(val type: RecipeType, val id: Int, val name: String, val price: Float, val food: List<Food>? = null) : Parcelable {
+    enum class RecipeType {
+        NONE, ENTRANTE, FIRST_PLATE,
+        SECOND_PLATE, DESERT, DRINK,
+        COMPLEMENTS
+    }
 
     companion object {
-        fun parseId(id:Int) = when (id){
+        fun parseId(id: Int) = when (id) {
             R.id.btEntrantes -> RecipeType.ENTRANTE
             R.id.btPrimerPlato -> RecipeType.FIRST_PLATE
             R.id.btSegundoPlato -> RecipeType.SECOND_PLATE
@@ -29,6 +28,7 @@ data class Recipe(val type:RecipeType, val id: Int, val name:String, val price: 
             }
         }
     }
+
     override fun toString(): String {
         return "$name  $id  $price "
     }

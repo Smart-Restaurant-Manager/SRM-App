@@ -7,9 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
@@ -17,6 +15,8 @@ import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.databinding.FragmentStockListItemBinding
 import com.srm.srmapp.databinding.RvItemStockBinding
+import com.srm.srmapp.ui.common.Adapter
+import com.srm.srmapp.ui.common.PlotView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

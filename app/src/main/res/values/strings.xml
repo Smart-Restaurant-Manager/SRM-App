@@ -59,4 +59,8 @@
     <string name="complements">Complementos</string>
     <string name="exist_account">¿Tienes una cuenta?</string>
     <string name="select_photo">Seleccionar foto</string>
+    <string name="a_adir_a_la_carta">Añadir a la carta</string>
+    <string name="modificar">Modificar</string>
+    <string name="delete">Eliminar</string>
+    <string name="selecionar_ingredientes">Selecionar ingredientes</string>
 </resources>

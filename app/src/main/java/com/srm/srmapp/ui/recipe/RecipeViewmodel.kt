@@ -19,6 +19,7 @@ class RecipeViewmodel @Inject constructor(private val RecipeRepository: RecipeRe
     init {
         Timber.d("INIT")
     }
+
     private val _recipeList: MutableLiveData<Resource<List<Recipe>>> = MutableLiveData()
     fun getRecipeListLiveData() = _recipeList as LiveData<Resource<List<Recipe>>>
 
@@ -38,19 +39,19 @@ class RecipeViewmodel @Inject constructor(private val RecipeRepository: RecipeRe
     fun getFoodLiveData() = _food as LiveData<Resource<Food>>
 
 
-    fun refreshRecipeList(){
-        _recipeList.value= Resource.Loading()
-        viewModelScope.launchException(){
-          //  val recipe = RecipeRepository.getRecipe()
-           // _recipeList.postValue(recipe)
+    fun refreshRecipeList() {
+        Timber.d("Call refresh")
+        _recipeList.value = Resource.Loading()
+        viewModelScope.launchException() {
+            val recipe = RecipeRepository.getRecipes()
+            _recipeList.postValue(recipe)
         }
-
     }
 
     fun getRecipeBy(id: Int) {
         viewModelScope.launchException {
-         //   val recipe =  RecipeRepository.getRecipe(id)
-          //  _recipe.postValue(recipe)
+            val recipe = RecipeRepository.getRecipe(id)
+            _recipe.postValue(recipe)
         }
     }
 

@@ -1,101 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_graph"
-    app:startDestination="@id/walcomeFragment">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main_graph"
+        app:startDestination="@id/walcomeFragment">
 
     <fragment
-        android:id="@+id/walcomeFragment"
-        android:name="com.srm.srmapp.ui.WalcomeFragment"
-        android:label="WalcomeFragment"
-        tools:layout="@layout/fragment_walcome">
+            android:id="@+id/walcomeFragment"
+            android:name="com.srm.srmapp.ui.WalcomeFragment"
+            android:label="WalcomeFragment"
+            tools:layout="@layout/fragment_walcome">
         <action
-            android:id="@+id/action_walcomeFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:popUpTo="@id/walcomeFragment"
-            app:popUpToInclusive="true" />
+                android:id="@+id/action_walcomeFragment_to_loginFragment"
+                app:destination="@id/loginFragment"
+                app:popUpTo="@id/walcomeFragment"
+                app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_walcomeFragment_to_managerFragment"
-            app:destination="@id/managerFragment"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/walcomeFragment" />
+                android:id="@+id/action_walcomeFragment_to_managerFragment"
+                app:destination="@id/managerFragment"
+                app:popUpToInclusive="true"
+                app:popUpTo="@id/walcomeFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.srm.srmapp.ui.login.LoginFragment"
-        android:label="LoginFragment"
-        tools:layout="@layout/fragment_login">
+            android:id="@+id/loginFragment"
+            android:name="com.srm.srmapp.ui.login.LoginFragment"
+            android:label="LoginFragment"
+            tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginFragment_to_managerFragment"
-            app:destination="@id/managerFragment"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
+                android:id="@+id/action_loginFragment_to_managerFragment"
+                app:destination="@id/managerFragment"
+                app:popUpTo="@id/loginFragment"
+                app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/stockListFragment"
-        android:name="com.srm.srmapp.ui.stock.StockListFragment"
-        android:label="StockListFragment"
-        tools:layout="@layout/fragment_stock_list">
+            android:id="@+id/stockListFragment"
+            android:name="com.srm.srmapp.ui.stock.StockListFragment"
+            android:label="StockListFragment"
+            tools:layout="@layout/fragment_stock_list">
         <action
-            android:id="@+id/action_stockListFragment_to_stockListItemFragment"
-            app:destination="@id/stockListItemFragment" />
+                android:id="@+id/action_stockListFragment_to_stockListItemFragment"
+                app:destination="@id/stockListItemFragment" />
         <action
-            android:id="@+id/action_stockListFragment_to_stockAddFragment"
-            app:destination="@id/stockAddFragment" />
+                android:id="@+id/action_stockListFragment_to_stockAddFragment"
+                app:destination="@id/stockAddFragment" />
     </fragment>
     <fragment
-        android:id="@+id/stockMainFragment"
-        android:name="com.srm.srmapp.ui.stock.StockMainFragment"
-        android:label="StockMainFragment"
-        tools:layout="@layout/fragment_stock_main">
+            android:id="@+id/stockMainFragment"
+            android:name="com.srm.srmapp.ui.stock.StockMainFragment"
+            android:label="StockMainFragment"
+            tools:layout="@layout/fragment_stock_main">
         <action
-            android:id="@+id/action_stockMainFragment_to_stockListFragment"
-            app:destination="@id/stockListFragment" />
+                android:id="@+id/action_stockMainFragment_to_stockListFragment"
+                app:destination="@id/stockListFragment" />
     </fragment>
     <fragment
-        android:id="@+id/stockListItemFragment"
-        android:name="com.srm.srmapp.ui.stock.StockListItemFragment"
-        android:label="StockListItemFragment"
-        tools:layout="@layout/fragment_stock_list_item" />
+            android:id="@+id/stockListItemFragment"
+            android:name="com.srm.srmapp.ui.stock.StockListItemFragment"
+            android:label="StockListItemFragment"
+            tools:layout="@layout/fragment_stock_list_item" />
     <fragment
-        android:id="@+id/managerFragment"
-        android:name="com.srm.srmapp.ui.ManagerFragment"
-        android:label="ManagerFragment"
-        tools:layout="@layout/fragment_manager">
+            android:id="@+id/managerFragment"
+            android:name="com.srm.srmapp.ui.ManagerFragment"
+            android:label="ManagerFragment"
+            tools:layout="@layout/fragment_manager">
         <action
-            android:id="@+id/action_managerFragment_to_stockMainFragment"
-            app:destination="@id/stockMainFragment" />
+                android:id="@+id/action_managerFragment_to_stockMainFragment"
+                app:destination="@id/stockMainFragment" />
         <action
-            android:id="@+id/action_managerFragment_to_receiptMainFragment"
-            app:destination="@id/receiptMainFragment" />
+                android:id="@+id/action_managerFragment_to_receiptMainFragment"
+                app:destination="@id/receiptMainFragment" />
     </fragment>
     <fragment
-        android:id="@+id/stockAddFragment"
-        android:name="com.srm.srmapp.ui.stock.StockAddFragment"
-        android:label="StockAddFragment"
-        tools:layout="@layout/fragment_stock_add">
+            android:id="@+id/stockAddFragment"
+            android:name="com.srm.srmapp.ui.stock.StockAddFragment"
+            android:label="StockAddFragment"
+            tools:layout="@layout/fragment_stock_add" />
+    <fragment
+            android:id="@+id/receiptMainFragment"
+            android:name="com.srm.srmapp.ui.recipe.RecipeMainFragment"
+            android:label="ReceiptMainFragment"
+            tools:layout="@layout/fragment_receipt_main">
+        <action
+                android:id="@+id/action_receiptMainFragment_to_menuCardList"
+                app:destination="@id/menuCardList" />
     </fragment>
     <fragment
-        android:id="@+id/receiptMainFragment"
-        android:name="com.srm.srmapp.ui.recipe.RecipeMainFragment"
-        android:label="ReceiptMainFragment"
-        tools:layout="@layout/fragment_receipt_main">
-        <action
-            android:id="@+id/action_receiptMainFragment_to_menuCardList"
-            app:destination="@id/menuCardList">
+            android:id="@+id/menuCardList"
+            android:name="com.srm.srmapp.ui.recipe.MenuCardListFragment"
+            android:label="ReceiptMainFragment"
+            tools:layout="@layout/fragment_menu_card_list">
 
-        </action>
-
+        <action
+                android:id="@+id/action_menuCardList_to_recipeAddFragment"
+                app:destination="@id/recipeAddFragment" />
+        <action
+                android:id="@+id/action_menuCardList_to_recipeModFragment"
+                app:destination="@id/recipeModFragment" />
     </fragment>
     <fragment
-        android:id="@+id/menuCardList"
-        android:name="com.srm.srmapp.ui.recipe.RecipeMainFragment"
-        android:label="ReceiptMainFragment"
-        tools:layout="@layout/fragment_menu_card_list">
-
-    </fragment>
+            android:id="@+id/recipeAddFragment"
+            android:name="com.srm.srmapp.ui.recipe.RecipeAddFragment"
+            android:label="RecipeAddFragment"
+            tools:layout="@layout/fragment_menu_item_add_or_mod" />
+    <fragment
+            android:id="@+id/recipeModFragment"
+            android:name="com.srm.srmapp.ui.recipe.RecipeModFragment"
+            android:label="RecipeModFragment"
+            tools:layout="@layout/fragment_menu_item_add_or_mod" />
 
 
 </navigation>

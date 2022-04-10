@@ -60,7 +60,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintBottom_toTopOf="@+id/pvPlot" />
 
-    <com.srm.srmapp.ui.stock.PlotView
+    <com.srm.srmapp.ui.common.PlotView
             android:id="@+id/pvPlot"
             android:layout_width="0dp"
             android:layout_height="0dp"

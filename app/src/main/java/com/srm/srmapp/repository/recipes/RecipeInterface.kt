@@ -17,14 +17,13 @@ interface RecipeInterface {
     @GET("api/fake/recipes/")
     suspend fun getRecipes(): Response<RecipeListResponse>
 
-
     @GET("api/fake/recipes/{recipe}")
     suspend fun getRecipe(@Path("recipe") id: Int): Response<RecipeResponse>
 
     @POST("api/fake/recipes")
-    suspend fun postRecipe(@Body postRecipe:RecipeObject): Response<RecipeResponse>
+    suspend fun postRecipe(@Body postRecipe: RecipeObject): Response<RecipeResponse>
 
     @PUT("api/fake/recipes/{recipe}")
-    suspend fun modifyRecipe(@Path("recipe")id:Int,@Body modRecipe:RecipeObject): Response<RecipeResponse>
+    suspend fun modifyRecipe(@Path("recipe") id: Int, @Body modRecipe: RecipeObject): Response<RecipeResponse>
 
 }
