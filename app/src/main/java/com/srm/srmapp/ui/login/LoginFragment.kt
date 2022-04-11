@@ -6,19 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.UserSession
-import com.srm.srmapp.databinding.LoginFragmentBinding
-import com.srm.srmapp.ui.MainActivity
+import com.srm.srmapp.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListener {
+class LoginFragment : Fragment(), View.OnClickListener {
 
-    private lateinit var binding: LoginFragmentBinding
+    private lateinit var binding: FragmentLoginBinding
     private val viewModel by viewModels<LoginViewModel>()
 
     @Inject
@@ -28,28 +28,32 @@ class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListene
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        binding = LoginFragmentBinding.inflate(inflater, container, false)
+        binding = FragmentLoginBinding.inflate(inflater, container, false)
         setupView()
         setupObservables()
         return binding.root
     }
 
     private fun setupView() {
-        binding.bLogin.setOnClickListener(this)
-        binding.btFormToggle.setOnClickListener(this)
+        binding.btLogin.setOnClickListener(this)
+        binding.btGoToLogin.setOnClickListener(this)
+        binding.btGoToSignUp.setOnClickListener(this)
         binding.btSignup.setOnClickListener(this)
         binding.btLogout.setOnClickListener(this)
+        binding.cbTerms.setOnCheckedChangeListener { compoundButton, b ->
+            binding.btSignup.isEnabled = b
+        }
     }
 
     private fun setupObservables() {
-        viewModel.getLoginState().observe(requireActivity()) { response ->
+        viewModel.getLoginState().observe(viewLifecycleOwner) { response ->
             Timber.d("LoginState updated $response.m")
             when (response) {
                 is Resource.Success -> {
                     binding.tvStatus.text = "${response.data}"
                 }
                 is Resource.Loading -> {
-                    binding.tvStatus.text = requireActivity().getString(R.string.loginLoading)
+                    binding.tvStatus.text = getString(R.string.loginLoading)
                 }
                 is Resource.Error -> {
                     binding.tvStatus.text = response.message
@@ -57,7 +61,7 @@ class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListene
             }
         }
 
-        viewModel.getSignupState().observe(requireActivity()) { response ->
+        viewModel.getSignupState().observe(viewLifecycleOwner) { response ->
             Timber.d("Sign up updated $response.m")
             when (response) {
                 is Resource.Success -> {
@@ -72,13 +76,16 @@ class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListene
             }
         }
 
-        userSession.getUser().observe(requireActivity()) {
+        userSession.getUser().observe(viewLifecycleOwner) {
             Timber.d("User updated")
             if (it != null) {
-                binding.tvLoginStatus.text = "Logged in ${it.email}"
                 binding.btLogout.isEnabled = true
+                binding.btLogin.isEnabled = false
+                binding.tvLoginStatus.text = "Logged in ${it.email}"
+                findNavController().navigate(R.id.action_loginFragment_to_managerFragment)
             } else {
                 binding.btLogout.isEnabled = false
+                binding.btLogin.isEnabled = true
                 binding.tvLoginStatus.text = "Not logged in"
             }
         }
@@ -86,21 +93,20 @@ class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListene
 
     override fun onClick(p0: View) {
         when (p0.id) {
-            R.id.bLogin -> {
+            R.id.btLogin -> {
                 val user = binding.edUsername.text.toString().ifBlank { "frank@srm.com" }
                 val password = binding.edPassword.text.toString().ifBlank { "frank.srm" }
                 viewModel.login(user, password)
             }
 
-            R.id.btFormToggle -> {
-                if (viewModel.getFormtoggle()) {
-                    binding.formLogin.visibility = View.GONE
-                    binding.formSignup.visibility = View.VISIBLE
-                } else {
-                    binding.formLogin.visibility = View.VISIBLE
-                    binding.formSignup.visibility = View.GONE
-                }
-                viewModel.toggleForm()
+            R.id.btGoToSignUp -> {
+                binding.formLogin.visibility = View.GONE
+                binding.formSignup.visibility = View.VISIBLE
+            }
+
+            R.id.btGoToLogin -> {
+                binding.formLogin.visibility = View.VISIBLE
+                binding.formSignup.visibility = View.GONE
             }
 
             R.id.btSignup -> {
@@ -113,12 +119,8 @@ class LoginFragment : Fragment(), MainActivity.FragmentName, View.OnClickListene
                 }
             }
             R.id.btLogout -> {
-                viewModel.logout()
+                userSession.logout()
             }
         }
-    }
-
-    override fun getName(): String {
-        return "Login"
     }
 }

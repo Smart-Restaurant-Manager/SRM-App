@@ -2,8 +2,8 @@ package com.srm.srmapp.repository.authentication
 
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.UserSession
-import com.srm.srmapp.data.dto.auth.LoginObject
-import com.srm.srmapp.data.dto.auth.SignupObject
+import com.srm.srmapp.data.dto.auth.body.LoginObject
+import com.srm.srmapp.data.dto.auth.body.SignupObject
 import com.srm.srmapp.repository.BaseRepository
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,14 +22,6 @@ class AuthRepository @Inject constructor(private val api: AuthInterface, private
         }
     }
 
-    suspend fun logout(): Resource<String> {
-        return safeApiCall({
-            api.logout(userSession.getBearerToken())
-        }) { response ->
-            userSession.logout()
-            response.toString()
-        }
-    }
 
     suspend fun signup(email: String, name: String, password: String, passwordConfirmation: String): Resource<String> {
         return safeApiCall({

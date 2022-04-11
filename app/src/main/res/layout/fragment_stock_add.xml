@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <ImageButton
+        android:id="@+id/btback"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:backgroundTint="#FFFFFF"
+        app:srcCompat="@drawable/back_arrow"
+        android:layout_marginTop="-50dp"
+        android:layout_marginEnd="160dp"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/title_size"
+            android:textColor="@color/black"
+            android:textAllCaps="true"
+            android:layout_marginTop="20dp"
+            android:text="Añadir stock" />
+
+    <EditText
+            android:layout_marginTop="70dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="Nombre"
+            android:background="@drawable/edit_text_border"
+            android:inputType="text"
+            android:id="@+id/edName"
+            android:importantForAutofill="no"
+            android:textAlignment="center" />
+
+
+    <EditText
+            android:layout_width="300dp"
+            android:layout_marginTop="30dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:hint="Cantidad"
+            android:background="@drawable/edit_text_border"
+            android:id="@+id/edQuantity"
+            android:importantForAutofill="no"
+            android:textAlignment="center" />
+
+    <TextView
+            android:id="@+id/editTextDate"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_marginTop="30dp"
+            android:text="Fecha de Caducidad"
+            android:textStyle="normal"
+            android:textColor="@color/black"
+            android:textAlignment="center" />
+
+    <DatePicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:datePickerMode="spinner"
+            android:calendarViewShown="false"
+            android:id="@+id/dpFecha" />
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Añadir"
+            android:layout_marginTop="30dp"
+            android:id="@+id/btAdd"
+            android:backgroundTint="#291B1B" />
+
+
+
+</LinearLayout>
