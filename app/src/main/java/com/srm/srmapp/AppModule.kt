@@ -1,7 +1,6 @@
 package com.srm.srmapp
 
 import android.content.Context
-import androidx.viewbinding.BuildConfig
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.srm.srmapp.data.UserSession
@@ -17,6 +16,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import javax.inject.Singleton
 
 @Module
@@ -26,11 +26,41 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserSession(@ApplicationContext context: Context, api: AuthInterface): UserSession = UserSession(context, api)
+    fun provideUserSession(@ApplicationContext context: Context): UserSession {
+        val client = OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor()
+                .setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+                else HttpLoggingInterceptor.Level.NONE))
+            .build()
+
+        val gson = GsonConverterFactory.create(GsonBuilder()
+            .setDateFormat("dd-MM-yyyy'T'HH:mm:ssz")
+            .create())
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(gson)
+            .client(client)
+            .build()
+
+        val api = retrofit.create(AuthInterface::class.java)
+        return UserSession(context, api)
+    }
 
     @Provides
     @Singleton
-    fun provideHttpClient() = OkHttpClient.Builder()
+    fun provideHttpClient(userSession: UserSession) = OkHttpClient.Builder()
+        .addInterceptor {
+            val req = it.request()
+            Timber.i("request url ${req.url.encodedPathSegments}")
+            if (req.url.encodedPathSegments[1] == "fake")
+                it.proceed(req)
+            else
+                it.proceed(req
+                    .newBuilder()
+                    .addHeader("Authorization", userSession.getBearerToken())
+                    .build())
+        }
         .addInterceptor(HttpLoggingInterceptor().setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE))
         .build()
 
