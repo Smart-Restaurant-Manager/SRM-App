@@ -9,5 +9,6 @@ sealed class Resource<T>(
     class Loading<T> : Resource<T>()
 
     fun isSuccess(): Boolean = this is Success
+    fun isSuccessAndDataNotNull(): Boolean = this is Success && this.data != null
     fun isError(): Boolean = this is Error
 }

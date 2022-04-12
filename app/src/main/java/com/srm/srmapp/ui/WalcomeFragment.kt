@@ -30,6 +30,8 @@ class WalcomeFragment : Fragment() {
     }
 
     private fun setupView() {
+        if (userSession.getUser().value == null)
+            userSession.refresUser()
         userSession.getUser().observe(viewLifecycleOwner) { user ->
             binding.apply {
                 if (user == null) { // not logged in

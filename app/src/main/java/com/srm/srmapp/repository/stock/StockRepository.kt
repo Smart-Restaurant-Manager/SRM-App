@@ -33,4 +33,10 @@ class StockRepository @Inject constructor(private val api: StockInterface) : Bas
     }) {
         it.toStockList()
     }
+
+    suspend fun postStock() = safeApiCall({
+        api.postFood()
+    }){
+
+    }
 }

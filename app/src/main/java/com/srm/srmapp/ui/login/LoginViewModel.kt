@@ -26,7 +26,7 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
     fun login(username: String, password: String) {
         Timber.d("login $username $password")
         _loginState.value = Resource.Loading()
-        viewModelScope.launchException(Dispatchers.IO) {
+        viewModelScope.launchException() {
             val res = repository.login(username, password)
             _loginState.postValue(res)
         }
@@ -36,7 +36,7 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
     fun signup(email: String, name: String, password: String, passwordCheck: String) {
         Timber.d("signup $email $name $password $passwordCheck")
         _signupState.value = Resource.Loading()
-        viewModelScope.launchException(Dispatchers.IO) {
+        viewModelScope.launchException() {
             val res = repository.signup(email, name, password, passwordCheck)
             _signupState.postValue(res)
             Timber.d("${res.data}")

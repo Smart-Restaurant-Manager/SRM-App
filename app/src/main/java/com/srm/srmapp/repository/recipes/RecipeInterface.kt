@@ -13,7 +13,6 @@ interface RecipeInterface {
     @GET("/img/{img_url}")
     fun getRecipeImage(@Path("img_url") img_id: String): Call<Resource<Response<Unit>>>
 
-
     @GET("api/fake/recipes/")
     suspend fun getRecipes(): Response<RecipeListResponse>
 

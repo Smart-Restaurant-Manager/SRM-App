@@ -12,6 +12,8 @@ import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.databinding.FragmentStockAddBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
+
 
 @AndroidEntryPoint
 class StockAddFragment : Fragment() {
@@ -37,15 +39,15 @@ class StockAddFragment : Fragment() {
                     Snackbar.make(it, "Invalid Quantity", Snackbar.LENGTH_LONG).show()
                     return@setOnClickListener
                 }.toFloat()
-                val date = dpFecha.toString().ifEmpty {
-                    Snackbar.make(it, "Invalid Date", Snackbar.LENGTH_LONG).show()
-                    return@setOnClickListener
+
+                val date = Calendar.getInstance().apply {
+                    set(dpFecha.year, dpFecha.month, dpFecha.dayOfMonth)
                 }
                 val units = "TODO".toString().ifEmpty { // TODO
                     Snackbar.make(it, "Invalid Unit", Snackbar.LENGTH_LONG).show()
                     return@setOnClickListener
                 }
-                val food = Food(argFoodType, -1, name, units, listOf(Stock(-1, quantity = quantity, date)))
+                val food = Food(argFoodType, -1, name, units, listOf(Stock(-1, quantity = quantity, date.time)))
                 viewmodel.addFood(food)
                 findNavController().popBackStack()
             }

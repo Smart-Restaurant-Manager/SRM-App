@@ -68,44 +68,44 @@
             android:text="@string/cantidad"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/textView"
+            android:id="@+id/tvHeaderQuantity"
             android:layout_marginTop="40dp"
-            app:layout_constraintStart_toEndOf="@+id/textView3"
+            app:layout_constraintStart_toEndOf="@+id/tvHeaderLot"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintEnd_toStartOf="@+id/textView4"
+            app:layout_constraintEnd_toStartOf="@+id/tvHeaderExpireDate"
             app:layout_constraintTop_toBottomOf="@+id/tvStockTitle" />
 
     <TextView
             android:text="@string/lote"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/textView3"
+            android:id="@+id/tvHeaderLot"
             android:layout_marginTop="0dp"
-            app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintStart_toEndOf="@+id/tvHeaderName"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintEnd_toStartOf="@+id/textView"
-            app:layout_constraintTop_toTopOf="@+id/textView" />
+            app:layout_constraintEnd_toStartOf="@+id/tvHeaderQuantity"
+            app:layout_constraintTop_toTopOf="@+id/tvHeaderQuantity" />
 
     <TextView
             android:text="@string/nombre"
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:id="@+id/textView2"
+            android:id="@+id/tvHeaderName"
             android:layout_marginTop="0dp"
-            app:layout_constraintEnd_toStartOf="@+id/textView3"
-            app:layout_constraintTop_toTopOf="@+id/textView3"
+            app:layout_constraintEnd_toStartOf="@+id/tvHeaderLot"
+            app:layout_constraintTop_toTopOf="@+id/tvHeaderLot"
             app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
             android:text="@string/caducidad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textView4"
+            android:id="@+id/tvHeaderExpireDate"
             android:layout_marginTop="0dp"
-            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintStart_toEndOf="@+id/tvHeaderQuantity"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView" />
+            app:layout_constraintTop_toTopOf="@+id/tvHeaderQuantity" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="wrap_content"
@@ -115,7 +115,7 @@
             app:layout_constraintHorizontal_bias="0.6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3"
+            app:layout_constraintTop_toBottomOf="@+id/tvHeaderLot"
             app:layout_constraintVertical_bias="0.0">
 
         <androidx.recyclerview.widget.RecyclerView
