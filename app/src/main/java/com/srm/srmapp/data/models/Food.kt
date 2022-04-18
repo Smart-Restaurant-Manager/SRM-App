@@ -2,6 +2,7 @@ package com.srm.srmapp.data.models
 
 import android.os.Parcelable
 import com.srm.srmapp.R
+import com.srm.srmapp.data.dto.stock.body.FoodObject
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 
@@ -33,4 +34,6 @@ data class Food(val type: FoodType, val id: Int, val name: String, val units: St
     override fun toString(): String {
         return "$name $units $id"
     }
+
+    fun toJsonObject(): FoodObject = FoodObject(name, units)
 }

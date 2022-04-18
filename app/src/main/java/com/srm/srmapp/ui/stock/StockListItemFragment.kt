@@ -58,7 +58,7 @@ class StockListItemFragment : Fragment() {
                             setOnDownListener { idx ->
                                 val item = data[idx]
                                 AlertDialog.Builder(requireContext()).apply {
-                                    setMessage("${item.id} ${item.expirationDate} ${item.quantity}")
+                                    setMessage("${item.stockId} ${item.expirationDate} ${item.quantity}")
                                     show()
                                 }
                             }
@@ -78,7 +78,7 @@ class StockListItemFragment : Fragment() {
             RvItemStockBinding.bind(view)
         }, { itemBinding, item -> // seyup child views
             itemBinding.apply {
-                tvName.text = "${food.name} ${item.id}"
+                tvName.text = "${food.name} ${item.stockId}"
                 tvQuantity.text = "${item.quantity} ${food.units}"
                 tvCaducidad.text = item.expirationDate.toString()
                 tvLote.visibility = View.GONE

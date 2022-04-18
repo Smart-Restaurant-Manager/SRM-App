@@ -47,7 +47,7 @@ class StockAddFragment : Fragment() {
                     Snackbar.make(it, "Invalid Unit", Snackbar.LENGTH_LONG).show()
                     return@setOnClickListener
                 }
-                val food = Food(argFoodType, -1, name, units, listOf(Stock(-1, quantity = quantity, date.time)))
+                val food = Food(argFoodType, -1, name, units, listOf(Stock(-1, -1, quantity = quantity, date.time)))
                 viewmodel.addFood(food)
                 findNavController().popBackStack()
             }

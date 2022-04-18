@@ -126,5 +126,10 @@ class StockListFragment : Fragment() {
         binding.btback.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        binding.apply {
+            tvHeaderLot.visibility = View.GONE
+            tvHeaderExpireDate.visibility = View.GONE
+        }
     }
 }

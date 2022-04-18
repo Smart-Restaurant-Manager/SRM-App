@@ -7,5 +7,6 @@ data class StockData(
     val id: Int,
     val type: String,
 ) {
-    fun toStock() = Stock(id = id, quantity = attributes.quantity.toFloat(), expirationDate = attributes.expiration_date)
+    fun toStock() =
+        Stock(stockId = id, foodId = attributes.food_id, quantity = attributes.quantity.toFloat(), expirationDate = attributes.expiration_date)
 }

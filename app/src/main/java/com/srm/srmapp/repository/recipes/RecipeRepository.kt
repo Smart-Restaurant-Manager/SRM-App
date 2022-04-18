@@ -20,19 +20,17 @@ class RecipeRepository @Inject constructor(private val api: RecipeInterface) : B
 
     suspend fun postRecipe(name: String, price: Float, available: Boolean, food: Array<Int>): Resource<String> {
         return safeApiCall({
-            api.postRecipe(RecipeObject(name, price, available, food))
-        }) { response ->
-            "Recipe added with id ${response.data.id}"
-
+            api.postRecipe(RecipeObject(name, price, available, null))
+        }) {
+            "Recipe added"
         }
     }
 
     suspend fun modRecipe(id: Int, name: String, price: Float, available: Boolean, food: Array<Int>): Resource<String> {
         return safeApiCall({
-            api.modifyRecipe(id, RecipeObject(name, price, available, food))
-        }) { response ->
-            "Recipe Modified with id ${response.data.id}"
-
+            api.modifyRecipe(id, RecipeObject(name, price, available, null))
+        }) {
+            "Recipe Modified"
         }
     }
 }

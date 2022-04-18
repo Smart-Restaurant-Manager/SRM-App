@@ -1,5 +1,7 @@
 package com.srm.srmapp.repository.stock
 
+import com.srm.srmapp.data.models.Food
+import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.BaseRepository
 import javax.inject.Inject
 
@@ -34,9 +36,39 @@ class StockRepository @Inject constructor(private val api: StockInterface) : Bas
         it.toStockList()
     }
 
-    suspend fun postStock() = safeApiCall({
-        api.postFood()
-    }){
+    suspend fun postFood(food: Food) = safeApiCall({
+        api.postFood(food.toJsonObject())
+    }) {
+        "New food added"
+    }
 
+    suspend fun putFood(food: Food) = safeApiCall({
+        api.putFood(food.id, food.toJsonObject())
+    }) {
+        "Food modified"
+    }
+
+    suspend fun deleteFood(food: Food) = safeApiCall({
+        api.deleteFood(food.id)
+    }) {
+        "Food deleted"
+    }
+
+    suspend fun postStock(stock: Stock) = safeApiCall({
+        api.postStock(stock.toJsonObject())
+    }) {
+        "Stock added"
+    }
+
+    suspend fun putStock(stock: Stock) = safeApiCall({
+        api.putStock(stock.stockId, stock.toJsonObject())
+    }) {
+        "Stock modified"
+    }
+
+    suspend fun deleteStock() = safeApiCall({
+        api.deleteStock(1)
+    }) {
+        "Stock deleted"
     }
 }

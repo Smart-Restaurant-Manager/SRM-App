@@ -64,7 +64,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
 
     fun addFood(food: Food) {
         viewModelScope.launchException {
-            // TODO
+           stockRepository.postFood(food)
         }
     }
 
@@ -89,7 +89,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         val res = _stockLisst.value
         val list = res?.data
         if (list != null) {
-            list.find { it.id == id }?.let {
+            list.find { it.stockId == id }?.let {
                 _stock.value = Resource.Success(data = it)
             }
         }
