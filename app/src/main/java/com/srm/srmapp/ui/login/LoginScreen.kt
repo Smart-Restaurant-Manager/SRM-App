@@ -10,26 +10,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.ui.common.SrmButton
 import com.srm.srmapp.ui.common.SrmHeader
 import com.srm.srmapp.ui.common.SrmText
 import com.srm.srmapp.ui.common.SrmTextField
-import com.srm.srmapp.ui.login.destinations.SignUpScreenDestination
+import com.srm.srmapp.ui.destinations.SignUpScreenDestination
+import com.srm.srmapp.ui.destinations.StockMainScreenDestination
 
 @Destination
 @RootNavGraph(start = true)
 @Composable
 fun LoginScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hiltViewModel()) {
-    val user = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
+    val user = remember { mutableStateOf("q@q") }
+    val password = remember { mutableStateOf("q") }
     val loginState = viewmodel.getLoginState().observeAsState()
 
 
@@ -68,5 +67,8 @@ fun LoginScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hi
 
         if (loginState.value is Resource.Loading)
             CircularProgressIndicator()
+
+        if (loginState.value is Resource.Success)
+            navigator.navigate(StockMainScreenDestination())
     }
 }
