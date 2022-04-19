@@ -47,7 +47,7 @@
     <string name="login2">Inicio de sesión</string>
     <string name="forget_password">¿Has olvidado la contraseña?</string>
     <string name="session_login">Iniciar sesión</string>
-    <string name="forget_account">¿Has olvidado tu cuenta?</string>
+    <string name="no_account">¿No tienes cuenta?</string>
     <string name="new_account">Crear cuenta</string>
     <string name="terms_conditions">Acepto los terminos y condiciones y las Políticas de Privacidad</string>
     <string name="title_receipt">Carta</string>
