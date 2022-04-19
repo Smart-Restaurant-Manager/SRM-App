@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.ramcosta.composedestinations.DestinationsNavHost
-import com.srm.srmapp2.ui.theme.SMRappTheme
+import com.srm.srmapp.ui.login.NavGraphs
+import com.srm.srmapp.ui.theme.SMRappTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

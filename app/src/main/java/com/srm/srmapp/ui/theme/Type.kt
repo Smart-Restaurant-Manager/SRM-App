@@ -1,4 +1,4 @@
-package com.srm.srmapp2.ui.theme
+package com.srm.srmapp.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
