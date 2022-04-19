@@ -1,19 +1,72 @@
 package com.srm.srmapp.ui.login
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Button
-import androidx.compose.material.TextField
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import com.srm.srmapp.R
+import com.srm.srmapp.Resource
+import com.srm.srmapp.ui.common.SrmButton
+import com.srm.srmapp.ui.common.SrmHeader
+import com.srm.srmapp.ui.common.SrmText
+import com.srm.srmapp.ui.common.SrmTextField
+import com.srm.srmapp.ui.login.destinations.SignUpScreenDestination
 
 @Destination
+@RootNavGraph(start = true)
 @Composable
-fun LoginScreen(navigator: DestinationsNavigator) {
-    Column {
-        TextField(value = "User", onValueChange = {})
-        TextField(value = "Password", onValueChange = {})
-        Button(onClick = { navigator.popBackStack() }) {
+fun LoginScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hiltViewModel()) {
+    val user = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
+    val loginState = viewmodel.getLoginState().observeAsState()
+
+
+    SrmHeader(stringResource(id = R.string.login2)) {
+        navigator.popBackStack()
+    }
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxHeight(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        SrmTextField(value = user.value,
+            label = stringResource(id = R.string.user_mail),
+            enabled = loginState.value !is Resource.Loading,
+            isError = loginState.value is Resource.Error,
+            onValueChange = { user.value = it })
+
+        SrmTextField(value = password.value,
+            label = stringResource(id = R.string.password),
+            enabled = loginState.value !is Resource.Loading,
+            isError = loginState.value is Resource.Error,
+            onValueChange = { password.value = it })
+
+        SrmButton(onClick = {
+            viewmodel.login(user.value, password.value)
+        }, text = stringResource(id = R.string.login),
+            enabled = loginState.value !is Resource.Loading)
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            SrmText(text = stringResource(id = R.string.no_account))
+            TextButton({ navigator.navigate(SignUpScreenDestination()) }) {
+                SrmText(text = stringResource(id = R.string.register), maxLines = 2)
+            }
         }
+
+        if (loginState.value is Resource.Loading)
+            CircularProgressIndicator()
     }
 }
