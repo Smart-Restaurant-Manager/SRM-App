@@ -4,11 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -29,16 +26,14 @@ import kotlinx.coroutines.delay
 @Destination
 @Composable
 fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hiltViewModel()) {
-    val email = remember { mutableStateOf("") }
-    val name = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
-    val password2 = remember { mutableStateOf("") }
-    val signUpState = viewmodel.getSignupState().observeAsState()
-    val checkBox = remember { mutableStateOf(false) }
+    var email by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var password2 by remember { mutableStateOf("") }
+    val signUpState by viewmodel.getSignupState().observeAsState()
+    var checkBox by remember { mutableStateOf(false) }
 
-    SrmHeader(stringResource(id = R.string.new_account)) {
-        navigator.popBackStack()
-    }
+    SrmHeader(stringResource(id = R.string.new_account)) { navigator.navigateUp() }
 
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -46,37 +41,37 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SrmTextField(value = email.value,
+        SrmTextField(value = email,
             label = stringResource(id = R.string.email),
-            enabled = signUpState.value !is Resource.Loading,
-            isError = signUpState.value is Resource.Error,
-            onValueChange = { email.value = it })
+            enabled = signUpState !is Resource.Loading,
+            isError = signUpState is Resource.Error,
+            onValueChange = { email = it })
 
-        SrmTextField(value = name.value,
+        SrmTextField(value = name,
             label = stringResource(id = R.string.name),
-            enabled = signUpState.value !is Resource.Loading,
-            isError = signUpState.value is Resource.Error,
-            onValueChange = { name.value = it })
+            enabled = signUpState !is Resource.Loading,
+            isError = signUpState is Resource.Error,
+            onValueChange = { name = it })
 
-        SrmTextField(value = password.value,
+        SrmTextField(value = password,
             label = stringResource(id = R.string.password),
-            enabled = signUpState.value !is Resource.Loading,
-            isError = signUpState.value is Resource.Error,
-            onValueChange = { password.value = it })
+            enabled = signUpState !is Resource.Loading,
+            isError = signUpState is Resource.Error,
+            onValueChange = { password = it })
 
-        SrmTextField(value = password2.value,
+        SrmTextField(value = password2,
             label = stringResource(id = R.string.password_check),
-            enabled = signUpState.value !is Resource.Loading,
-            isError = signUpState.value is Resource.Error,
-            onValueChange = { password2.value = it })
+            enabled = signUpState !is Resource.Loading,
+            isError = signUpState is Resource.Error,
+            onValueChange = { password2 = it })
 
         SrmButton(onClick = {
-            viewmodel.signup(email.value, name.value, password.value, password2.value)
+            viewmodel.signup(email, name, password, password2)
         }, text = stringResource(id = R.string.register),
-            enabled = signUpState.value !is Resource.Loading && checkBox.value)
+            enabled = signUpState !is Resource.Loading && checkBox)
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = checkBox.value, onCheckedChange = { checkBox.value = it })
+            Checkbox(checked = checkBox, onCheckedChange = { checkBox = it })
             Spacer(modifier = Modifier.size(16.dp))
             SrmText(text = stringResource(id = R.string.terms_conditions))
         }
@@ -88,12 +83,12 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
             }
         }
 
-        if (signUpState.value is Resource.Loading)
+        if (signUpState is Resource.Loading)
             CircularProgressIndicator()
 
-        if (signUpState.value is Resource.Success) {
+        if (signUpState is Resource.Success) {
             SrmText(text = "Cuenta creada correctamente! Espere a ser rederigido.", textAlign = TextAlign.Center)
-            LaunchedEffect(key1 = signUpState.value) {
+            LaunchedEffect(key1 = signUpState) {
                 delay(4000)
                 navigator.popBackStack()
             }
