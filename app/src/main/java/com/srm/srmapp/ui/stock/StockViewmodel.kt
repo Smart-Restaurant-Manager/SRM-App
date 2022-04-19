@@ -20,23 +20,26 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
     }
 
     private val _foodList: MutableLiveData<Resource<List<Food>>> = MutableLiveData()
-    fun getFoodListLiveData() = _foodList as LiveData<Resource<List<Food>>>
+    val foodList: LiveData<Resource<List<Food>>>
+        get() = _foodList
 
     private val _food: MutableLiveData<Resource<Food>> = MutableLiveData()
-    fun getFoodLiveData() = _food as LiveData<Resource<Food>>
+    val food: LiveData<Resource<Food>>
+        get() = _food
 
-    private val _stockLisst: MutableLiveData<Resource<List<Stock>>> = MutableLiveData()
-    fun getStockListLiveData() = _stockLisst as LiveData<Resource<List<Stock>>>
+    private val _stockList: MutableLiveData<Resource<List<Stock>>> = MutableLiveData()
+    val stockLisst: LiveData<Resource<List<Stock>>>
+        get() = _stockList
 
     private val _stock: MutableLiveData<Resource<Stock>> = MutableLiveData()
-    fun getStockLiveData() = _stock as LiveData<Resource<Stock>>
-
+    val stock: LiveData<Resource<Stock>>
+        get() = _stock
 
     fun refreshStockList(/*TODO filter list by type, add get range */) {
-        _stockLisst.value = Resource.Loading()
+        _stockList.value = Resource.Loading()
         viewModelScope.launchException {
             val stock = stockRepository.getStock()
-            _stockLisst.postValue(stock)
+            _stockList.postValue(stock)
         }
     }
 
@@ -64,7 +67,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
 
     fun addFood(food: Food) {
         viewModelScope.launchException {
-           stockRepository.postFood(food)
+            stockRepository.postFood(food)
         }
     }
 
@@ -86,7 +89,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
     }
 
     fun getStockbyId(id: Int) {
-        val res = _stockLisst.value
+        val res = _stockList.value
         val list = res?.data
         if (list != null) {
             list.find { it.stockId == id }?.let {
