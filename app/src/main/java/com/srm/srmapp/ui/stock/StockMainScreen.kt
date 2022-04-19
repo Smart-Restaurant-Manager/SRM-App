@@ -1,4 +1,4 @@
-package com.srm.srmapp.ui
+package com.srm.srmapp.ui.stock
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
