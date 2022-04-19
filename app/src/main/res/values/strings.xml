@@ -15,7 +15,7 @@
     <string name="login_signup_status">Login/Signup Status</string>
     <string name="status">Status</string>
     <string name="title_stock">STOCK</string>
-    <string name="carne">Alimentos Carnicos</string>
+    <string name="carne">Carnes</string>
     <string name="lacteos">Lacteos</string>
     <string name="especias">Especias</string>
     <string name="vegetales">Vegetales</string>
@@ -25,9 +25,9 @@
     <string name="placeholder_find">Find</string>
     <string name="template_title">Title</string>
     <string name="predictions">Predicciones</string>
-    <string name="stock">Stock</string>
+    <string name="food">Aliments</string>
     <string name="reservas">Reservas</string>
-    <string name="menu">Carta</string>
+    <string name="menu">Menu</string>
     <string name="nombre">Nombre</string>
     <string name="cantidad">Cantidad</string>
     <string name="lote">Lote</string>
@@ -64,4 +64,5 @@
     <string name="delete">Eliminar</string>
     <string name="selecionar_ingredientes">Selecionar ingredientes</string>
     <string name="food_id_value">1</string>
+    <string name="start">Inici</string>
 </resources>
