@@ -16,7 +16,7 @@ interface StockInterface {
     @GET("api/v1/food/{food}")
     suspend fun getFood(@Path("food") id: Int): Response<FoodResponse>
 
-    @GET("api/v1/food/{food}/stock")
+    @GET("api/v1/food/{food}/stocks")
     suspend fun getFoodStock(@Path("food") id: Int): Response<StockListResponse>
 
     @GET("api/v1/stocks")

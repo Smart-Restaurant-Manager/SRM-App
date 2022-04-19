@@ -79,7 +79,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         val res = _foodList.value
         val list = res?.data
         if (list != null) {
-            list.find { it.id == id }?.let {
+            list.find { it.foodId == id }?.let {
                 _food.value = Resource.Success(data = it)
             }
         }

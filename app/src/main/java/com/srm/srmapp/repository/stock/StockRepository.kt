@@ -43,13 +43,13 @@ class StockRepository @Inject constructor(private val api: StockInterface) : Bas
     }
 
     suspend fun putFood(food: Food) = safeApiCall({
-        api.putFood(food.id, food.toJsonObject())
+        api.putFood(food.foodId, food.toJsonObject())
     }) {
         "Food modified"
     }
 
     suspend fun deleteFood(food: Food) = safeApiCall({
-        api.deleteFood(food.id)
+        api.deleteFood(food.foodId)
     }) {
         "Food deleted"
     }

@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.srm.srmapp.data.models.Food
-import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.databinding.FragmentStockAddBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -47,7 +46,7 @@ class StockAddFragment : Fragment() {
                     Snackbar.make(it, "Invalid Unit", Snackbar.LENGTH_LONG).show()
                     return@setOnClickListener
                 }
-                val food = Food(argFoodType, -1, name, units, listOf(Stock(-1, -1, quantity = quantity, date.time)))
+                val food = Food(argFoodType, -1, name, units)
                 viewmodel.addFood(food)
                 findNavController().popBackStack()
             }

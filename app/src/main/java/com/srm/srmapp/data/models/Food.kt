@@ -8,7 +8,8 @@ import timber.log.Timber
 
 
 @Parcelize
-data class Food(val type: FoodType, val id: Int, val name: String, val units: String, val stock: List<Stock>? = null) : Parcelable {
+data class Food(val type: FoodType, var foodId: Int, val name: String, val units: String, val stockList: MutableList<Stock> = mutableListOf()) :
+    Parcelable {
     enum class FoodType {
         NONE,
         CARNE, LACTEOS,
@@ -32,8 +33,12 @@ data class Food(val type: FoodType, val id: Int, val name: String, val units: St
     }
 
     override fun toString(): String {
-        return "$name $units $id"
+        return "$name $units $foodId"
     }
 
     fun toJsonObject(): FoodObject = FoodObject(name, units)
+    fun addStock(stock: Stock) {
+        stock.foodId = this.foodId
+        stockList.add(stock)
+    }
 }

@@ -10,5 +10,5 @@ data class FoodData(
     fun toFood() = Food(type = when (type) {
         "Carne" -> Food.FoodType.CARNE
         else -> Food.FoodType.NONE
-    }, id = id, name = attributes.name, units = attributes.units)
+    }, foodId = id, name = attributes.name, units = attributes.units)
 }
