@@ -18,9 +18,7 @@ import com.srm.srmapp.R
 fun SrmHeader(title: String, onClickLeft: () -> Unit = {}) {
     ConstraintLayout(
         modifier = Modifier
-            .padding(top = 40.dp, bottom = 40.dp)
             .height(70.dp)
-            .fillMaxHeight()
             .fillMaxWidth(),
     ) {
         val (icon, text) = createRefs()
