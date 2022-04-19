@@ -63,4 +63,5 @@
     <string name="modificar">Modificar</string>
     <string name="delete">Eliminar</string>
     <string name="selecionar_ingredientes">Selecionar ingredientes</string>
+    <string name="food_id_value">1</string>
 </resources>

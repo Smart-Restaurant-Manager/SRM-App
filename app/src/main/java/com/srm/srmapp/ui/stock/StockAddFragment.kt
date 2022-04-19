@@ -42,7 +42,7 @@ class StockAddFragment : Fragment() {
                 val date = Calendar.getInstance().apply {
                     set(dpFecha.year, dpFecha.month, dpFecha.dayOfMonth)
                 }
-                val units = "TODO".toString().ifEmpty { // TODO
+                val units = edUnit.toString().ifEmpty {
                     Snackbar.make(it, "Invalid Unit", Snackbar.LENGTH_LONG).show()
                     return@setOnClickListener
                 }

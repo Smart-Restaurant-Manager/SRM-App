@@ -15,7 +15,7 @@ import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.databinding.FragmentStockListBinding
-import com.srm.srmapp.databinding.RvItemStockBinding
+import com.srm.srmapp.databinding.RvItemFoodBinding
 import com.srm.srmapp.databinding.SearchDialogBinding
 import com.srm.srmapp.ui.common.Adapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,7 +27,7 @@ class StockListFragment : Fragment() {
     private lateinit var searchDialogBinding: SearchDialogBinding
     private lateinit var dialog: AlertDialog
     private val viewmodel by activityViewModels<StockViewmodel>()
-    private lateinit var adapter: Adapter<RvItemStockBinding, Food>
+    private lateinit var adapter: Adapter<RvItemFoodBinding, Food>
     private lateinit var argTitle: String
     private lateinit var argFoodType: Food.FoodType
     override fun onCreateView(
@@ -68,19 +68,18 @@ class StockListFragment : Fragment() {
         binding.tvStockTitle.text = title
 
         // setup adapter
-        adapter = Adapter(emptyList(), R.layout.rv_item_stock, { view ->
-            RvItemStockBinding.bind(view)
+        adapter = Adapter(emptyList(), R.layout.rv_item_food, { view ->
+            RvItemFoodBinding.bind(view)
         }, { itemBinding, item -> // setup child views
             itemBinding.apply {
-                tvLote.text = item.name
-                tvQuantity.text = item.units
+                tvFoodId.text = item.foodId.toString()
                 tvName.text = item.name
-                tvCaducidad.visibility = View.GONE
+                tvQuantity.text = item.stockList.sumOf { it.quantity.toDouble() }.toString()
             }
-        }) { view, item -> // on item click
+        }) { view, food -> // on item click
             val arg = Bundle()
-            arg.putParcelable("item", item)
-            arg.putString("title", title)
+            arg.putParcelable(StockListItemFragment.ARG_FOOD, food)
+            arg.putString(StockListItemFragment.ARG_TITLE, title)
             findNavController().navigate(R.id.action_stockListFragment_to_stockListItemFragment, arg)
         }
 

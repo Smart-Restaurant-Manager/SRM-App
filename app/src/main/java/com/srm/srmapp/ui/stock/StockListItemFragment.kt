@@ -26,14 +26,19 @@ class StockListItemFragment : Fragment() {
     private lateinit var plotView: PlotView
     private val viewmodel by activityViewModels<StockViewmodel>()
 
+    companion object {
+        const val ARG_FOOD = "FOOD"
+        const val ARG_TITLE = "TITLE"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentStockListItemBinding.inflate(inflater, container, false)
         plotView = binding.pvPlot
-        val food = arguments?.getParcelable<Food>("item")
-        val title = arguments?.getString("title")
+        val food = arguments?.getParcelable<Food>(ARG_FOOD)
+        val title = arguments?.getString(ARG_TITLE)
         if (food != null && title != null) {
             setupView(food, title)
             setupObservables()
@@ -81,7 +86,6 @@ class StockListItemFragment : Fragment() {
                 tvName.text = "${food.name} ${item.stockId}"
                 tvQuantity.text = "${item.quantity} ${food.units}"
                 tvCaducidad.text = item.expirationDate.toString()
-                tvLote.visibility = View.GONE
             }
         })
         binding.rvHistory.adapter = adapter
