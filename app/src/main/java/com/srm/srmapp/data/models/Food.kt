@@ -7,7 +7,13 @@ import timber.log.Timber
 
 
 @Parcelize
-data class Food(val type: FoodType, var foodId: Int, val name: String, val units: String, val stockList: MutableList<Stock> = mutableListOf()) :
+data class Food(
+    val type: FoodType = FoodType.NONE,
+    var foodId: Int = -1,
+    val name: String,
+    val units: String,
+    val stockList: MutableList<Stock> = mutableListOf(),
+) :
     Parcelable {
     enum class FoodType {
         NONE,
