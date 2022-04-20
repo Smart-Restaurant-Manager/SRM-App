@@ -28,12 +28,29 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         get() = _food
 
     private val _stockList: MutableLiveData<Resource<List<Stock>>> = MutableLiveData()
-    val stockLisst: LiveData<Resource<List<Stock>>>
+    val stockList: LiveData<Resource<List<Stock>>>
         get() = _stockList
 
     private val _stock: MutableLiveData<Resource<Stock>> = MutableLiveData()
     val stock: LiveData<Resource<Stock>>
         get() = _stock
+
+    private val _status: MutableLiveData<Resource<String>> = MutableLiveData()
+    val status: LiveData<Resource<String>>
+        get() = _status
+
+    fun clearStcokList() {
+        _stockList.value = Resource.Empty()
+    }
+
+    fun clearFoodList() {
+        _foodList.value = Resource.Empty()
+    }
+
+    fun clearStatus() {
+        Timber.d("Clear Status ${_status.value}")
+        _status.value = Resource.Empty()
+    }
 
     fun refreshStockList(/*TODO filter list by type, add get range */) {
         _stockList.value = Resource.Loading()
@@ -51,6 +68,21 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         }
     }
 
+    fun deleteFood(food: Food) {
+        viewModelScope.launchException {
+            val msg = stockRepository.deleteFood(food)
+            Timber.d("Delete food $msg")
+            _status.postValue(msg)
+        }
+    }
+
+    fun getFoodStock(food: Food) {
+        viewModelScope.launchException {
+            val stockList = stockRepository.getFoodStock(food)
+            _stockList.postValue(stockList)
+        }
+    }
+
     fun getFoodBy(id: Int) {
         viewModelScope.launchException {
             val food = stockRepository.getFood(id)
@@ -65,9 +97,10 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         }
     }
 
-    fun addFood(food: Food) {
+    fun addFood(type: String, name: String, units: String) {
+        val food = Food(type=type, name = name, units = units)
         viewModelScope.launchException {
-            stockRepository.postFood(food)
+            _status.postValue(stockRepository.postFood(food))
         }
     }
 
