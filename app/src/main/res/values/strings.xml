@@ -71,4 +71,5 @@
     <string name="food_name">Nom</string>
     <string name="add_food">Afegir aliment</string>
     <string name="add_stock">Afegir stock</string>
+    <string name="quantity">Quantitat</string>
 </resources>
