@@ -109,7 +109,10 @@ fun FoodListScreen(
 
     if (statusMessage.isSuccess()) {
         statusMessage.data?.let {
-            SrmDialog(onDismissRequest = { viewmodel.clearStatus() }) {
+            SrmDialog(onDismissRequest = {
+                viewmodel.clearStatus()
+                viewmodel.refreshFoodList()
+            }) {
                 SrmText(text = it, textAlign = TextAlign.Center)
             }
         }
@@ -120,8 +123,12 @@ fun FoodListScreen(
             SrmDialog(onDismissRequest = {
                 viewmodel.clearStcokList()
             }) {
-                SrmText(text = "${it.first()}")
-                SrmText(text = "${it.size} ${it.first()}")
+                if (it.isEmpty())
+                    SrmText(text = "No stocks found")
+                else {
+                    SrmText(text = "${it.first()}")
+                    SrmText(text = "${it.size} ${it.first()}")
+                }
             }
         }
     }
@@ -136,6 +143,7 @@ fun FoodListScreen(
             SrmTextFieldHint(value = type, placeholder = stringResource(R.string.category), onValueChange = { type = it })
             TextButton(onClick = {
                 viewmodel.addFood(type, name, units)
+                popupAddState = false
             }) {
                 SrmText(text = stringResource(R.string.add_food))
             }
