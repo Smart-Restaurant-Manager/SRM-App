@@ -1,6 +1,5 @@
 package com.srm.srmapp
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
 import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.repository.authentication.AuthInterface
@@ -28,9 +27,6 @@ import javax.inject.Inject
 class ExampleInstrumentedTest {
     @get:Rule
     var hiltRule = HiltAndroidRule(this)
-
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val testDispatcher = UnconfinedTestDispatcher()
 
