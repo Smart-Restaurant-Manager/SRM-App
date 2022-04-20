@@ -14,4 +14,12 @@ sealed class Resource<T>(
     fun isLoading(): Boolean = this is Loading
     fun isSuccessAndDataNotNull(): Boolean = this is Success && this.data != null
     fun isError(): Boolean = this is Error
+    override fun toString(): String {
+        return when (this) {
+            is Success -> "Success $data"
+            is Error -> "Error $data $message"
+            is Loading -> "Loading"
+            is Empty -> "Empty"
+        }
+    }
 }
