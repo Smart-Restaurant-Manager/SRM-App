@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +37,8 @@ import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.theme.*
+import timber.log.Timber
+import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -78,7 +82,7 @@ fun FoodListScreen(
     val statusMessage by viewmodel.status.observeAsState(Resource.Empty())
     val refreshState = rememberSwipeRefreshState(foodListState.isLoading())
     var popupState by remember { mutableStateOf(false) }
-    var popupAddState by remember { mutableStateOf(false) }
+    var popupAddFoodState by remember { mutableStateOf(false) }
 
     if (foodListState.isEmpty()) viewmodel.refreshFoodList()
     Column(modifier = Modifier
@@ -87,7 +91,7 @@ fun FoodListScreen(
         horizontalAlignment = Alignment.CenterHorizontally) {
         SrmAddTitleSearch(stringResource(R.string.food),
             onClickSearch = {},
-            onClickAdd = { popupAddState = true },
+            onClickAdd = { popupAddFoodState = true },
             onClickBack = { navigator.navigateUp() })
         SwipeRefresh(
             state = refreshState,
@@ -133,17 +137,17 @@ fun FoodListScreen(
         }
     }
 
-    if (popupAddState) {
+    if (popupAddFoodState) {
         var name by remember { mutableStateOf("") }
         var units by remember { mutableStateOf("") }
         var type by remember { mutableStateOf("") }
-        SrmDialog(onDismissRequest = { popupAddState = false }) {
+        SrmDialog(onDismissRequest = { popupAddFoodState = false }) {
             SrmTextFieldHint(value = name, placeholder = stringResource(R.string.food_name), onValueChange = { name = it })
             SrmTextFieldHint(value = units, placeholder = stringResource(R.string.unit), onValueChange = { units = it })
             SrmTextFieldHint(value = type, placeholder = stringResource(R.string.category), onValueChange = { type = it })
             TextButton(onClick = {
                 viewmodel.addFood(type, name, units)
-                popupAddState = false
+                popupAddFoodState = false
             }) {
                 SrmText(text = stringResource(R.string.add_food))
             }
@@ -168,6 +172,7 @@ fun FoodItemPopup(
     viewmodel: StockViewmodel = hiltViewModel(),
     onDismissRequest: () -> Unit = {},
 ) {
+    var popupAddStockState by remember { mutableStateOf(false) }
     SrmDialog(onDismissRequest = onDismissRequest) {
         SrmSelectableRow(
             item = food,
@@ -177,9 +182,21 @@ fun FoodItemPopup(
                 onDismissRequest.invoke()
             }) {
             Spacer(modifier = Modifier.width(spacerWitdh))
-            Icon(painter = painterResource(id = R.drawable.ic_baseline_history_24), contentDescription = stringResource(id = R.string.delete))
+            Icon(painter = painterResource(id = R.drawable.ic_baseline_history_24), contentDescription = stringResource(R.string.show_history))
             Spacer(modifier = Modifier.width(spacerWitdh))
             SrmText(text = stringResource(R.string.show_history))
+        }
+        SrmSelectableRow(
+            item = food,
+            horizontalArrangement = Arrangement.Start,
+            onClick = {
+                popupAddStockState = true
+                Timber.d("Add Stock $popupAddStockState")
+            }) {
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            Icon(painter = painterResource(id = R.drawable.ic_baseline_add_24), contentDescription = stringResource(R.string.add_stock))
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            SrmText(text = stringResource(R.string.add_stock))
         }
         SrmSelectableRow(
             item = food,
@@ -194,6 +211,40 @@ fun FoodItemPopup(
             SrmText(text = stringResource(R.string.delete))
         }
     }
+
+
+    if (popupAddStockState) {
+        var quantity by remember { mutableStateOf("") }
+        var date by remember { mutableStateOf(LocalDate.now()) }
+        val error = try {
+            quantity.toFloat()
+            false
+        } catch (e: Exception) {
+            true
+        }
+        SrmDialog(onDismissRequest = {
+            popupAddStockState = false
+            onDismissRequest.invoke()
+        }) {
+            Row(modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround) {
+                SrmCalendarView(onDateSelected = { date = it })
+            }
+            SrmTextFieldHint(value = quantity,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                placeholder = stringResource(R.string.quantity),
+                isError = error,
+                onValueChange = { quantity = it })
+            TextButton(enabled = !error, onClick = {
+                viewmodel.addStock(food, quantity.toFloat(), date)
+                popupAddStockState = false
+                onDismissRequest.invoke()
+            }) {
+                SrmText(text = stringResource(R.string.add_food))
+            }
+        }
+    }
+
 }
 
 @Composable
