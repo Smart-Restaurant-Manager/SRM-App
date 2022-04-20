@@ -66,4 +66,8 @@
     <string name="food_id_value">1</string>
     <string name="start">Inici</string>
     <string name="show_history">Mostrar historial</string>
+    <string name="category">Categoria d\'aliment</string>
+    <string name="unit">Unitats</string>
+    <string name="food_name">Nom</string>
+    <string name="add_food">Afegir aliment</string>
 </resources>
