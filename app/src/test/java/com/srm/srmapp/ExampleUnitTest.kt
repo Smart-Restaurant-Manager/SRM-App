@@ -67,8 +67,8 @@ class ExampleUnitTest {
         Stock(-1, -1, 5f, Calendar.getInstance().time),
     )
     private val foodList: List<Food> = listOf(
-        Food(Food.FoodType.CARNE, -1, "Carne 1", "kg"),
-        Food(Food.FoodType.LACTEOS, -1, "Leche 1", "l"),
+        Food("Carne", -1, "Carne 1", "kg"),
+        Food("Carne", -1, "Leche 1", "l"),
     )
 
     @Test
