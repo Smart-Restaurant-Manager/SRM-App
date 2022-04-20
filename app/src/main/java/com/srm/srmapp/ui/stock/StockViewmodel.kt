@@ -3,14 +3,14 @@ package com.srm.srmapp.ui.stock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.srm.srmapp.Resource
-import com.srm.srmapp.Utils.launchException
+import com.srm.srmapp.Utils.fetchResource
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.stock.StockRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,60 +53,54 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
     }
 
     fun refreshStockList(/*TODO filter list by type, add get range */) {
-        _stockList.value = Resource.Loading()
-        viewModelScope.launchException {
-            val stock = stockRepository.getStock()
-            _stockList.postValue(stock)
+        fetchResource(_stockList) {
+            stockRepository.getStock()
         }
     }
 
     fun refreshFoodList(/*TODO filter list by type, add get range*/) {
-        _foodList.value = Resource.Loading()
-        viewModelScope.launchException {
-            val food = stockRepository.getFood()
-            _foodList.postValue(food)
+        fetchResource(_foodList) {
+            stockRepository.getFood()
         }
     }
 
     fun deleteFood(food: Food) {
-        viewModelScope.launchException {
+        fetchResource(_status) {
             val msg = stockRepository.deleteFood(food)
             Timber.d("Delete food $msg")
-            _status.postValue(msg)
+            msg
         }
     }
 
     fun getFoodStock(food: Food) {
-        viewModelScope.launchException {
-            val stockList = stockRepository.getFoodStock(food)
-            _stockList.postValue(stockList)
+        fetchResource(_stockList) {
+            stockRepository.getFoodStock(food)
         }
     }
 
     fun getFoodBy(id: Int) {
-        viewModelScope.launchException {
-            val food = stockRepository.getFood(id)
-            _food.postValue(food)
+        fetchResource(_food) {
+            stockRepository.getFood(id)
         }
     }
 
     fun getStockBy(id: Int) {
-        viewModelScope.launchException {
-            val stock = stockRepository.getStock(id)
-            _stock.postValue(stock)
+        fetchResource(_stock) {
+            stockRepository.getStock(id)
         }
     }
 
     fun addFood(type: String, name: String, units: String) {
-        val food = Food(type=type, name = name, units = units)
-        viewModelScope.launchException {
-            _status.postValue(stockRepository.postFood(food))
+        val food = Food(type = type, name = name, units = units)
+        fetchResource(_status) {
+            stockRepository.postFood(food)
         }
     }
 
-    fun addStock(stock: Stock) {
-        viewModelScope.launchException {
-            // TODO
+    fun addStock(food: Food, quantity: Float, expirationDate: Date) {
+        val stock = Stock(foodId = food.foodId, quantity = quantity, stockId = -1, expirationDate = expirationDate)
+        fetchResource(_status) {
+            stockRepository.postStock(stock)
         }
     }
 
