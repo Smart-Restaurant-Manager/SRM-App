@@ -13,15 +13,16 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
 import com.srm.srmapp.ui.common.SrmButton
 import com.srm.srmapp.ui.common.SrmHeader
-import com.srm.srmapp.ui.destinations.FoodMainScreenDestination
+import com.srm.srmapp.ui.destinations.FoodListScreenDestination
 import com.srm.srmapp.ui.theme.ButtonColor1
+import com.srm.srmapp.ui.theme.padding
 
 @Composable
 @com.ramcosta.composedestinations.annotation.Destination
 fun ManagerScreen(navigator: DestinationsNavigator) {
     val buttonNames = listOf(
         Pair(R.string.reservas) {},
-        Pair(R.string.food) { navigator.navigate(FoodMainScreenDestination()) },
+        Pair(R.string.food) { navigator.navigate(FoodListScreenDestination()) },
         Pair(R.string.menu) {},
         Pair(R.string.predictions) {})
     SrmHeader(title = stringResource(R.string.start)) { navigator.navigateUp() }
@@ -29,7 +30,7 @@ fun ManagerScreen(navigator: DestinationsNavigator) {
         LazyColumn {
             items(buttonNames) { (id, onclick) ->
                 SrmButton(modifier = Modifier
-                    .padding(30.dp)
+                    .padding(padding)
                     .width(150.dp)
                     .height(80.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor1),
