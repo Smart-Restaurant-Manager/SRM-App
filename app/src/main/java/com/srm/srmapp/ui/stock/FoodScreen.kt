@@ -1,6 +1,5 @@
 package com.srm.srmapp.ui.stock
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,7 +7,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -21,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -31,14 +28,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
-import com.srm.srmapp.ui.common.SrmAddTitleSearch
-import com.srm.srmapp.ui.common.SrmButton
-import com.srm.srmapp.ui.common.SrmHeader
-import com.srm.srmapp.ui.common.SrmText
-import com.srm.srmapp.ui.destinations.FoodListScreenDestination
-import com.srm.srmapp.ui.theme.ButtonColor1
+import com.srm.srmapp.ui.common.*
+import com.srm.srmapp.ui.theme.*
 
-@Destination
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FoodMainScreen(navigator: DestinationsNavigator) {
@@ -56,12 +48,12 @@ fun FoodMainScreen(navigator: DestinationsNavigator) {
         LazyVerticalGrid(columns = GridCells.Fixed(2)) {
             items(buttonNames) { buttonName ->
                 SrmButton(modifier = Modifier
-                    .padding(30.dp)
+                    .padding(padding)
                     .width(150.dp)
                     .height(80.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor1),
                     onClick = {
-                        navigator.navigate(FoodListScreenDestination(id = buttonName))
+//                        navigator.navigate(FoodListScreenDestination(id = buttonName))
                     },
                     text = stringResource(id = buttonName))
             }
@@ -74,19 +66,20 @@ fun FoodMainScreen(navigator: DestinationsNavigator) {
 fun FoodListScreen(
     navigator: DestinationsNavigator,
     backStackEntry: NavBackStackEntry,
-    @StringRes id: Int,
 ) {
     val viewmodel = hiltViewModel<StockViewmodel>(backStackEntry)
     val foodListState by viewmodel.foodList.observeAsState(Resource.Empty())
     val refreshState = rememberSwipeRefreshState(foodListState.isLoading())
 
     if (foodListState.isEmpty()) viewmodel.refreshFoodList()
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        SrmAddTitleSearch(stringResource(id = id),
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(start = paddingStart, end = paddingEnd),
+        horizontalAlignment = Alignment.CenterHorizontally) {
+        SrmAddTitleSearch(stringResource(R.string.food),
             onClickSearch = {},
             onClickAdd = {},
             onClickBack = { navigator.navigateUp() })
-
         SwipeRefresh(
             state = refreshState,
             onRefresh = { viewmodel.refreshFoodList() }) {
@@ -105,35 +98,39 @@ fun FoodListScreen(
 
 @Composable
 fun FoodItem(food: Food) {
-    var selectedItem by remember { mutableStateOf(Food(name = "", units = "")) }
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(60.dp)) {
-        Row(modifier = Modifier
-            .fillMaxSize()
-            .selectable(
-                selected = selectedItem == food,
-                onClick = { selectedItem = food }
-            ),
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically) {
-            SrmText(text = food.name, textAlign = TextAlign.Center)
-            SrmText(text = food.units, textAlign = TextAlign.Center)
-            IconButton(onClick = { }) {
-                Icon(painter = painterResource(id = R.drawable.ic_baseline_menu_24), contentDescription = "Item Menu")
-            }
+    var popupState by remember {
+        mutableStateOf(false)
+    }
+    SrmSelectableRow(item = food) {
+        SrmText(text = food.name, textAlign = TextAlign.Center)
+        SrmText(text = food.units, textAlign = TextAlign.Center)
+        IconButton(onClick = { popupState = !popupState }) {
+            Icon(painter = painterResource(id = R.drawable.ic_baseline_menu_24), contentDescription = "Item Menu")
         }
     }
+    if (popupState)
+        FoodItemPopup(food = food) {
+            popupState = !popupState
+        }
 }
 
 @Composable
-fun FoodItemPopup(food: Food) {
-    Popup {
-        Box {
-            Row {
-                SrmText(text = stringResource(R.string.delete))
-                SrmText(text = stringResource(R.string.show_history))
-            }
+fun FoodItemPopup(
+    food: Food,
+    onDismissRequest: () -> Unit = {},
+) {
+    SrmDialog(onDismissRequest = onDismissRequest) {
+        SrmSelectableRow(item = food, horizontalArrangement = Arrangement.Start) {
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            Icon(painter = painterResource(id = R.drawable.ic_baseline_delete_24), contentDescription = stringResource(id = R.string.delete))
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            SrmText(text = stringResource(R.string.delete))
+        }
+        SrmSelectableRow(item = food, horizontalArrangement = Arrangement.Start) {
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            Icon(painter = painterResource(id = R.drawable.ic_baseline_history_24), contentDescription = stringResource(id = R.string.delete))
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            SrmText(text = stringResource(R.string.show_history))
         }
     }
 }
