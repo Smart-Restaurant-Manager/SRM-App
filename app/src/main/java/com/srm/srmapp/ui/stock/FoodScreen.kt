@@ -10,17 +10,19 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavBackStackEntry
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -117,6 +119,21 @@ fun FoodItem(food: Food) {
             verticalAlignment = Alignment.CenterVertically) {
             SrmText(text = food.name, textAlign = TextAlign.Center)
             SrmText(text = food.units, textAlign = TextAlign.Center)
+            IconButton(onClick = { }) {
+                Icon(painter = painterResource(id = R.drawable.ic_baseline_menu_24), contentDescription = "Item Menu")
+            }
+        }
+    }
+}
+
+@Composable
+fun FoodItemPopup(food: Food) {
+    Popup {
+        Box {
+            Row {
+                SrmText(text = stringResource(R.string.delete))
+                SrmText(text = stringResource(R.string.show_history))
+            }
         }
     }
 }

@@ -65,4 +65,6 @@
     <string name="selecionar_ingredientes">Selecionar ingredientes</string>
     <string name="food_id_value">1</string>
     <string name="start">Inici</string>
+    <string name="delete">Eliminar</string>
+    <string name="show_history">Mostrar historial</string>
 </resources>
