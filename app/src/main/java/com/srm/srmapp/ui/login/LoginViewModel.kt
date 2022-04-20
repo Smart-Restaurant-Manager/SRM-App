@@ -3,12 +3,10 @@ package com.srm.srmapp.ui.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.srm.srmapp.Resource
-import com.srm.srmapp.Utils.launchException
+import com.srm.srmapp.Utils.fetchResource
 import com.srm.srmapp.repository.authentication.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -25,21 +23,19 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
 
     fun login(username: String, password: String) {
         Timber.d("login $username $password")
-        _loginState.value = Resource.Loading()
-        viewModelScope.launchException() {
+        fetchResource(_loginState) {
             val res = repository.login(username, password)
-            _loginState.postValue(res)
+            res
         }
     }
 
 
     fun signup(email: String, name: String, password: String, passwordCheck: String) {
         Timber.d("signup $email $name $password $passwordCheck")
-        _signupState.value = Resource.Loading()
-        viewModelScope.launchException() {
+        fetchResource(_signupState) {
             val res = repository.signup(email, name, password, passwordCheck)
-            _signupState.postValue(res)
             Timber.d("${res.data}")
+            res
         }
     }
 }
