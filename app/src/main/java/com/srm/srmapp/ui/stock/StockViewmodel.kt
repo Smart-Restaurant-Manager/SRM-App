@@ -10,7 +10,7 @@ import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.stock.StockRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
-import java.util.*
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -97,7 +97,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         }
     }
 
-    fun addStock(food: Food, quantity: Float, expirationDate: Date) {
+    fun addStock(food: Food, quantity: Float, expirationDate: LocalDate) {
         val stock = Stock(foodId = food.foodId, quantity = quantity, stockId = -1, expirationDate = expirationDate)
         fetchResource(_status) {
             stockRepository.postStock(stock)
