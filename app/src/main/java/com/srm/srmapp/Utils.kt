@@ -11,6 +11,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 object Utils {
@@ -55,5 +58,17 @@ object Utils {
         this.viewModelScope.launchException {
             livedataResource.postValue(repositoryCall.invoke())
         }
+    }
+
+    fun Date.toLocalDate(): LocalDate {
+        return this.toInstant()
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
+    }
+
+    fun LocalDate.toDate(): Date {
+        return Date.from(this.atStartOfDay()
+            .atZone(ZoneId.systemDefault())
+            .toInstant())
     }
 }
