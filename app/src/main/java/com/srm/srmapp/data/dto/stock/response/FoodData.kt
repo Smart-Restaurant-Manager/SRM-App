@@ -8,7 +8,6 @@ data class FoodData(
     val type: String,
 ) {
     fun toFood() = Food(type = when (type) {
-        "Carne" -> Food.FoodType.CARNE
-        else -> Food.FoodType.NONE
+        else -> ""
     }, foodId = id, name = attributes.name, units = attributes.units)
 }
