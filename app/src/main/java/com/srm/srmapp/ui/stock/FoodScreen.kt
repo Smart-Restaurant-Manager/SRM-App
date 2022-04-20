@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelStoreOwner
@@ -49,9 +50,6 @@ fun FoodMainScreen(navigator: DestinationsNavigator) {
     )
     SrmHeader(title = stringResource(id = R.string.title_stock)) { navigator.navigateUp() }
 
-    val viewModelStoreOwner: ViewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
-        "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
-    }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         LazyVerticalGrid(columns = GridCells.Fixed(2)) {
             items(buttonNames) { buttonName ->
@@ -79,7 +77,6 @@ fun FoodListScreen(
     val viewmodel = hiltViewModel<StockViewmodel>(backStackEntry)
     val foodListState by viewmodel.foodList.observeAsState(Resource.Empty())
     val refreshState = rememberSwipeRefreshState(foodListState.isLoading())
-    var selectedItem by remember { mutableStateOf(Food(name = "", units = "")) }
 
     if (foodListState.isEmpty()) viewmodel.refreshFoodList()
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -95,20 +92,37 @@ fun FoodListScreen(
                 if (foodListState.isSuccess()) {
                     foodListState.data?.let {
                         items(it) { food ->
-                            Row(modifier = Modifier
-                                .fillMaxWidth()
-                                .selectable(
-                                    selected = selectedItem == food,
-                                    onClick = { selectedItem = food }
-                                ),
-                                horizontalArrangement = Arrangement.SpaceAround) {
-                                SrmText(text = food.name, textAlign = TextAlign.Center)
-                                SrmText(text = food.units, textAlign = TextAlign.Center)
-                            }
+                            FoodItem(food = food)
                         }
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+fun FoodItem(food: Food) {
+    var selectedItem by remember { mutableStateOf(Food(name = "", units = "")) }
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(60.dp)) {
+        Row(modifier = Modifier
+            .fillMaxSize()
+            .selectable(
+                selected = selectedItem == food,
+                onClick = { selectedItem = food }
+            ),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically) {
+            SrmText(text = food.name, textAlign = TextAlign.Center)
+            SrmText(text = food.units, textAlign = TextAlign.Center)
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FoodItemPreview() {
+    FoodItem(Food(name = "Food", units = "Unit"))
 }
