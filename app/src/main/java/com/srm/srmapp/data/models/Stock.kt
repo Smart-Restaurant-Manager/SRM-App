@@ -20,4 +20,8 @@ data class Stock(val stockId: Int, var foodId: Int, val quantity: Float, val exp
         result = 31 * result + expirationDate.hashCode()
         return result
     }
+
+    override fun toString(): String {
+        return "$stockId $foodId $quantity $expirationDate"
+    }
 }
