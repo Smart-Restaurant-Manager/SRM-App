@@ -35,7 +35,7 @@ fun SrmAddTitleSearch(title: String, onClickAdd: () -> Unit = {}, onClickSearch:
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 IconButton(onClickAdd) {
-                    Icon(painter = painterResource(id = R.drawable.add), contentDescription = "Add")
+                    Icon(painter = painterResource(id = R.drawable.ic_baseline_add_24), contentDescription = "Add")
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Box(
