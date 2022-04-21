@@ -77,4 +77,7 @@
     <string name="bebidas">Bebidas</string>
     <string name="complementos">Complementos</string>
     <string name="Carta">Carta</string>
+    <string name="show_stock">Mostrar stock</string>
+    <string name="add_stock">Afegir stock</string>
+    <string name="quantity">Quantitat</string>
 </resources>
