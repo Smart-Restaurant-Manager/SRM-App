@@ -28,7 +28,7 @@ class RecipeRepository @Inject constructor(private val api: RecipeInterface) : B
 
     suspend fun modRecipe(id: Int, name: String, price: Float, available: Boolean, food: Array<Int>): Resource<String> {
         return safeApiCall({
-            api.modifyRecipe(id, RecipeObject(name, price, available, null))
+            api.putRecipe(id, RecipeObject(name, price, available, null))
         }) {
             "Recipe Modified"
         }
