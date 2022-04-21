@@ -1,7 +1,8 @@
 package com.srm.srmapp
 
-import com.google.gson.GsonBuilder
+import com.google.gson.Gson
 import com.srm.srmapp.data.dto.auth.body.LoginObject
+import com.srm.srmapp.data.dto.stock.body.FoodObject
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.authentication.AuthInterface
@@ -19,14 +20,18 @@ import java.time.LocalDate
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+
+
 class ExampleUnitTest {
     private val BASE_URL = "https://smart-restaurant-manager.herokuapp.com"
+
+    val gson: Gson = AppModule.provideGsonConverter()
     private val retrofit2 = Retrofit.Builder()
         .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create(GsonBuilder()
-            .setDateFormat("dd-MM-yyyy'T'HH:mm:ssz")
-            .create()))
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .client(OkHttpClient.Builder()
+            .followRedirects(false)
+            .followSslRedirects(false)
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build())
         .build()
@@ -34,10 +39,10 @@ class ExampleUnitTest {
     private var token: String = ""
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create(GsonBuilder()
-            .setDateFormat("dd-MM-yyyy'T'HH:mm:ssz")
-            .create()))
+        .addConverterFactory(GsonConverterFactory.create(gson))
         .client(OkHttpClient.Builder()
+            .followRedirects(false)
+            .followSslRedirects(false)
             .addInterceptor {
                 val req = it.request()
                 it.proceed(req
@@ -61,14 +66,10 @@ class ExampleUnitTest {
     private val stocklist = listOf(
         Stock(-1, -1, 0f, LocalDate.now()),
         Stock(-1, -1, 1f, LocalDate.now()),
-        Stock(-1, -1, 2f, LocalDate.now()),
-        Stock(-1, -1, 3f, LocalDate.now()),
-        Stock(-1, -1, 4f, LocalDate.now()),
-        Stock(-1, -1, 5f, LocalDate.now()),
     )
     private val foodList: List<Food> = listOf(
-        Food("Carne", -1, "Carne 1", "kg"),
-        Food("Carne", -1, "Leche 1", "l"),
+        Food("", -1, "testFood1112", "kg"),
+        Food("", -1, "testFood32213", "l"),
     )
 
     @Test
@@ -87,9 +88,11 @@ class ExampleUnitTest {
     @Test
     fun testStockApi() {
         // insert food
-        assert(runBlocking {
-            stockapi.postFood(foodList[0].toJsonObject())
-        }.isSuccessful)
+        foodList.forEach {
+            assert(runBlocking {
+                stockapi.postFood(it.toJsonObject())
+            }.isSuccessful)
+        }
 
         // get food list
         val response = runBlocking {
@@ -97,58 +100,40 @@ class ExampleUnitTest {
         }
         assert(response.isSuccessful)
 
-        val data = response.body()
-        assert(data != null)
+        val foodlistRes = response.body()?.toFoodList()
+        assert(foodlistRes != null)
 
-        val foodlist = data?.toFoodList()!!
-
-        // find food
-        val food = foodlist.find {
-            it.name == foodlist[0].name && it.units == foodlist[0].units
-        }
-
-        assert(food != null)
-        food!!
-        food.addStock(stocklist[0])
-        food.addStock(stocklist[1])
-
-        // add stock
-        for (s in food.stockList) {
+        // put food
+        foodlistRes?.forEach {
             assert(
                 runBlocking {
-                    stockapi.postStock(s.toJsonObject())
+                    stockapi.putFood(it.foodId, FoodObject(it.name.reversed(), it.units.reversed()))
                 }.isSuccessful
             )
         }
 
-        // get stock for food
-        val stockres = runBlocking {
-            stockapi.getFoodStock(food.foodId)
+        // get food list
+        val foodlistReversed = runBlocking {
+            stockapi.getFood()
+        }.body()?.toFoodList()
+        assert(foodlistReversed != null)
+
+        // check if we modified correctly by counting
+        var count = 0
+        foodlistReversed?.forEach { res ->
+            if (foodList.find { it.name == res.name.reversed() && it.units == res.units.reversed() } != null) {
+                count++
+            }
         }
+        assert(count == foodList.size)
 
-        assert(stockres.isSuccessful)
-
-        val stocks = stockres.body()?.toStockList()
-        assert(stocks != null)
-        stocks!!
-
-        // validate stocks
-        for ((s1, s2) in stocks.zip(food.stockList)) {
-            assert(s1 == s2)
-        }
-
-        // delete stocks
-        for (s in stocks) {
-            assert(
-                runBlocking {
-                    stockapi.deleteStock(s.stockId)
-                }.isSuccessful
-            )
-        }
 
         // delete food
-        assert(runBlocking {
-            stockapi.deleteFood(food.foodId)
-        }.isSuccessful)
+        foodlistRes?.forEach { res ->
+            if (foodList.find { it.name == res.name } != null)
+                assert(runBlocking {
+                    stockapi.deleteFood(res.foodId)
+                }.isSuccessful)
+        }
     }
 }
