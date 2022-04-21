@@ -111,8 +111,9 @@ fun FoodListScreen(
         }
     }
 
-    if (statusMessage.isSuccess()) {
-        statusMessage.data?.let {
+    if (statusMessage.isSuccess() || statusMessage.isError()) {
+        val msg = statusMessage.data ?: statusMessage.message
+        msg?.let {
             SrmDialog(onDismissRequest = {
                 viewmodel.clearStatus()
                 viewmodel.refreshFoodList()
