@@ -37,6 +37,8 @@ object AppModule {
             .addInterceptor(HttpLoggingInterceptor()
                 .setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
                 else HttpLoggingInterceptor.Level.NONE))
+            .followRedirects(false)
+            .followSslRedirects(false)
             .build()
 
         val retrofit = Retrofit.Builder()
@@ -64,6 +66,8 @@ object AppModule {
                     .build())
         }
         .addInterceptor(HttpLoggingInterceptor().setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE))
+        .followRedirects(false)
+        .followSslRedirects(false)
         .build()
 
 
