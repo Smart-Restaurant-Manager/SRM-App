@@ -27,7 +27,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -74,9 +73,8 @@ fun FoodMainScreen(navigator: DestinationsNavigator) {
 @Destination
 fun FoodListScreen(
     navigator: DestinationsNavigator,
-    backStackEntry: NavBackStackEntry,
+    viewmodel: StockViewmodel = hiltViewModel(),
 ) {
-    val viewmodel = hiltViewModel<StockViewmodel>(backStackEntry)
     val foodListState by viewmodel.foodList.observeAsState(Resource.Empty())
     val stockList by viewmodel.stockList.observeAsState(Resource.Empty())
     val statusMessage by viewmodel.status.observeAsState(Resource.Empty())
