@@ -1,5 +1,7 @@
 package com.srm.srmapp.repository.stock
 
+import com.srm.srmapp.data.dto.stock.body.FoodObject
+import com.srm.srmapp.data.dto.stock.body.StockObject
 import com.srm.srmapp.data.dto.stock.response.FoodListResponse
 import com.srm.srmapp.data.dto.stock.response.FoodResponse
 import com.srm.srmapp.data.dto.stock.response.StockListResponse
@@ -8,36 +10,36 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface StockInterface {
-    @GET("api/fake/food")
+    @GET("api/v1/food")
     suspend fun getFood(): Response<FoodListResponse>
 
-    @POST("api/fake/food")
-    suspend fun postFood(): Response<Unit>// TODO BODY
-
-    @GET("api/fake/food/{food}")
+    @GET("api/v1/food/{food}")
     suspend fun getFood(@Path("food") id: Int): Response<FoodResponse>
 
-    @PUT("api/fake/food/{food}")
-    suspend fun modifyFood(@Path("food") id: Int): Response<Unit> // TODO BODY
-
-    @DELETE("api/fake/food/{food}")
-    suspend fun deleteFood(@Path("food") id: Int): Response<Unit>
-
-    @GET("api/fake/food/{food}/stock")
+    @GET("api/v1/food/{food}/stocks")
     suspend fun getFoodStock(@Path("food") id: Int): Response<StockListResponse>
 
-    @GET("api/fake/stocks")
+    @GET("api/v1/stocks")
     suspend fun getStock(): Response<StockListResponse>
 
-    @POST("api/fake/stocks")
-    suspend fun postStock(): Response<StockListResponse> // TODO BODY
-
-    @GET("api/fake/stocks/{stock}")
+    @GET("api/v1/stocks/{stock}")
     suspend fun getStock(@Path("stock") id: Int): Response<StockResponse>
 
-    @DELETE("api/fake/stocks/{stock}")
+    @POST("api/v1/food")
+    suspend fun postFood(@Body foodObject: FoodObject): Response<Unit>
+
+    @PUT("api/v1/food/{food}")
+    suspend fun putFood(@Path("food") id: Int, @Body foodObject: FoodObject): Response<Unit>
+
+    @DELETE("api/v1/food/{food}")
+    suspend fun deleteFood(@Path("food") id: Int): Response<Unit>
+
+    @POST("api/v1/stocks")
+    suspend fun postStock(@Body stockObject: StockObject): Response<Unit>
+
+    @DELETE("api/v1/stocks/{stock}")
     suspend fun deleteStock(@Path("stock") id: Int): Response<Unit>
 
-    @PUT("api/fake/stocks/{stock}")
-    suspend fun modifyStock(@Path("stock") id: Int): Response<Unit> // TODO BODY
+    @PUT("api/v1/stocks/{stock}")
+    suspend fun putStock(@Path("stock") id: Int, @Body stockObject: StockObject): Response<Unit>
 }

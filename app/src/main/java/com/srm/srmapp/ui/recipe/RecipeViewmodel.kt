@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.srm.srmapp.Resource
+import com.srm.srmapp.Utils.fetchResource
 import com.srm.srmapp.Utils.launchException
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Recipe
@@ -41,17 +42,14 @@ class RecipeViewmodel @Inject constructor(private val RecipeRepository: RecipeRe
 
     fun refreshRecipeList() {
         Timber.d("Call refresh")
-        _recipeList.value = Resource.Loading()
-        viewModelScope.launchException {
-            val recipe = RecipeRepository.getRecipes()
-            _recipeList.postValue(recipe)
+        fetchResource(_recipeList) {
+            RecipeRepository.getRecipes()
         }
     }
 
     fun getRecipeBy(id: Int) {
-        viewModelScope.launchException {
-            val recipe = RecipeRepository.getRecipe(id)
-            _recipe.postValue(recipe)
+        fetchResource(_recipe) {
+            RecipeRepository.getRecipe(id)
         }
     }
 

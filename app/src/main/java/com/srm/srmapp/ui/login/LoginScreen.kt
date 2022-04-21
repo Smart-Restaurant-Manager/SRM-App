@@ -1,0 +1,70 @@
+package com.srm.srmapp.ui.login
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.TextButton
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.srm.srmapp.R
+import com.srm.srmapp.Resource
+import com.srm.srmapp.ui.common.SrmButton
+import com.srm.srmapp.ui.common.SrmHeader
+import com.srm.srmapp.ui.common.SrmText
+import com.srm.srmapp.ui.common.SrmTextField
+import com.srm.srmapp.ui.destinations.ManagerScreenDestination
+import com.srm.srmapp.ui.destinations.SignUpScreenDestination
+
+@Destination
+@RootNavGraph(start = true)
+@Composable
+fun LoginScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hiltViewModel()) {
+    var user by remember { mutableStateOf("q@q") }
+    var password by remember { mutableStateOf("q") }
+    val loginState by viewmodel.getLoginState().observeAsState(Resource.Empty())
+
+
+    SrmHeader(stringResource(id = R.string.login2)) { navigator.navigateUp() }
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxHeight(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        SrmTextField(value = user,
+            label = stringResource(id = R.string.user_mail),
+            enabled = loginState !is Resource.Loading,
+            isError = loginState is Resource.Error,
+            onValueChange = { user = it })
+
+        SrmTextField(value = password,
+            label = stringResource(id = R.string.password),
+            enabled = loginState !is Resource.Loading,
+            isError = loginState is Resource.Error,
+            onValueChange = { password = it })
+
+        SrmButton(onClick = {
+            viewmodel.login(user, password)
+        }, text = stringResource(id = R.string.login),
+            enabled = loginState !is Resource.Loading)
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            SrmText(text = stringResource(id = R.string.no_account))
+            TextButton({ navigator.navigate(SignUpScreenDestination()) }) {
+                SrmText(text = stringResource(id = R.string.register), maxLines = 2)
+            }
+        }
+
+        if (loginState is Resource.Loading)
+            CircularProgressIndicator()
+
+        if (loginState is Resource.Success)
+            navigator.navigate(ManagerScreenDestination())
+    }
+}

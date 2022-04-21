@@ -15,7 +15,7 @@
     <string name="login_signup_status">Login/Signup Status</string>
     <string name="status">Status</string>
     <string name="title_stock">STOCK</string>
-    <string name="carne">Alimentos Carnicos</string>
+    <string name="carne">Carnes</string>
     <string name="lacteos">Lacteos</string>
     <string name="especias">Especias</string>
     <string name="vegetales">Vegetales</string>
@@ -25,9 +25,9 @@
     <string name="placeholder_find">Find</string>
     <string name="template_title">Title</string>
     <string name="predictions">Predicciones</string>
-    <string name="stock">Stock</string>
+    <string name="food">Aliments</string>
     <string name="reservas">Reservas</string>
-    <string name="menu">Carta</string>
+    <string name="menu">Menu</string>
     <string name="nombre">Nombre</string>
     <string name="cantidad">Cantidad</string>
     <string name="lote">Lote</string>
@@ -47,7 +47,7 @@
     <string name="login2">Inicio de sesión</string>
     <string name="forget_password">¿Has olvidado la contraseña?</string>
     <string name="session_login">Iniciar sesión</string>
-    <string name="forget_account">¿Has olvidado tu cuenta?</string>
+    <string name="no_account">¿No tienes cuenta?</string>
     <string name="new_account">Crear cuenta</string>
     <string name="terms_conditions">Acepto los terminos y condiciones y las Políticas de Privacidad</string>
     <string name="title_receipt">Carta</string>
@@ -63,4 +63,13 @@
     <string name="modificar">Modificar</string>
     <string name="delete">Eliminar</string>
     <string name="selecionar_ingredientes">Selecionar ingredientes</string>
+    <string name="food_id_value">1</string>
+    <string name="start">Inici</string>
+    <string name="show_stock">Mostrar stock</string>
+    <string name="category">Categoria d\'aliment</string>
+    <string name="unit">Unitats</string>
+    <string name="food_name">Nom</string>
+    <string name="add_food">Afegir aliment</string>
+    <string name="add_stock">Afegir stock</string>
+    <string name="quantity">Quantitat</string>
 </resources>

@@ -10,15 +10,17 @@ abstract class BaseRepository {
         return try {
             val res = apiCall.invoke()
             val data = res.body()
-            if (res.isSuccessful && data != null)
-                Resource.Success(data = responseConverter.invoke(data))
+            @Suppress("UNCHECKED_CAST")
+            if (res.isSuccessful)
+                Resource.Success(data = responseConverter.invoke(data ?: Unit as R))
             else
                 throw HttpException(res)
         } catch (e: HttpException) {
             when (e.code()) {
-                400 -> Resource.Error("Not found")
-                // TODO handle other codes
-                else -> Resource.Error("Http error ${e.code()} ${e.response()?.errorBody()?.string()}")
+                404 -> Resource.Error("Not found")
+                401 -> Resource.Error("Unauthorized")
+                500 -> Resource.Error("Server Error, try later")
+                else -> Resource.Error("Http error ${e.code()} ${e.response()?.errorBody()}")
             }
         } catch (e: IOException) {
             Resource.Error("No internet")

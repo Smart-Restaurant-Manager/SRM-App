@@ -1,29 +1,26 @@
 package com.srm.srmapp.repository.recipes
 
-import com.srm.srmapp.Resource
 import com.srm.srmapp.data.dto.recipe.body.RecipeObject
 import com.srm.srmapp.data.dto.recipe.response.RecipeListResponse
 import com.srm.srmapp.data.dto.recipe.response.RecipeResponse
-import retrofit2.Call
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.*
 
 interface RecipeInterface {
-    //No se implementa de momento
     @GET("/img/{img_url}")
-    fun getRecipeImage(@Path("img_url") img_id: String): Call<Resource<Response<Unit>>>
+    @Streaming
+    suspend fun getRecipeImage(@Path("img_url") img_id: String): ResponseBody
 
-
-    @GET("api/fake/recipes/")
+    @GET("api/v1/recipes/")
     suspend fun getRecipes(): Response<RecipeListResponse>
 
-    @GET("api/fake/recipes/{recipe}")
+    @GET("api/v1/recipes/{recipe}")
     suspend fun getRecipe(@Path("recipe") id: Int): Response<RecipeResponse>
 
-    @POST("api/fake/recipes")
-    suspend fun postRecipe(@Body postRecipe: RecipeObject): Response<RecipeResponse>
+    @POST("api/v1/recipes")
+    suspend fun postRecipe(@Body postRecipe: RecipeObject): Response<Unit>
 
-    @PUT("api/fake/recipes/{recipe}")
-    suspend fun modifyRecipe(@Path("recipe") id: Int, @Body modRecipe: RecipeObject): Response<RecipeResponse>
-
+    @PUT("api/v1/recipes/{recipe}")
+    suspend fun modifyRecipe(@Path("recipe") id: Int, @Body modRecipe: RecipeObject): Response<Unit>
 }

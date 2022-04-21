@@ -1,15 +1,25 @@
 package com.srm.srmapp.data.dto.auth.response
 
+import com.google.gson.annotations.SerializedName
 import com.srm.srmapp.data.models.User
+import java.time.LocalDate
 import java.util.*
 
 data class UserResponse(
-    val id: Int,
-    val name: String,
+    @SerializedName("created_at")
+    val createdAt: String,
+    @SerializedName("email")
     val email: String,
-    val email_verified_at: Date?,
-    val created_at: Date,
-    val updated_at: Date,
+    @SerializedName("email_verified_at")
+    val emailVerifiedAt: LocalDate,
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("name")
+    val name: String,
+    @SerializedName("role")
+    val role: Int,
+    @SerializedName("updated_at")
+    val updatedAt: LocalDate,
 )
 
 fun UserResponse.toUser(): User = User(name, email)
