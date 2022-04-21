@@ -12,7 +12,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
+import java.time.LocalDate
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -59,12 +59,12 @@ class ExampleUnitTest {
 
     private val stockapi = retrofit.create(StockInterface::class.java)
     private val stocklist = listOf(
-        Stock(-1, -1, 0f, Calendar.getInstance().time),
-        Stock(-1, -1, 1f, Calendar.getInstance().time),
-        Stock(-1, -1, 2f, Calendar.getInstance().time),
-        Stock(-1, -1, 3f, Calendar.getInstance().time),
-        Stock(-1, -1, 4f, Calendar.getInstance().time),
-        Stock(-1, -1, 5f, Calendar.getInstance().time),
+        Stock(-1, -1, 0f, LocalDate.now()),
+        Stock(-1, -1, 1f, LocalDate.now()),
+        Stock(-1, -1, 2f, LocalDate.now()),
+        Stock(-1, -1, 3f, LocalDate.now()),
+        Stock(-1, -1, 4f, LocalDate.now()),
+        Stock(-1, -1, 5f, LocalDate.now()),
     )
     private val foodList: List<Food> = listOf(
         Food("Carne", -1, "Carne 1", "kg"),
