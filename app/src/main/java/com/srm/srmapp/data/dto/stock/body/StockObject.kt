@@ -1,10 +1,10 @@
 package com.srm.srmapp.data.dto.stock.body
 
-import java.util.*
+import java.time.LocalDate
 
 data class StockObject(
     val quantity: Float,
-    val expiration_date: Date,
+    val expiration_date: LocalDate,
     val food_id: Int,
     val expired: Boolean? = null,
 )

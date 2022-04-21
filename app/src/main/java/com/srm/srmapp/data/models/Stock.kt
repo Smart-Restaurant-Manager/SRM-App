@@ -1,14 +1,13 @@
 package com.srm.srmapp.data.models
 
 import android.os.Parcelable
-import com.srm.srmapp.Utils.toDate
 import com.srm.srmapp.data.dto.stock.body.StockObject
 import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
 
 @Parcelize
 data class Stock(val stockId: Int, var foodId: Int, val quantity: Float, val expirationDate: LocalDate) : Parcelable {
-    fun toJsonObject() = StockObject(quantity, expirationDate.toDate(), foodId, expirationDate < LocalDate.now())
+    fun toJsonObject() = StockObject(quantity, expirationDate, foodId, null)
     override fun equals(other: Any?): Boolean {
         if (other !is Stock) return false
         return other.foodId == foodId && other.expirationDate == expirationDate

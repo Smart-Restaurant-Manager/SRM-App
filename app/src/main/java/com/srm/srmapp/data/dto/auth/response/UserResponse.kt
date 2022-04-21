@@ -2,6 +2,7 @@ package com.srm.srmapp.data.dto.auth.response
 
 import com.google.gson.annotations.SerializedName
 import com.srm.srmapp.data.models.User
+import java.time.LocalDate
 import java.util.*
 
 data class UserResponse(
@@ -10,7 +11,7 @@ data class UserResponse(
     @SerializedName("email")
     val email: String,
     @SerializedName("email_verified_at")
-    val emailVerifiedAt: Date,
+    val emailVerifiedAt: LocalDate,
     @SerializedName("id")
     val id: Int,
     @SerializedName("name")
@@ -18,7 +19,7 @@ data class UserResponse(
     @SerializedName("role")
     val role: Int,
     @SerializedName("updated_at")
-    val updatedAt: Date,
+    val updatedAt: LocalDate,
 )
 
 fun UserResponse.toUser(): User = User(name, email)

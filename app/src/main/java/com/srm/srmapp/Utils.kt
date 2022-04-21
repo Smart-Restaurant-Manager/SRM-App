@@ -60,15 +60,4 @@ object Utils {
         }
     }
 
-    fun Date.toLocalDate(): LocalDate {
-        return this.toInstant()
-            .atZone(ZoneId.systemDefault())
-            .toLocalDate()
-    }
-
-    fun LocalDate.toDate(): Date {
-        return Date.from(this.atStartOfDay()
-            .atZone(ZoneId.systemDefault())
-            .toInstant())
-    }
 }

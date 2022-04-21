@@ -1,10 +1,10 @@
 package com.srm.srmapp.data.dto.stock.response
 
-import java.util.*
+import java.time.LocalDate
 
 data class FoodAttributes(
-    val created_at: Date,
+    val created_at: LocalDate,
     val name: String,
     val units: String,
-    val updated_at: Date,
+    val updated_at: LocalDate,
 )
