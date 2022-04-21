@@ -6,6 +6,7 @@ import com.srm.srmapp.data.dto.stock.body.FoodObject
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.authentication.AuthInterface
+import com.srm.srmapp.repository.orders.OrdersInterface
 import com.srm.srmapp.repository.stock.StockInterface
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -135,5 +136,16 @@ class ExampleUnitTest {
                     stockapi.deleteFood(res.foodId)
                 }.isSuccessful)
         }
+    }
+
+
+    private val orderApi = retrofit.create(OrdersInterface::class.java)
+
+    @Test
+    fun testOrder() {
+        val ordersRes = runBlocking {
+            orderApi.getOrders()
+        }
+        assert(ordersRes.isSuccessful)
     }
 }
