@@ -22,6 +22,6 @@ data class Stock(val stockId: Int, var foodId: Int, val quantity: Float, val exp
     }
 
     override fun toString(): String {
-        return "$stockId $foodId $quantity $expirationDate"
+        return "Id $stockId Quantitat: $quantity Caducitat: $expirationDate"
     }
 }

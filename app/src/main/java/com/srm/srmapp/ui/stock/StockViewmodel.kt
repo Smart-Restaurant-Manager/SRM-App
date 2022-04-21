@@ -65,12 +65,31 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
     }
 
     fun deleteFood(food: Food) {
-        fetchResource(_status) {
+        fetchResource(_status, onSuccess = {
+            _foodList.value?.data?.toMutableList()?.let { list ->
+                list.remove(food)
+                _foodList.postValue(Resource.Success(list.toList()))
+            }
+        }) {
             val msg = stockRepository.deleteFood(food)
             Timber.d("Delete food $msg")
             msg
         }
     }
+
+    fun deleteStock(stock: Stock) {
+        fetchResource(_status, onSuccess = {
+            _stockList.value?.data?.toMutableList()?.let { list ->
+                list.remove(stock)
+                _stockList.postValue(Resource.Success(list.toList()))
+            }
+        }, repositoryCall = {
+            val msg = stockRepository.deleteStock(stock)
+            Timber.d("Delete stock $msg")
+            msg
+        })
+    }
+
 
     fun getFoodStock(food: Food) {
         fetchResource(_stockList) {
@@ -92,7 +111,12 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
 
     fun addFood(type: String, name: String, units: String) {
         val food = Food(type = type, name = name, units = units)
-        fetchResource(_status) {
+        fetchResource(_status, onSuccess = {
+//            _foodList.value?.data?.toMutableList()?.let { list ->
+//                list.add(food)
+//                _foodList.postValue(Resource.Success(list.toList()))
+//            }
+        }) {
             stockRepository.postFood(food)
         }
     }

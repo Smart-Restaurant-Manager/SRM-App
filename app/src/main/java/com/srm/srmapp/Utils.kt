@@ -11,9 +11,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import timber.log.Timber
-import java.time.LocalDate
-import java.time.ZoneId
-import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 object Utils {
@@ -53,10 +50,17 @@ object Utils {
         }
     }
 
-    fun <T> ViewModel.fetchResource(livedataResource: MutableLiveData<Resource<T>>, repositoryCall: suspend () -> Resource<T>) {
+    fun <T> ViewModel.fetchResource(
+        livedataResource: MutableLiveData<Resource<T>>,
+        onSuccess: suspend (Resource<T>) -> Unit = {},
+        repositoryCall: suspend () -> Resource<T>,
+    ) {
         livedataResource.value = Resource.Loading()
         this.viewModelScope.launchException {
-            livedataResource.postValue(repositoryCall.invoke())
+            val r = repositoryCall.invoke()
+            if (r.isSuccess())
+                onSuccess.invoke(r)
+            livedataResource.postValue(r)
         }
     }
 

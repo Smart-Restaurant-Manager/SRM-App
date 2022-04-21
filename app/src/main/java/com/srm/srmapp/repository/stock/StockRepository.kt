@@ -72,8 +72,8 @@ class StockRepository @Inject constructor(private val api: StockInterface) : Bas
         "Stock modified"
     }
 
-    suspend fun deleteStock() = safeApiCall({
-        api.deleteStock(1)
+    suspend fun deleteStock(stock: Stock) = safeApiCall({
+        api.deleteStock(stock.stockId)
     }) {
         "Stock deleted"
     }

@@ -116,7 +116,6 @@ fun FoodListScreen(
         msg?.let {
             SrmDialog(onDismissRequest = {
                 viewmodel.clearStatus()
-                viewmodel.refreshFoodList()
             }) {
                 SrmText(text = it, textAlign = TextAlign.Center)
             }
@@ -131,8 +130,19 @@ fun FoodListScreen(
                 if (it.isEmpty())
                     SrmText(text = "No stocks found")
                 else {
-                    SrmText(text = "${it.first()}")
-                    SrmText(text = "${it.size} ${it.first()}")
+                    LazyColumn(modifier = Modifier.wrapContentSize()) {
+                        items(it) { stock ->
+                            SrmSelectableRow(item = stock) {
+                                SrmText(text = "${stock.quantity} ${stock.expirationDate}", textAlign = TextAlign.Center)
+                                IconButton(onClick = {
+                                    viewmodel.deleteStock(stock)
+                                }) {
+                                    Icon(painter = painterResource(id = R.drawable.ic_baseline_delete_24),
+                                        contentDescription = stringResource(id = R.string.delete))
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -148,6 +158,7 @@ fun FoodListScreen(
             SrmTextFieldHint(value = type, placeholder = stringResource(R.string.category), onValueChange = { type = it })
             TextButton(onClick = {
                 viewmodel.addFood(type, name, units)
+                viewmodel.refreshFoodList()
                 popupAddFoodState = false
             }) {
                 SrmText(text = stringResource(R.string.add_food))
@@ -183,9 +194,9 @@ fun FoodItemPopup(
                 onDismissRequest.invoke()
             }) {
             Spacer(modifier = Modifier.width(spacerWitdh))
-            Icon(painter = painterResource(id = R.drawable.ic_baseline_history_24), contentDescription = stringResource(R.string.show_history))
+            Icon(painter = painterResource(id = R.drawable.ic_baseline_history_24), contentDescription = stringResource(R.string.show_stock))
             Spacer(modifier = Modifier.width(spacerWitdh))
-            SrmText(text = stringResource(R.string.show_history))
+            SrmText(text = stringResource(R.string.show_stock))
         }
         SrmSelectableRow(
             item = food,
