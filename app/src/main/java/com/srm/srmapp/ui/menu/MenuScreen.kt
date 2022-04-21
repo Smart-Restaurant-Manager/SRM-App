@@ -1,7 +1,9 @@
 package com.srm.srmapp.ui.menu
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -11,9 +13,10 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
+import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.ui.common.SrmButton
 import com.srm.srmapp.ui.common.SrmHeader
-import com.srm.srmapp.ui.destinations.EntrantesScreenDestination
+import com.srm.srmapp.ui.destinations.RecipeScreenDestination
 import com.srm.srmapp.ui.theme.ButtonColor1
 import com.srm.srmapp.ui.theme.padding
 
@@ -22,12 +25,12 @@ import com.srm.srmapp.ui.theme.padding
 @Composable
 fun MenuScreen(navigator: DestinationsNavigator) {
     val buttonNames = listOf(
-        Pair(R.string.entrantes) { navigator.navigate(EntrantesScreenDestination()) },
-        Pair(R.string.first_plate) {},
-        Pair(R.string.second_plate) {},
-        Pair(R.string.postres) {},
-        Pair(R.string.bebidas) {},
-        Pair(R.string.complementos) {})
+        Pair(R.string.entrantes) { navigator.navigate(RecipeScreenDestination(Recipe.RecipeType.ENTRANTE)) },
+        Pair(R.string.first_plate) { navigator.navigate(RecipeScreenDestination(Recipe.RecipeType.FIRST_PLATE)) },
+        Pair(R.string.second_plate) { navigator.navigate(RecipeScreenDestination(Recipe.RecipeType.SECOND_PLATE)) },
+        Pair(R.string.postres) { navigator.navigate(RecipeScreenDestination(Recipe.RecipeType.DESERT)) },
+        Pair(R.string.bebidas) { navigator.navigate(RecipeScreenDestination(Recipe.RecipeType.DRINK)) },
+        Pair(R.string.complementos) { navigator.navigate(RecipeScreenDestination(Recipe.RecipeType.COMPLEMENTS)) })
 
     SrmHeader(title = stringResource(R.string.Carta)) { navigator.navigateUp() }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
