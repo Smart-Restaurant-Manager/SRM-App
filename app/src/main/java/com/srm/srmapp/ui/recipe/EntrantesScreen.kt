@@ -38,12 +38,8 @@ import org.w3c.dom.Text
 @Composable
 fun EntrantesScreen(
     navigator: DestinationsNavigator,
-    backStackEntry: NavBackStackEntry
-)
-{
-
-    val viewmodel = hiltViewModel<RecipeViewmodel>(
-        backStackEntry)
+    viewmodel: RecipeViewmodel = hiltViewModel(),
+) {
     val RecipeList by viewmodel.getRecipeListLiveData().observeAsState(Resource.Empty())
     val Recipe by viewmodel.getRecipeLiveData().observeAsState(Resource.Empty())
     var popupState by remember { mutableStateOf(false) }
