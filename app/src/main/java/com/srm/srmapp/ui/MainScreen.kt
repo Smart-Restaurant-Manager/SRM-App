@@ -14,6 +14,7 @@ import com.srm.srmapp.R
 import com.srm.srmapp.ui.common.SrmButton
 import com.srm.srmapp.ui.common.SrmHeader
 import com.srm.srmapp.ui.destinations.FoodListScreenDestination
+import com.srm.srmapp.ui.destinations.MenuScreenDestination
 import com.srm.srmapp.ui.theme.ButtonColor1
 import com.srm.srmapp.ui.theme.padding
 
@@ -23,7 +24,7 @@ fun ManagerScreen(navigator: DestinationsNavigator) {
     val buttonNames = listOf(
         Pair(R.string.reservas) {},
         Pair(R.string.food) { navigator.navigate(FoodListScreenDestination()) },
-        Pair(R.string.menu) {},
+        Pair(R.string.menu) {navigator.navigate(MenuScreenDestination())},
         Pair(R.string.predictions) {})
     SrmHeader(title = stringResource(R.string.start)) { navigator.navigateUp() }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
