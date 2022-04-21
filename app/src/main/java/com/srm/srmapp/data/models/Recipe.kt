@@ -12,7 +12,7 @@ data class Recipe(
     val name: String,
     val price: Float,
     val available: Boolean,
-    val food: List<Pair<Food, Float>>? = null,
+    val food: List<Pair<Int, Float>>? = null, // Food_id and quantity
 ) :
     Parcelable {
     enum class RecipeType {
@@ -28,4 +28,4 @@ data class Recipe(
 
 }
 
-fun Pair<Food, Float>.toRecipeFoodObject() = RecipeFoodObject(food_id = this.first.foodId, this.second)
+fun Pair<Int, Float>.toRecipeFoodObject() = RecipeFoodObject(food_id = this.first, this.second)
