@@ -13,7 +13,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRepository) : ViewModel() {
-
+    init {
+        Timber.d("INIT")
+    }
     private val _recipeList: MutableLiveData<Resource<List<Recipe>>> = MutableLiveData()
     val recipeList: LiveData<Resource<List<Recipe>>>
         get() = _recipeList
