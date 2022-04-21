@@ -1,13 +1,10 @@
-package com.srm.srmapp.ui.recipe
+package com.srm.srmapp.ui.menu
 
-import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.srm.srmapp.Resource
 import com.srm.srmapp.Utils.fetchResource
-import com.srm.srmapp.Utils.launchException
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.data.models.Stock
@@ -55,9 +52,10 @@ class RecipeViewmodel @Inject constructor(private val RecipeRepository: RecipeRe
     }
 
 
-    fun addRecipe(type: Recipe.RecipeType, id:Int,available: Boolean, name:String, price: Float
-                  , food: Array<Int>) : Parcelable {
-
-        RecipeRepository.postRecipe(name,price,available,food)
-
-    }
+//    fun addRecipe(
+//        type: Recipe.RecipeType, id: Int, available: Boolean, name: String, price: Float,
+//        food: Array<Int>,
+//    ): Parcelable {
+//        RecipeRepository.postRecipe(name, price, available, food)
+//    }
+}
