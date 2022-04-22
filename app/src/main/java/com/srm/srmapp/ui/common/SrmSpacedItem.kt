@@ -25,7 +25,7 @@ fun <T> SrmSelectableRow(
             selected = selectedItem == item,
             onClick = {
                 selectedItem = item
-                Timber.d(item.toString())
+                Timber.d("Click on item $item")
                 onClick.invoke(item)
             }
         ),
