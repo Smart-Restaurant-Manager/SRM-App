@@ -58,7 +58,10 @@ fun RecipeScreen(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 if (recipeList.isSuccess())
                     recipeList.data?.let { recipeList ->
-                        items(recipeList.takeWhile { it.type == recipeType }) { recipe ->
+                        items(recipeList.takeWhile {
+//                            it.type == recipeType // No implemented yet
+                            true
+                        }, key = { it.id }) { recipe ->
                             RecipeItem(recipe = recipe) { popupState = !popupState }
                             if (popupState)
                                 RecipeItemPopUp(recipe = recipe,
@@ -119,7 +122,7 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, re
 
 @Composable
 fun RecipeItem(recipe: Recipe, onclick: () -> Unit) {
-    SrmSpacedRow(horizontalArrangement = Arrangement.SpaceEvenly) {
+    SrmSelectableRow(item = recipe, horizontalArrangement = Arrangement.SpaceEvenly) {
         SrmText(text = recipe.name, textAlign = TextAlign.Center)
         SrmText(text = recipe.price.toString(), textAlign = TextAlign.Center)
     }

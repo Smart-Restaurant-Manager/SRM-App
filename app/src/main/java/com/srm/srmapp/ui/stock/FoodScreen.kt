@@ -128,7 +128,7 @@ fun FoodListScreen(
                     SrmText(text = "No stocks found")
                 else {
                     LazyColumn(modifier = Modifier.wrapContentSize()) {
-                        items(it) { stock ->
+                        items(it, key = { it.stockId }) { stock ->
                             SrmSelectableRow(item = stock) {
                                 SrmText(text = "${stock.quantity} ${stock.expirationDate}", textAlign = TextAlign.Center)
                                 IconButton(onClick = {
