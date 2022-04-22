@@ -8,10 +8,10 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Recipe(
     val type: RecipeType,
-    val id: Int,
+    val id: Int = -1,
     val name: String,
     val price: Float,
-    val available: Boolean,
+    val available: Boolean? = null,
     val food: List<Pair<Int, Float>>? = null, // Food_id and quantity
 ) :
     Parcelable {
@@ -23,7 +23,7 @@ data class Recipe(
 
     fun toJsonObject() = RecipeObject(name = name, price = price, available = available, food = food?.map { it.toRecipeFoodObject() })
     override fun toString(): String {
-        return "$name  $id  $price "
+        return "$name  $id  $price $food"
     }
 
 }

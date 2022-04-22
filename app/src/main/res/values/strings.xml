@@ -80,4 +80,6 @@
     <string name="show_stock">Mostrar stock</string>
     <string name="add_stock">Afegir stock</string>
     <string name="quantity">Quantitat</string>
+    <string name="price">Precio</string>
+    <string name="add_recipe">Afegir plat</string>
 </resources>

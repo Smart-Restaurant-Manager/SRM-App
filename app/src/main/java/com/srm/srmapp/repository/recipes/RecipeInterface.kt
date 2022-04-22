@@ -12,7 +12,7 @@ interface RecipeInterface {
     @Streaming
     suspend fun getRecipeImage(@Path("img_url") img_id: String): ResponseBody
 
-    @GET("api/v1/recipes/")
+    @GET("api/v1/recipes")
     suspend fun getRecipes(): Response<RecipeListResponse>
 
     @POST("api/v1/recipes")
