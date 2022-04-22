@@ -1,5 +1,6 @@
 package com.srm.srmapp.ui.menu
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,6 +29,7 @@ import com.srm.srmapp.ui.theme.paddingStart
 import timber.log.Timber
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Destination
 @Composable
 fun RecipeScreen(
@@ -58,6 +60,12 @@ fun RecipeScreen(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 if (recipeList.isSuccess())
                     recipeList.data?.let { recipeList ->
+                        stickyHeader {
+                            SrmSpacedRow(horizontalArrangement = Arrangement.SpaceEvenly) {
+                                SrmText(text = stringResource(R.string.recipe_name), textAlign = TextAlign.Center)
+                                SrmText(text = stringResource(R.string.preu_euros), textAlign = TextAlign.Center)
+                            }
+                        }
                         items(recipeList.takeWhile {
 //                            it.type == recipeType // No implemented yet
                             true

@@ -82,4 +82,7 @@
     <string name="quantity">Quantitat</string>
     <string name="price">Precio</string>
     <string name="add_recipe">Afegir plat</string>
+    <string name="preu_euros">Preu €</string>
+    <string name="recipe_name">Nom</string>
+    <string name="food_name">Nom</string>
 </resources>

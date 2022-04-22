@@ -68,6 +68,7 @@ fun FoodMainScreen(navigator: DestinationsNavigator) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Destination
 fun FoodListScreen(
@@ -96,7 +97,14 @@ fun FoodListScreen(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 if (foodListState.isSuccess()) {
                     foodListState.data?.let {
-                        items(it) { food ->
+                        stickyHeader {
+                            SrmSpacedRow {
+                                SrmText(text = stringResource(R.string.food_name))
+                                SrmText(text = stringResource(R.string.quantity))
+                                Spacer(modifier = Modifier.width(20.dp))
+                            }
+                        }
+                        items(it, key = { it.foodId }) { food ->
                             FoodItem(food = food) { popupState = !popupState }
                             if (popupState)
                                 FoodItemPopup(food = food,
@@ -312,5 +320,4 @@ fun calcRectangles(yData: List<Float>, ww: Float, hh: Float): MutableList<RectF>
 @Preview(showBackground = true)
 @Composable
 fun FoodItemPreview() {
-    FoodItem(Food(name = "Food", units = "Unit", type = "Type")) {}
 }
