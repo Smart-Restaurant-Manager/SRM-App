@@ -26,7 +26,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -73,7 +72,7 @@ fun FoodMainScreen(navigator: DestinationsNavigator) {
 @Destination
 fun FoodListScreen(
     navigator: DestinationsNavigator,
-    viewmodel: StockViewmodel = hiltViewModel(),
+    viewmodel: StockViewmodel,
 ) {
     val foodListState by viewmodel.foodList.observeAsState(Resource.Empty())
     val stockList by viewmodel.stockList.observeAsState(Resource.Empty())
@@ -101,7 +100,7 @@ fun FoodListScreen(
                             FoodItem(food = food) { popupState = !popupState }
                             if (popupState)
                                 FoodItemPopup(food = food,
-                                    onDismissRequest = { popupState = !popupState })
+                                    onDismissRequest = { popupState = !popupState }, viewmodel = viewmodel)
                         }
                     }
                 }
@@ -179,7 +178,7 @@ fun FoodItem(food: Food, onClick: () -> Unit) {
 @Composable
 fun FoodItemPopup(
     food: Food,
-    viewmodel: StockViewmodel = hiltViewModel(),
+    viewmodel: StockViewmodel,
     onDismissRequest: () -> Unit = {},
 ) {
     var popupAddStockState by remember { mutableStateOf(false) }
