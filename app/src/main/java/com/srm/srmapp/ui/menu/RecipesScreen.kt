@@ -147,7 +147,7 @@ fun RecipeItemPopUp(
 
 @Composable
 fun FoodSelector(foodList: List<Food>, onCheckedChange: (Food, Boolean, Float) -> Unit) {
-    LazyColumn() {
+    LazyColumn {
         items(foodList) { food ->
             var checked by remember { mutableStateOf(false) }
             var quantity by remember { mutableStateOf("") }

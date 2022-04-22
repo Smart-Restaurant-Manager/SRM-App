@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class OrderResponse(
     @SerializedName("data")
-    val `data`: Data
+    val `data`: Data,
 ) {
     data class Data(
         @SerializedName("type")
@@ -13,7 +13,7 @@ data class OrderResponse(
         @SerializedName("id")
         val id: Int, // 1
         @SerializedName("attributes")
-        val attributes: Attributes
+        val attributes: Attributes,
     ) {
         data class Attributes(
             @SerializedName("order_status_id")
@@ -29,7 +29,7 @@ data class OrderResponse(
             @SerializedName("created_at")
             val createdAt: String, // 2012/03/06 17:33:07
             @SerializedName("updated_at")
-            val updatedAt: String // 2012/03/06 17:33:07
+            val updatedAt: String, // 2012/03/06 17:33:07
         ) {
             data class Status(
                 @SerializedName("type")
@@ -37,7 +37,7 @@ data class OrderResponse(
                 @SerializedName("id")
                 val id: Int, // 1
                 @SerializedName("attributes")
-                val attributes: Attributes
+                val attributes: Attributes,
             ) {
                 data class Attributes(
                     @SerializedName("status")
@@ -45,7 +45,7 @@ data class OrderResponse(
                     @SerializedName("created_at")
                     val createdAt: String, // 2012/03/06 17:33:07
                     @SerializedName("updated_at")
-                    val updatedAt: String // 2012/03/06 17:33:07
+                    val updatedAt: String, // 2012/03/06 17:33:07
                 )
             }
 
@@ -55,7 +55,7 @@ data class OrderResponse(
                 @SerializedName("id")
                 val id: Int, // 1
                 @SerializedName("attributes")
-                val attributes: Attributes
+                val attributes: Attributes,
             ) {
                 data class Attributes(
                     @SerializedName("name")
@@ -69,7 +69,7 @@ data class OrderResponse(
                     @SerializedName("people")
                     val people: Int, // 6
                     @SerializedName("table")
-                    val table: String // foo
+                    val table: String, // foo
                 )
             }
 
@@ -87,7 +87,7 @@ data class OrderResponse(
                 @SerializedName("created_at")
                 val createdAt: String, // 2012/03/06 17:33:07
                 @SerializedName("updated_at")
-                val updatedAt: String // 2012/03/06 17:33:07
+                val updatedAt: String, // 2012/03/06 17:33:07
             )
         }
     }

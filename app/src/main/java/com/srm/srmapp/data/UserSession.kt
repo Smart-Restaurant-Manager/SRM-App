@@ -10,7 +10,6 @@ import com.srm.srmapp.data.models.User
 import com.srm.srmapp.repository.authentication.AuthInterface
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,7 +34,7 @@ class UserSession @Inject constructor(context: Context, private val authInterfac
 
     fun logout() {
         if (isLoggedIn()) {
-            CoroutineScope(scope).launchException() {
+            CoroutineScope(scope).launchException {
                 authInterface.logout(getBearerToken())
             }.invokeOnCompletion {
                 userObject.postValue(null)
@@ -46,7 +45,7 @@ class UserSession @Inject constructor(context: Context, private val authInterfac
 
     fun refresUser() {
         if (isLoggedIn()) {
-            CoroutineScope(scope).launchException() {
+            CoroutineScope(scope).launchException {
                 val res = authInterface.getUser(getBearerToken())
                 Timber.d("Got user ${res.body()?.email}")
                 userObject.postValue(res.body()?.toUser())

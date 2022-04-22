@@ -16,6 +16,7 @@ class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRe
     init {
         Timber.d("INIT")
     }
+
     private val _recipeList: MutableLiveData<Resource<List<Recipe>>> = MutableLiveData()
     val recipeList: LiveData<Resource<List<Recipe>>>
         get() = _recipeList

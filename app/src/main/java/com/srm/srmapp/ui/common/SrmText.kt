@@ -55,6 +55,6 @@ fun SrmText(
 
 @Composable
 @Preview(showBackground = true)
-fun PreviewText(){
+fun PreviewText() {
     SrmText(text = "Preview Text")
 }
