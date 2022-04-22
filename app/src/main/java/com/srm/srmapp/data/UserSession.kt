@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.srm.srmapp.R
+import com.srm.srmapp.Resource
 import com.srm.srmapp.Utils.launchException
 import com.srm.srmapp.data.dto.auth.response.toUser
 import com.srm.srmapp.data.models.User
@@ -17,9 +18,13 @@ import javax.inject.Inject
 class UserSession @Inject constructor(context: Context, private val authInterface: AuthInterface) {
     private val prefs = context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
     private val prefKey = context.getString(R.string.pref_key_token)
-    private var userObject: MutableLiveData<User?> = MutableLiveData(null)
+    private var _userObject: MutableLiveData<Resource<User>> = MutableLiveData(Resource.Empty())
+    private var _loggedIn: MutableLiveData<Boolean> = MutableLiveData(false)
     private val scope = CoroutineName(javaClass.simpleName)
-
+    val userObject: LiveData<Resource<User>>
+        get() = _userObject
+    val loggedIn: LiveData<Boolean>
+        get() = _loggedIn
 
     fun setToken(token: String) {
         prefs.edit().apply {
@@ -33,25 +38,27 @@ class UserSession @Inject constructor(context: Context, private val authInterfac
     fun getBearerToken() = "Bearer ${prefs.getString(prefKey, "")}"
 
     fun logout() {
-        if (isLoggedIn()) {
-            CoroutineScope(scope).launchException {
-                authInterface.logout(getBearerToken())
-            }.invokeOnCompletion {
-                userObject.postValue(null)
-                setToken("")
-            }
+        CoroutineScope(scope).launchException {
+            authInterface.logout(getBearerToken())
+        }.invokeOnCompletion {
+            _userObject.postValue(Resource.Empty())
+            _loggedIn.postValue(false)
+            setToken("")
         }
     }
 
     fun refresUser() {
-        if (isLoggedIn()) {
-            CoroutineScope(scope).launchException {
-                val res = authInterface.getUser(getBearerToken())
-                Timber.d("Got user ${res.body()?.email}")
-                userObject.postValue(res.body()?.toUser())
+        CoroutineScope(scope).launchException {
+            val res = authInterface.getUser(getBearerToken())
+            Timber.d("Got user ${res.body()?.email}")
+            val resBody = res.body()
+            if (resBody != null) {
+                _userObject.postValue(Resource.Success(resBody.toUser()))
+                _loggedIn.postValue(true)
+            } else {
+                _userObject.postValue(Resource.Error("No user found"))
+                _loggedIn.postValue(false)
             }
         }
     }
-
-    fun getUser() = userObject as LiveData<User?>
 }

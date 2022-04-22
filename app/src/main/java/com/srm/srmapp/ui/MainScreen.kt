@@ -1,35 +1,55 @@
 package com.srm.srmapp.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
-import com.srm.srmapp.ui.bookings.BookingScreen
-import com.srm.srmapp.ui.common.SrmButton
-import com.srm.srmapp.ui.common.SrmHeader
-import com.srm.srmapp.ui.destinations.BookingScreenDestination
+import com.srm.srmapp.data.UserSession
+import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.destinations.FoodListScreenDestination
 import com.srm.srmapp.ui.destinations.MenuScreenDestination
-import com.srm.srmapp.ui.destinations.RecipeScreenDestination
 import com.srm.srmapp.ui.theme.ButtonColor1
 import com.srm.srmapp.ui.theme.padding
+import kotlin.system.exitProcess
 
 @Composable
 @com.ramcosta.composedestinations.annotation.Destination
-fun ManagerScreen(navigator: DestinationsNavigator) {
+fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
     val buttonNames = listOf(
-        Pair(R.string.reservas) {navigator.navigate(BookingScreenDestination())},
+        Pair(R.string.reservas) {},
         Pair(R.string.food) { navigator.navigate(FoodListScreenDestination()) },
         Pair(R.string.menu) { navigator.navigate(MenuScreenDestination()) },
         Pair(R.string.predictions) {})
-    SrmHeader(title = stringResource(R.string.start)) { navigator.navigateUp() }
+    var popupState by remember { mutableStateOf(false) }
+    val loggedIn by userSession.loggedIn.observeAsState(true)
+    if (!loggedIn) {
+        navigator.navigateUp()
+    }
+    if (popupState) {
+        SrmDialog(onDismissRequest = { popupState = false }) {
+            SrmSpacedRow(horizontalArrangement = Arrangement.SpaceEvenly) {
+                SrmTextButton(textColor = Color.Red, onClick = { exitProcess(0) }, text = "Exit")
+                SrmTextButton(onClick = {
+                    userSession.logout()
+                    popupState = false
+                }, text = "Logout")
+            }
+        }
+    }
+
+
+    SrmHeader(title = stringResource(R.string.start)) { popupState = true }
+    BackHandler { popupState = true }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         LazyColumn {
             items(buttonNames) { (id, onclick) ->

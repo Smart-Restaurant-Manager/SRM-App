@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,9 +40,10 @@ fun SrmButton(
 fun SrmTextButton(
     onClick: () -> Unit,
     text: String,
+    textColor: Color = Color.Unspecified,
 ) {
     TextButton(onClick = onClick, content = {
-        SrmText(text = text)
+        SrmText(text = text, color = textColor)
     })
 }
 
