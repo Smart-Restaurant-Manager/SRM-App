@@ -11,10 +11,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
+import com.srm.srmapp.ui.bookings.BookingScreen
 import com.srm.srmapp.ui.common.SrmButton
 import com.srm.srmapp.ui.common.SrmHeader
+import com.srm.srmapp.ui.destinations.BookingScreenDestination
 import com.srm.srmapp.ui.destinations.FoodListScreenDestination
 import com.srm.srmapp.ui.destinations.MenuScreenDestination
+import com.srm.srmapp.ui.destinations.RecipeScreenDestination
 import com.srm.srmapp.ui.theme.ButtonColor1
 import com.srm.srmapp.ui.theme.padding
 
@@ -22,7 +25,7 @@ import com.srm.srmapp.ui.theme.padding
 @com.ramcosta.composedestinations.annotation.Destination
 fun ManagerScreen(navigator: DestinationsNavigator) {
     val buttonNames = listOf(
-        Pair(R.string.reservas) {},
+        Pair(R.string.reservas) {navigator.navigate(BookingScreenDestination())},
         Pair(R.string.food) { navigator.navigate(FoodListScreenDestination()) },
         Pair(R.string.menu) { navigator.navigate(MenuScreenDestination()) },
         Pair(R.string.predictions) {})
