@@ -211,7 +211,7 @@ fun FoodItemPopup(
             horizontalArrangement = Arrangement.Start,
             onClick = {
                 popupAddStockState = true
-                Timber.d("Add Stock $popupAddStockState")
+                Timber.d("Add Stock $food")
             }) {
             Spacer(modifier = Modifier.width(spacerWitdh))
             Icon(painter = painterResource(id = R.drawable.ic_baseline_add_24), contentDescription = stringResource(R.string.add_stock))
