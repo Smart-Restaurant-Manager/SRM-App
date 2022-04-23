@@ -50,7 +50,12 @@ class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRe
     }
 
     fun deleteRecipe(id: Int) {
-        fetchResource(_status) {
+        fetchResource(_status, onSuccess = {
+            _recipeList.value?.data?.toMutableList()?.let { list ->
+                list.removeIf { it.id == id }
+                _recipeList.postValue(Resource.Success(list.toList()))
+            }
+        }) {
             recipeRepository.deleteRecipe(id)
         }
     }
