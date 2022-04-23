@@ -52,12 +52,14 @@ class UserSession @Inject constructor(context: Context, private val authInterfac
         _userObject.postValue(Resource.Loading())
         CoroutineScope(scope).launchException {
             val res = authInterface.getUser(getBearerToken())
-            Timber.d("Got user ${res.body()?.email}")
             val resBody = res.body()
-            if (resBody != null) {
+            if (res.isSuccessful && resBody != null) {
+                Timber.d("Got user ${res.body()?.email}")
                 _userObject.postValue(Resource.Success(resBody.toUser()))
                 _loggedIn.postValue(true)
             } else {
+                Timber.d("No user found")
+                logout()
                 _userObject.postValue(Resource.Error("No user found"))
                 _loggedIn.postValue(false)
             }
