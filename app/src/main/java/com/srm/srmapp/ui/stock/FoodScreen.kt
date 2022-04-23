@@ -49,10 +49,6 @@ fun FoodListScreen(
     // Swipe to refresh state
     val refreshState = rememberSwipeRefreshState(foodListState.isLoading())
 
-    // food item dialog state
-    var dialogItemState by remember { mutableStateOf(false) }
-    var food by remember { mutableStateOf(Food(type = "", name = "", units = "")) }
-
     // item add dialog state
     var dialogAddFoodState by remember { mutableStateOf(false) }
 
@@ -85,21 +81,18 @@ fun FoodListScreen(
                     }
                 }
                 items(foodList, key = { it.foodId }) {
-                    FoodItem(food = it) {
-                        dialogItemState = true
-                        food = it
+                    var dialogItemState by remember { mutableStateOf(false) }
+                    FoodItem(food = it) { dialogItemState = true }
+                    if (dialogItemState) {
+                        FoodItemPopup(
+                            food = it,
+                            viewmodel = viewmodel,
+                            onDismissRequest = { dialogItemState = false },
+                        )
                     }
                 }
             }
         }
-    }
-
-    if (dialogItemState) {
-        FoodItemPopup(
-            food = food,
-            viewmodel = viewmodel,
-            onDismissRequest = { dialogItemState = false },
-        )
     }
 
 

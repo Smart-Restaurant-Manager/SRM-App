@@ -47,9 +47,6 @@ fun RecipeScreen(
     val recipeListState by viewmodel.recipeList.observeAsState(Resource.Empty())
     if (recipeListState.isEmpty()) viewmodel.refreshRecipeList()
 
-    // item click dialog state
-    var dialogItemState by remember { mutableStateOf(false) }
-    var recipe by remember { mutableStateOf(Recipe(Recipe.RecipeType.NONE, name = "", price = 0f)) }
 
     // add item dialog state
     var dialogAddState by remember { mutableStateOf(false) }
@@ -93,22 +90,21 @@ fun RecipeScreen(
 //                            it.type == recipeType // No implemented yet
                     true
                 }, key = { it.id }) {
-                    RecipeItem(recipe = it) {
-                        dialogItemState = true
-                        recipe = it
+                    var dialogItemState by remember { mutableStateOf(false) }
+                    RecipeItem(recipe = it) { dialogItemState = true }
+                    if (dialogItemState) {
+                        RecipeItemPopUp(
+                            recipe = it,
+                            viewmodel = viewmodel,
+                            onDismissRequest = { dialogItemState = false }
+                        )
                     }
                 }
             }
         }
     }
 
-    if (dialogItemState) {
-        RecipeItemPopUp(
-            recipe = recipe,
-            viewmodel = viewmodel,
-            onDismissRequest = { dialogItemState = false }
-        )
-    }
+
 
     if (dialogAddState) {
         AddRecipeDialog(onDismissRequest = {
