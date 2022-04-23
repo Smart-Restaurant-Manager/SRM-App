@@ -7,11 +7,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Icon
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -29,6 +31,7 @@ import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.stock.StockViewmodel
 import com.srm.srmapp.ui.theme.paddingEnd
 import com.srm.srmapp.ui.theme.paddingStart
+import com.srm.srmapp.ui.theme.spacerWitdh
 import timber.log.Timber
 
 
@@ -38,7 +41,7 @@ import timber.log.Timber
 fun RecipeScreen(
     navigator: DestinationsNavigator,
     recipeType: Recipe.RecipeType,
-    viewmodel: RecipeViewmodel = hiltViewModel(),
+    viewmodel: RecipeViewmodel,
 ) {
     val recipeList by viewmodel.recipeList.observeAsState(Resource.Empty())
     val recipe by viewmodel.recipe.observeAsState(Resource.Empty())
@@ -69,7 +72,7 @@ fun RecipeScreen(
                             Row(modifier = Modifier
                                 .background(Color.White)
                                 .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
+                                horizontalArrangement = Arrangement.SpaceEvenly,
                                 verticalAlignment = Alignment.CenterVertically) {
                                 SrmText(text = stringResource(R.string.recipe_name), textAlign = TextAlign.Center)
                                 SrmText(text = stringResource(R.string.preu_euros), textAlign = TextAlign.Center)
@@ -82,7 +85,7 @@ fun RecipeScreen(
                             RecipeItem(recipe = recipe) { popupState = !popupState }
                             if (popupState)
                                 RecipeItemPopUp(recipe = recipe,
-                                    onDismissRequest = { popupState = !popupState })
+                                    onDismissRequest = { popupState = !popupState }, viewmodel = viewmodel)
                         }
                     }
             }
@@ -161,8 +164,8 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, re
 }
 
 @Composable
-fun RecipeItem(recipe: Recipe, onclick: () -> Unit) {
-    SrmSelectableRow(item = recipe, horizontalArrangement = Arrangement.SpaceEvenly) {
+fun RecipeItem(recipe: Recipe, onClick: (Recipe) -> Unit) {
+    SrmSelectableRow(item = recipe, onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
         SrmText(text = recipe.name, textAlign = TextAlign.Center)
         SrmText(text = recipe.price.toString(), textAlign = TextAlign.Center)
     }
@@ -171,7 +174,7 @@ fun RecipeItem(recipe: Recipe, onclick: () -> Unit) {
 @Composable
 fun RecipeItemPopUp(
     recipe: Recipe,
-    viewmodel: RecipeViewmodel = hiltViewModel(),
+    viewmodel: RecipeViewmodel,
     onDismissRequest: () -> Unit = {},
 ) {
     SrmDialog(onDismissRequest = onDismissRequest) {
@@ -179,10 +182,25 @@ fun RecipeItemPopUp(
             item = recipe,
             horizontalArrangement = Arrangement.Start,
             onClick = {
+                viewmodel.deleteRecipe(it.id)
+                onDismissRequest.invoke()
+            }) {
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            Icon(painter = painterResource(id = R.drawable.ic_baseline_delete_24), contentDescription = stringResource(id = R.string.delete))
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            SrmText(text = stringResource(R.string.delete))
+        }
+        SrmSelectableRow(
+            item = recipe,
+            horizontalArrangement = Arrangement.Start,
+            onClick = {
                 viewmodel.getRecipeBy(it.id)
                 onDismissRequest.invoke()
             }) {
-
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            Icon(painter = painterResource(id = R.drawable.ic_baseline_add_24), contentDescription = "Mostrar ingredients")
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            SrmText(text = stringResource(R.string.show_ingredients))
         }
     }
 }

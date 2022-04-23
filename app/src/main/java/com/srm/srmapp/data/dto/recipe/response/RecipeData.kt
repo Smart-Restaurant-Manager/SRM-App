@@ -1,7 +1,9 @@
 package com.srm.srmapp.data.dto.recipe.response
 
+import androidx.annotation.Keep
 import com.srm.srmapp.data.models.Recipe
 
+@Keep
 data class RecipeData(
     val attributes: RecipeAttributes,
     val id: Int,

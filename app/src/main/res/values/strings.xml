@@ -85,4 +85,5 @@
     <string name="preu_euros">Preu €</string>
     <string name="recipe_name">Nom</string>
     <string name="no_items_to_search">No items to search</string>
+    <string name="show_ingredients">Mostrar ingredients</string>
 </resources>

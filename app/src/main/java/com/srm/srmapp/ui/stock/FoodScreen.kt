@@ -105,11 +105,10 @@ fun FoodListScreen(
                         Row(modifier = Modifier
                             .background(Color.White)
                             .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
+                            horizontalArrangement = Arrangement.SpaceEvenly,
                             verticalAlignment = Alignment.CenterVertically) {
                             SrmText(text = stringResource(R.string.food_name))
                             SrmText(text = stringResource(R.string.quantity))
-                            Spacer(modifier = Modifier.width(20.dp))
                         }
                     }
                     items(it, key = { it.foodId }) { food ->
@@ -204,13 +203,10 @@ fun FoodListScreen(
 }
 
 @Composable
-fun FoodItem(food: Food, onClick: () -> Unit) {
-    SrmSelectableRow(item = food) {
+fun FoodItem(food: Food, onClick: (Food) -> Unit) {
+    SrmSelectableRow(item = food, onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
         SrmText(text = food.name, textAlign = TextAlign.Center)
         SrmText(text = food.units, textAlign = TextAlign.Center)
-        IconButton(onClick = onClick) {
-            Icon(painter = painterResource(id = R.drawable.ic_baseline_menu_24), contentDescription = "Item Menu")
-        }
     }
 }
 

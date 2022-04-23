@@ -1,8 +1,10 @@
 package com.srm.srmapp.data.dto.orders.body
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class OrderObject(
     @SerializedName("booking_id")
     val bookingId: Int, // asperiores

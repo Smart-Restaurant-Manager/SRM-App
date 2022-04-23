@@ -1,7 +1,9 @@
 package com.srm.srmapp.data.dto.recipe.response
 
+import androidx.annotation.Keep
 import com.srm.srmapp.data.dto.stock.response.FoodData
 
+@Keep
 data class RecipeAttributes(
     val available: Boolean,
     val created_at: String,
