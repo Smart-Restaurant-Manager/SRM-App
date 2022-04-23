@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -42,6 +41,7 @@ fun RecipeScreen(
     navigator: DestinationsNavigator,
     recipeType: Recipe.RecipeType,
     viewmodel: RecipeViewmodel,
+    stockViewmodel: StockViewmodel,
 ) {
     // recipe list state
     val recipeListState by viewmodel.recipeList.observeAsState(Resource.Empty())
@@ -106,7 +106,7 @@ fun RecipeScreen(
     if (dialogAddState) {
         AddRecipeDialog(onDismissRequest = {
             dialogAddState = false
-        }, viewmodel, recipeType)
+        }, viewmodel, stockViewmodel, recipeType)
     }
 
     if (dialogSearchRecipe) {
@@ -136,11 +136,10 @@ fun RecipeScreen(
 
 
 @Composable
-fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, recipeType: Recipe.RecipeType) {
+fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, stockViewmodel: StockViewmodel, recipeType: Recipe.RecipeType) {
     var name by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }
     val selectedFood = remember { arrayListOf<Pair<Int, Float>>() }
-    val stockViewmodel: StockViewmodel = hiltViewModel()
     val foodList by stockViewmodel.foodList.observeAsState(Resource.Empty())
 
     if (foodList.isSuccess()) {
