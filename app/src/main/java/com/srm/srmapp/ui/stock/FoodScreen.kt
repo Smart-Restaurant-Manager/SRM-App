@@ -50,6 +50,8 @@ fun FoodListScreen(
     var popupAddFoodState by remember { mutableStateOf(false) }
     var popupSearchFood by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
+    var itemIdx by remember { mutableStateOf(-1) }
+    val foodList = remember(foodListState.data) { foodListState.data ?: emptyList() }
 
     if (foodListState.isEmpty()) viewmodel.refreshFoodList()
     Column(modifier = Modifier
@@ -64,23 +66,21 @@ fun FoodListScreen(
             state = refreshState,
             onRefresh = { viewmodel.refreshFoodList() }) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
-                foodListState.data?.let {
-                    stickyHeader {
-                        Row(modifier = Modifier
-                            .background(Color.White)
-                            .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically) {
-                            SrmText(text = stringResource(R.string.food_name))
-                            SrmText(text = stringResource(R.string.quantity))
-                        }
+                stickyHeader {
+                    Row(modifier = Modifier
+                        .background(Color.White)
+                        .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically) {
+                        SrmText(text = stringResource(R.string.food_name))
+                        SrmText(text = stringResource(R.string.quantity))
                     }
-                    items(it, key = { it.foodId }) { food ->
-                        FoodItem(food = food) { popupState = !popupState }
-                        if (popupState)
-                            FoodItemPopup(food = food,
-                                onDismissRequest = { popupState = !popupState }, viewmodel = viewmodel)
-                    }
+                }
+                items(foodList, key = { it.foodId }) { food ->
+                    FoodItem(food = food) { popupState = !popupState }
+                    if (popupState)
+                        FoodItemPopup(food = food,
+                            onDismissRequest = { popupState = !popupState }, viewmodel = viewmodel)
                 }
             }
         }
@@ -144,15 +144,16 @@ fun FoodListScreen(
     }
 
     if (popupSearchFood) {
-        var itemIdx by remember { mutableStateOf(-1) }
-        val l = foodListState.data ?: emptyList()
-        SrmSearch(items = l,
+        SrmSearch(items = foodList,
             onDismissRequest = { popupSearchFood = false },
             predicate = { food, query ->
                 food.name.startsWith(query, ignoreCase = true)
             }) { food ->
             SrmSelectableRow(
-                onClick = { l.indexOf(food).let { idx -> itemIdx = idx } }) {
+                onClick = {
+                    foodList.indexOf(food).let { idx -> itemIdx = idx }
+                    popupSearchFood = false
+                }) {
                 SrmText(text = food.name, textAlign = TextAlign.Center)
                 SrmText(text = food.units, textAlign = TextAlign.Center)
             }

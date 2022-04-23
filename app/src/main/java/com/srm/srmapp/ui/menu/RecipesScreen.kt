@@ -43,14 +43,16 @@ fun RecipeScreen(
     recipeType: Recipe.RecipeType,
     viewmodel: RecipeViewmodel,
 ) {
-    val recipeList by viewmodel.recipeList.observeAsState(Resource.Empty())
+    val recipeListState by viewmodel.recipeList.observeAsState(Resource.Empty())
     var popupState by remember { mutableStateOf(false) }
     var popupAddState by remember { mutableStateOf(false) }
-    val refreshState = rememberSwipeRefreshState(recipeList.isLoading())
+    val refreshState = rememberSwipeRefreshState(recipeListState.isLoading())
     var popupSearchRecipe by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
+    var itemIdx by remember { mutableStateOf(-1) }
+    val recipeList = remember(recipeListState.data) { recipeListState.data ?: emptyList() }
 
-    if (recipeList.isEmpty()) viewmodel.refreshRecipeList()
+    if (recipeListState.isEmpty()) viewmodel.refreshRecipeList()
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(start = paddingStart, end = paddingEnd),
@@ -64,28 +66,25 @@ fun RecipeScreen(
             state = refreshState,
             onRefresh = { viewmodel.refreshRecipeList() }) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
-                if (recipeList.isSuccess())
-                    recipeList.data?.let { recipeList ->
-                        stickyHeader {
-                            Row(modifier = Modifier
-                                .background(Color.White)
-                                .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically) {
-                                SrmText(text = stringResource(R.string.recipe_name), textAlign = TextAlign.Center)
-                                SrmText(text = stringResource(R.string.preu_euros), textAlign = TextAlign.Center)
-                            }
-                        }
-                        items(recipeList.takeWhile {
-//                            it.type == recipeType // No implemented yet
-                            true
-                        }, key = { it.id }) { recipe ->
-                            RecipeItem(recipe = recipe) { popupState = !popupState }
-                            if (popupState)
-                                RecipeItemPopUp(recipe = recipe,
-                                    onDismissRequest = { popupState = !popupState }, viewmodel = viewmodel)
-                        }
+                stickyHeader {
+                    Row(modifier = Modifier
+                        .background(Color.White)
+                        .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically) {
+                        SrmText(text = stringResource(R.string.recipe_name), textAlign = TextAlign.Center)
+                        SrmText(text = stringResource(R.string.preu_euros), textAlign = TextAlign.Center)
                     }
+                }
+                items(recipeList.takeWhile {
+//                            it.type == recipeType // No implemented yet
+                    true
+                }, key = { it.id }) { recipe ->
+                    RecipeItem(recipe = recipe) { popupState = !popupState }
+                    if (popupState)
+                        RecipeItemPopUp(recipe = recipe,
+                            onDismissRequest = { popupState = !popupState }, viewmodel = viewmodel)
+                }
             }
         }
     }
@@ -98,15 +97,16 @@ fun RecipeScreen(
     }
 
     if (popupSearchRecipe) {
-        var itemIdx by remember { mutableStateOf(-1) }
-        val l = recipeList.data ?: emptyList()
-        SrmSearch(items = l,
+        SrmSearch(items = recipeList,
             onDismissRequest = { popupSearchRecipe = false },
             predicate = { recipeItem, query ->
                 recipeItem.name.startsWith(query, ignoreCase = true)
             }) { recipeItem ->
             SrmSelectableRow(
-                onClick = { l.indexOf(recipeItem).let { idx -> itemIdx = idx } }) {
+                onClick = {
+                    recipeList.indexOf(recipeItem).let { idx -> itemIdx = idx }
+                    popupSearchRecipe = false
+                }) {
                 SrmText(text = recipeItem.name, textAlign = TextAlign.Center)
                 SrmText(text = recipeItem.price.toString(), textAlign = TextAlign.Center)
             }
