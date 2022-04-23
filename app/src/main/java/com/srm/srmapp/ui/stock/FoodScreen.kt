@@ -42,25 +42,33 @@ fun FoodListScreen(
     navigator: DestinationsNavigator,
     viewmodel: StockViewmodel,
 ) {
+    // food list state
     val foodListState by viewmodel.foodList.observeAsState(Resource.Empty())
-    val stockList by viewmodel.stockList.observeAsState(Resource.Empty())
-    val statusMessage by viewmodel.status.observeAsState(Resource.Empty())
+    if (foodListState.isEmpty()) viewmodel.refreshFoodList()
+
+    // Swipe to refresh state
     val refreshState = rememberSwipeRefreshState(foodListState.isLoading())
-    var popupState by remember { mutableStateOf(false) }
-    var popupAddFoodState by remember { mutableStateOf(false) }
-    var popupSearchFood by remember { mutableStateOf(false) }
+
+    // food item dialog state
+    var dialogItemState by remember { mutableStateOf(false) }
+    var food by remember { mutableStateOf(Food(type = "", name = "", units = "")) }
+
+    // item add dialog state
+    var dialogAddFoodState by remember { mutableStateOf(false) }
+
+    // Search state dialog
+    var dialogSearchFood by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
     var itemIdx by remember { mutableStateOf(-1) }
     val foodList = remember(foodListState.data) { foodListState.data ?: emptyList() }
 
-    if (foodListState.isEmpty()) viewmodel.refreshFoodList()
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(start = paddingStart, end = paddingEnd),
         horizontalAlignment = Alignment.CenterHorizontally) {
         SrmAddTitleSearch(stringResource(R.string.food),
-            onClickSearch = { popupSearchFood = true },
-            onClickAdd = { popupAddFoodState = true },
+            onClickSearch = { dialogSearchFood = true },
+            onClickAdd = { dialogAddFoodState = true },
             onClickBack = { navigator.navigateUp() })
         SwipeRefresh(
             state = refreshState,
@@ -76,16 +84,26 @@ fun FoodListScreen(
                         SrmText(text = stringResource(R.string.quantity))
                     }
                 }
-                items(foodList, key = { it.foodId }) { food ->
-                    FoodItem(food = food) { popupState = !popupState }
-                    if (popupState)
-                        FoodItemPopup(food = food,
-                            onDismissRequest = { popupState = !popupState }, viewmodel = viewmodel)
+                items(foodList, key = { it.foodId }) {
+                    FoodItem(food = it) {
+                        dialogItemState = true
+                        food = it
+                    }
                 }
             }
         }
     }
 
+    if (dialogItemState) {
+        FoodItemPopup(
+            food = food,
+            viewmodel = viewmodel,
+            onDismissRequest = { dialogItemState = false },
+        )
+    }
+
+
+    val statusMessage by viewmodel.status.observeAsState(Resource.Empty())
     if (statusMessage.isSuccess() || statusMessage.isError()) {
         val msg = statusMessage.data ?: statusMessage.message
         msg?.let {
@@ -96,7 +114,8 @@ fun FoodListScreen(
             }
         }
     }
-
+    // stock for one food
+    val stockList by viewmodel.stockList.observeAsState(Resource.Empty())
     if (stockList.isSuccess()) {
         stockList.data?.let {
             SrmDialog(onDismissRequest = {
@@ -123,12 +142,12 @@ fun FoodListScreen(
         }
     }
 
-    if (popupAddFoodState) {
+    if (dialogAddFoodState) {
         var name by remember { mutableStateOf("") }
         var units by remember { mutableStateOf("") }
         var type by remember { mutableStateOf("") }
         SrmDialog(onDismissRequest = {
-            popupAddFoodState = false
+            dialogAddFoodState = false
             viewmodel.refreshFoodList()
         }) {
             SrmTextFieldHint(value = name, placeholder = stringResource(R.string.food_name), onValueChange = { name = it })
@@ -136,23 +155,23 @@ fun FoodListScreen(
             SrmTextFieldHint(value = type, placeholder = stringResource(R.string.category), onValueChange = { type = it })
             TextButton(onClick = {
                 viewmodel.addFood(type, name, units)
-                popupAddFoodState = false
+                dialogAddFoodState = false
             }) {
                 SrmText(text = stringResource(R.string.add_food))
             }
         }
     }
 
-    if (popupSearchFood) {
+    if (dialogSearchFood) {
         SrmSearch(items = foodList,
-            onDismissRequest = { popupSearchFood = false },
+            onDismissRequest = { dialogSearchFood = false },
             predicate = { food, query ->
                 food.name.startsWith(query, ignoreCase = true)
             }) { food ->
             SrmSelectableRow(
                 onClick = {
                     foodList.indexOf(food).let { idx -> itemIdx = idx }
-                    popupSearchFood = false
+                    dialogSearchFood = false
                 }) {
                 SrmText(text = food.name, textAlign = TextAlign.Center)
                 SrmText(text = food.units, textAlign = TextAlign.Center)
