@@ -44,7 +44,6 @@ fun FoodListScreen(
 ) {
     // food list state
     val foodListState by viewmodel.foodList.observeAsState(Resource.Empty())
-    if (foodListState.isEmpty()) viewmodel.refreshFoodList()
 
     // Swipe to refresh state
     val refreshState = rememberSwipeRefreshState(foodListState.isLoading())
@@ -141,7 +140,6 @@ fun FoodListScreen(
         var type by remember { mutableStateOf("") }
         SrmDialog(onDismissRequest = {
             dialogAddFoodState = false
-            viewmodel.refreshFoodList()
         }) {
             SrmTextFieldHint(value = name, placeholder = stringResource(R.string.food_name), onValueChange = { name = it })
             SrmTextFieldHint(value = units, placeholder = stringResource(R.string.unit), onValueChange = { units = it })

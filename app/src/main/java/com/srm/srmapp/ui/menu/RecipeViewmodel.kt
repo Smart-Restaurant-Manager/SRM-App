@@ -13,10 +13,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRepository) : ViewModel() {
-    init {
-        Timber.d("INIT")
-    }
-
     private val _recipeList: MutableLiveData<Resource<List<Recipe>>> = MutableLiveData()
     val recipeList: LiveData<Resource<List<Recipe>>>
         get() = _recipeList
@@ -28,6 +24,12 @@ class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRe
     private val _status: MutableLiveData<Resource<String>> = MutableLiveData()
     val status: LiveData<Resource<String>>
         get() = _status
+
+    init {
+        Timber.d("INIT")
+        refreshRecipeList()
+    }
+
 
     fun refreshRecipeList() {
         Timber.d("Call refresh")

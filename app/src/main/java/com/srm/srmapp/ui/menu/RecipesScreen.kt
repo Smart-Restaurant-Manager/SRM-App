@@ -45,9 +45,6 @@ fun RecipeScreen(
 ) {
     // recipe list state
     val recipeListState by viewmodel.recipeList.observeAsState(Resource.Empty())
-    if (recipeListState.isEmpty()) viewmodel.refreshRecipeList()
-
-
     // add item dialog state
     var dialogAddState by remember { mutableStateOf(false) }
 
@@ -145,8 +142,6 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, re
     val selectedFood = remember { arrayListOf<Pair<Int, Float>>() }
     val stockViewmodel: StockViewmodel = hiltViewModel()
     val foodList by stockViewmodel.foodList.observeAsState(Resource.Empty())
-    if (foodList.isEmpty())
-        stockViewmodel.refreshFoodList()
 
     if (foodList.isSuccess()) {
         SrmDialog(onDismissRequest = onDismissRequest) {
