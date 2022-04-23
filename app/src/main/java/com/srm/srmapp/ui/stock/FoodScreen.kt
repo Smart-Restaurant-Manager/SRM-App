@@ -186,6 +186,7 @@ fun FoodItemPopup(
         SrmSelectableRow(
             horizontalArrangement = Arrangement.Start,
             onClick = {
+                Timber.d("Get food stock $food")
                 viewmodel.getFoodStock(food)
                 onDismissRequest.invoke()
             }) {
@@ -208,6 +209,7 @@ fun FoodItemPopup(
         SrmSelectableRow(
             horizontalArrangement = Arrangement.Start,
             onClick = {
+                Timber.d("Delete $food")
                 viewmodel.deleteFood(food)
                 onDismissRequest.invoke()
             }) {
