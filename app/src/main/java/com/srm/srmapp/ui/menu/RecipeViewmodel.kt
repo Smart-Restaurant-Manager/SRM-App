@@ -27,7 +27,6 @@ class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRe
 
     init {
         Timber.d("INIT")
-        refreshRecipeList()
     }
 
 

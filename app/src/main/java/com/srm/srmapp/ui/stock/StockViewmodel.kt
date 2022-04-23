@@ -37,7 +37,6 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
 
     init {
         Timber.d("INIT")
-        refreshFoodList()
     }
 
     fun clearStcokList() {

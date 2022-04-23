@@ -18,17 +18,27 @@ import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.destinations.ManagerScreenDestination
 import com.srm.srmapp.ui.destinations.SignUpScreenDestination
+import com.srm.srmapp.ui.menu.RecipeViewmodel
+import com.srm.srmapp.ui.stock.StockViewmodel
 
 @Destination
 @RootNavGraph(start = true)
 @Composable
-fun LoginScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hiltViewModel(), userSession: UserSession) {
+fun LoginScreen(
+    navigator: DestinationsNavigator,
+    viewmodel: LoginViewModel = hiltViewModel(),
+    stockViewmodel: StockViewmodel,
+    recipeViewmodel: RecipeViewmodel,
+    userSession: UserSession,
+) {
 
     val userState by userSession.userObject.observeAsState(Resource.Empty())
     if (userSession.isLoggedIn()) {
         when {
             userState.isEmpty() -> userSession.refresUser()
             userState.isLoading() -> {
+                recipeViewmodel.refreshRecipeList()
+                stockViewmodel.refreshFoodList()
                 SrmSpacedColumn(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator()
                     SrmText(text = "Loading ...")
