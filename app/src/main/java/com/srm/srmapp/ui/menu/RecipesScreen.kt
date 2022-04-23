@@ -43,24 +43,31 @@ fun RecipeScreen(
     recipeType: Recipe.RecipeType,
     viewmodel: RecipeViewmodel,
 ) {
+    // recipe list state
     val recipeListState by viewmodel.recipeList.observeAsState(Resource.Empty())
-    var popupState by remember { mutableStateOf(false) }
-    var popupAddState by remember { mutableStateOf(false) }
+    // add item dialog state
+    var dialogAddState by remember { mutableStateOf(false) }
+
+    // Swipe to refresh satte
     val refreshState = rememberSwipeRefreshState(recipeListState.isLoading())
-    var popupSearchRecipe by remember { mutableStateOf(false) }
-    val lazyListState = rememberLazyListState()
+
+    // Search dialog state
+    var dialogSearchRecipe by remember { mutableStateOf(false) }
     var itemIdx by remember { mutableStateOf(-1) }
     val recipeList = remember(recipeListState.data) { recipeListState.data ?: emptyList() }
 
-    if (recipeListState.isEmpty()) viewmodel.refreshRecipeList()
+    // Lazy list state
+    val lazyListState = rememberLazyListState()
+
+
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(start = paddingStart, end = paddingEnd),
         horizontalAlignment = Alignment.CenterHorizontally)
     {
         SrmAddTitleSearch(stringResource(id = R.string.entrantes),
-            onClickSearch = { popupSearchRecipe = true },
-            onClickAdd = { popupAddState = true },
+            onClickSearch = { dialogSearchRecipe = true },
+            onClickAdd = { dialogAddState = true },
             onClickBack = { navigator.navigateUp() })
         SwipeRefresh(
             state = refreshState,
@@ -76,36 +83,42 @@ fun RecipeScreen(
                         SrmText(text = stringResource(R.string.preu_euros), textAlign = TextAlign.Center)
                     }
                 }
-                items(recipeList.takeWhile {
+                items(recipeList.filter {
 //                            it.type == recipeType // No implemented yet
                     true
-                }, key = { it.id }) { recipe ->
-                    RecipeItem(recipe = recipe) { popupState = !popupState }
-                    if (popupState)
-                        RecipeItemPopUp(recipe = recipe,
-                            onDismissRequest = { popupState = !popupState }, viewmodel = viewmodel)
+                }, key = { it.id }) {
+                    var dialogItemState by remember { mutableStateOf(false) }
+                    RecipeItem(recipe = it) { dialogItemState = true }
+                    if (dialogItemState) {
+                        RecipeItemPopUp(
+                            recipe = it,
+                            viewmodel = viewmodel,
+                            onDismissRequest = { dialogItemState = false }
+                        )
+                    }
                 }
             }
         }
     }
 
 
-    if (popupAddState) {
+
+    if (dialogAddState) {
         AddRecipeDialog(onDismissRequest = {
-            popupAddState = false
+            dialogAddState = false
         }, viewmodel, recipeType)
     }
 
-    if (popupSearchRecipe) {
+    if (dialogSearchRecipe) {
         SrmSearch(items = recipeList,
-            onDismissRequest = { popupSearchRecipe = false },
+            onDismissRequest = { dialogSearchRecipe = false },
             predicate = { recipeItem, query ->
                 recipeItem.name.startsWith(query, ignoreCase = true)
             }) { recipeItem ->
             SrmSelectableRow(
                 onClick = {
                     recipeList.indexOf(recipeItem).let { idx -> itemIdx = idx }
-                    popupSearchRecipe = false
+                    dialogSearchRecipe = false
                 }) {
                 SrmText(text = recipeItem.name, textAlign = TextAlign.Center)
                 SrmText(text = recipeItem.price.toString(), textAlign = TextAlign.Center)
@@ -129,8 +142,6 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, re
     val selectedFood = remember { arrayListOf<Pair<Int, Float>>() }
     val stockViewmodel: StockViewmodel = hiltViewModel()
     val foodList by stockViewmodel.foodList.observeAsState(Resource.Empty())
-    if (foodList.isEmpty())
-        stockViewmodel.refreshFoodList()
 
     if (foodList.isSuccess()) {
         SrmDialog(onDismissRequest = onDismissRequest) {

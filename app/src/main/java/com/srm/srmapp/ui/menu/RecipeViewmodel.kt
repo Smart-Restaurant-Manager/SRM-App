@@ -13,10 +13,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRepository) : ViewModel() {
-    init {
-        Timber.d("INIT")
-    }
-
     private val _recipeList: MutableLiveData<Resource<List<Recipe>>> = MutableLiveData()
     val recipeList: LiveData<Resource<List<Recipe>>>
         get() = _recipeList
@@ -28,6 +24,11 @@ class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRe
     private val _status: MutableLiveData<Resource<String>> = MutableLiveData()
     val status: LiveData<Resource<String>>
         get() = _status
+
+    init {
+        Timber.d("INIT")
+    }
+
 
     fun refreshRecipeList() {
         Timber.d("Call refresh")
@@ -49,7 +50,12 @@ class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRe
     }
 
     fun deleteRecipe(id: Int) {
-        fetchResource(_status) {
+        fetchResource(_status, onSuccess = {
+            _recipeList.value?.data?.toMutableList()?.let { list ->
+                list.removeIf { it.id == id }
+                _recipeList.postValue(Resource.Success(list.toList()))
+            }
+        }) {
             recipeRepository.deleteRecipe(id)
         }
     }

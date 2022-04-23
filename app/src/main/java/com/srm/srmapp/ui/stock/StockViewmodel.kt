@@ -15,10 +15,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class StockViewmodel @Inject constructor(private val stockRepository: StockRepository) : ViewModel() {
-    init {
-        Timber.d("INIT")
-    }
-
     private val _foodList: MutableLiveData<Resource<List<Food>>> = MutableLiveData()
     val foodList: LiveData<Resource<List<Food>>>
         get() = _foodList
@@ -39,6 +35,10 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
     val status: LiveData<Resource<String>>
         get() = _status
 
+    init {
+        Timber.d("INIT")
+    }
+
     fun clearStcokList() {
         _stockList.value = Resource.Empty()
     }
@@ -52,13 +52,13 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         _status.value = Resource.Empty()
     }
 
-    fun refreshStockList(/*TODO filter list by type, add get range */) {
+    fun refreshStockList() {
         fetchResource(_stockList) {
             stockRepository.getStock()
         }
     }
 
-    fun refreshFoodList(/*TODO filter list by type, add get range*/) {
+    fun refreshFoodList() {
         fetchResource(_foodList) {
             stockRepository.getFood()
         }
@@ -112,10 +112,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
     fun addFood(type: String, name: String, units: String) {
         val food = Food(type = type, name = name, units = units)
         fetchResource(_status, onSuccess = {
-//            _foodList.value?.data?.toMutableList()?.let { list ->
-//                list.add(food)
-//                _foodList.postValue(Resource.Success(list.toList()))
-//            }
+            refreshFoodList()
         }) {
             stockRepository.postFood(food)
         }

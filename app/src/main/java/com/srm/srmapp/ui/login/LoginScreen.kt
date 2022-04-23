@@ -18,17 +18,27 @@ import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.destinations.ManagerScreenDestination
 import com.srm.srmapp.ui.destinations.SignUpScreenDestination
+import com.srm.srmapp.ui.menu.RecipeViewmodel
+import com.srm.srmapp.ui.stock.StockViewmodel
 
 @Destination
 @RootNavGraph(start = true)
 @Composable
-fun LoginScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hiltViewModel(), userSession: UserSession) {
+fun LoginScreen(
+    navigator: DestinationsNavigator,
+    viewmodel: LoginViewModel = hiltViewModel(),
+    stockViewmodel: StockViewmodel,
+    recipeViewmodel: RecipeViewmodel,
+    userSession: UserSession,
+) {
 
     val userState by userSession.userObject.observeAsState(Resource.Empty())
     if (userSession.isLoggedIn()) {
         when {
             userState.isEmpty() -> userSession.refresUser()
             userState.isLoading() -> {
+                recipeViewmodel.refreshRecipeList()
+                stockViewmodel.refreshFoodList()
                 SrmSpacedColumn(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator()
                     SrmText(text = "Loading ...")
@@ -38,13 +48,23 @@ fun LoginScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hi
         }
     } else {
         userSession.logout()
-        LoginForm(navigator = navigator, viewmodel = viewmodel, userSession = userSession)
+        LoginForm(navigator = navigator,
+            viewmodel = viewmodel,
+            userSession = userSession,
+            stockViewmodel = stockViewmodel,
+            recipeViewmodel = recipeViewmodel)
     }
 }
 
 
 @Composable
-fun LoginForm(navigator: DestinationsNavigator, viewmodel: LoginViewModel, userSession: UserSession) {
+fun LoginForm(
+    navigator: DestinationsNavigator,
+    viewmodel: LoginViewModel,
+    stockViewmodel: StockViewmodel,
+    recipeViewmodel: RecipeViewmodel,
+    userSession: UserSession,
+) {
     var user by remember { mutableStateOf("q@q") }
     var password by remember { mutableStateOf("q") }
     val loginState by viewmodel.loginState.observeAsState(Resource.Empty())
@@ -81,8 +101,11 @@ fun LoginForm(navigator: DestinationsNavigator, viewmodel: LoginViewModel, userS
             }
         }
 
-        if (loginState is Resource.Loading)
+        if (loginState is Resource.Loading) {
+            recipeViewmodel.refreshRecipeList()
+            stockViewmodel.refreshFoodList()
             CircularProgressIndicator()
+        }
 
         if (loggedIn) {
             viewmodel.clearLoginStatus()
