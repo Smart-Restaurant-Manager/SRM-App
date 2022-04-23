@@ -8,6 +8,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -20,6 +27,7 @@ import com.srm.srmapp.ui.destinations.ManagerScreenDestination
 import com.srm.srmapp.ui.destinations.SignUpScreenDestination
 import com.srm.srmapp.ui.menu.RecipeViewmodel
 import com.srm.srmapp.ui.stock.StockViewmodel
+
 
 @Destination
 @RootNavGraph(start = true)
@@ -56,7 +64,6 @@ fun LoginScreen(
     }
 }
 
-
 @Composable
 fun LoginForm(
     navigator: DestinationsNavigator,
@@ -71,6 +78,14 @@ fun LoginForm(
     val loggedIn by userSession.loggedIn.observeAsState(false)
 
     SrmHeader(stringResource(id = R.string.login2)) { navigator.navigateUp() }
+
+    val poppinsFontFamily = FontFamily(
+        Font(R.font.poppins_light, FontWeight.Light),
+        Font(R.font.poppins_regular, FontWeight.Normal),
+        Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic),
+        Font(R.font.poppins_medium, FontWeight.Medium),
+        Font(R.font.poppins_bold, FontWeight.Bold)
+    )
     Column(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight(),
@@ -81,23 +96,28 @@ fun LoginForm(
             label = stringResource(id = R.string.user_mail),
             enabled = loginState !is Resource.Loading,
             isError = loginState is Resource.Error,
-            onValueChange = { user = it })
+            onValueChange = { user = it },
+        )
 
         SrmTextField(value = password,
             label = stringResource(id = R.string.password),
             enabled = loginState !is Resource.Loading,
             isError = loginState is Resource.Error,
-            onValueChange = { password = it })
+            onValueChange = { password = it },
+            modifier = Modifier
+                .padding(0.dp, 20.dp),
+            )
 
         SrmButton(onClick = {
             viewmodel.login(user, password)
         }, text = stringResource(id = R.string.login),
-            enabled = loginState !is Resource.Loading)
+            enabled = loginState !is Resource.Loading,
+        )
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            SrmText(text = stringResource(id = R.string.no_account))
+            SrmText(text = stringResource(id = R.string.no_account), fontFamily = poppinsFontFamily, fontWeight = FontWeight.Normal)
             TextButton({ navigator.navigate(SignUpScreenDestination()) }) {
-                SrmText(text = stringResource(id = R.string.register), maxLines = 2)
+                SrmText(text = stringResource(id = R.string.register), maxLines = 2, fontFamily = poppinsFontFamily, fontWeight = FontWeight.Bold)
             }
         }
 

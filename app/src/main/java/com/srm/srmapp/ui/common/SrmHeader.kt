@@ -1,14 +1,14 @@
 package com.srm.srmapp.ui.common
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,15 +31,27 @@ fun SrmHeader(title: String, onClickLeft: () -> Unit = {}) {
                 top.linkTo(parent.top)
                 bottom.linkTo(parent.bottom)
             }
-            .padding(end = 20.dp)
+            .padding(end = 20.dp, top = 20.dp)
             .wrapContentSize()) {
-            Icon(painter = painterResource(id = R.drawable.back_arrow), contentDescription = "Go Back")
+            Icon(
+                painter = painterResource(id = R.drawable.back_arrow),
+                contentDescription = "Go Back",
+                modifier = Modifier.size(25.dp, 25.dp)
+            )
         }
+        val poppinsFontFamily = FontFamily(
+            Font(R.font.poppins_light, FontWeight.Light),
+            Font(R.font.poppins_regular, FontWeight.Normal),
+            Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic),
+            Font(R.font.poppins_medium, FontWeight.Medium),
+            Font(R.font.poppins_bold, FontWeight.Bold)
+        )
         SrmText(
             text = title,
             textAlign = TextAlign.Center,
             fontSize = 30.sp,
             softWrap = true,
+            fontFamily = poppinsFontFamily,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .constrainAs(text) {
@@ -48,6 +60,7 @@ fun SrmHeader(title: String, onClickLeft: () -> Unit = {}) {
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
                 }
+                .padding(top = 20.dp)
                 .wrapContentSize()
         )
     }
