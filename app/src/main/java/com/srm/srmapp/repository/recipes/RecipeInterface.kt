@@ -12,15 +12,18 @@ interface RecipeInterface {
     @Streaming
     suspend fun getRecipeImage(@Path("img_url") img_id: String): ResponseBody
 
-    @GET("api/v1/recipes/")
+    @GET("api/v1/recipes")
     suspend fun getRecipes(): Response<RecipeListResponse>
-
-    @GET("api/v1/recipes/{recipe}")
-    suspend fun getRecipe(@Path("recipe") id: Int): Response<RecipeResponse>
 
     @POST("api/v1/recipes")
     suspend fun postRecipe(@Body postRecipe: RecipeObject): Response<Unit>
 
+    @GET("api/v1/recipes/{recipe}")
+    suspend fun getRecipe(@Path("recipe") id: Int): Response<RecipeResponse>
+
     @PUT("api/v1/recipes/{recipe}")
-    suspend fun modifyRecipe(@Path("recipe") id: Int, @Body modRecipe: RecipeObject): Response<Unit>
+    suspend fun putRecipe(@Path("recipe") id: Int, @Body modRecipe: RecipeObject): Response<Unit>
+
+    @DELETE("api/v1/recipes/{recipe}")
+    suspend fun deleteRecipe(@Path("recipe") id: Int): Response<Unit>
 }

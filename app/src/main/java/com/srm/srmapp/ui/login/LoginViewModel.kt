@@ -15,16 +15,21 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(private val repository: AuthRepository) : ViewModel() {
 
     private val _loginState: MutableLiveData<Resource<String>> = MutableLiveData()
-    fun getLoginState() = _loginState as LiveData<Resource<String>>
-
+    val loginState: LiveData<Resource<String>>
+        get() = _loginState
     private val _signupState: MutableLiveData<Resource<String>> = MutableLiveData()
-    fun getSignupState() = _signupState as LiveData<Resource<String>>
+    val signupState: LiveData<Resource<String>>
+        get() = _signupState
 
+    fun clearLoginStatus() {
+        _loginState.value = Resource.Empty()
+    }
 
     fun login(username: String, password: String) {
         Timber.d("login $username $password")
         fetchResource(_loginState) {
             val res = repository.login(username, password)
+            Timber.d("user resource $res")
             res
         }
     }

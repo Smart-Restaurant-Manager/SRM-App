@@ -1,10 +1,10 @@
-package com.srm.srmapp.data.dto.auth.response
+package com.srm.srmapp.data.dto.orders.response
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 @Keep
-data class LoginResponse(
+data class OrderListResponse(
     @SerializedName("data")
-    val data: LoginData,
+    val data: List<OrderResponse>,
 )

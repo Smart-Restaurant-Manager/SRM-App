@@ -1,8 +1,9 @@
 package com.srm.srmapp.data.dto.auth.response
 
+import androidx.annotation.Keep
 import java.time.LocalDate
-import java.util.*
 
+@Keep
 data class SignupAttributes(
     val email: String,
     val name: String,

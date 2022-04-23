@@ -1,7 +1,10 @@
 package com.srm.srmapp.ui.common
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +19,7 @@ fun SrmDialog(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Dialog(onDismissRequest = onDismissRequest) {
-        Column(Modifier
+        SrmSpacedColumn(Modifier
             .wrapContentHeight()
             .fillMaxWidth()
             .padding(start = paddingStart, end = paddingEnd)

@@ -30,7 +30,7 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
     var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var password2 by remember { mutableStateOf("") }
-    val signUpState by viewmodel.getSignupState().observeAsState()
+    val signUpState by viewmodel.signupState.observeAsState()
     var checkBox by remember { mutableStateOf(false) }
 
     SrmHeader(stringResource(id = R.string.new_account)) { navigator.navigateUp() }

@@ -1,7 +1,9 @@
 package com.srm.srmapp.data.dto.stock.response
 
+import androidx.annotation.Keep
 import com.srm.srmapp.data.models.Stock
 
+@Keep
 data class StockData(
     val attributes: StockAttributes,
     val id: Int,

@@ -14,21 +14,41 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
-import com.srm.srmapp.ui.common.SrmButton
-import com.srm.srmapp.ui.common.SrmHeader
-import com.srm.srmapp.ui.common.SrmText
-import com.srm.srmapp.ui.common.SrmTextField
+import com.srm.srmapp.data.UserSession
+import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.destinations.ManagerScreenDestination
 import com.srm.srmapp.ui.destinations.SignUpScreenDestination
 
 @Destination
 @RootNavGraph(start = true)
 @Composable
-fun LoginScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hiltViewModel(), userSession: UserSession) {
+
+    val userState by userSession.userObject.observeAsState(Resource.Empty())
+    if (userSession.isLoggedIn()) {
+        when {
+            userState.isEmpty() -> userSession.refresUser()
+            userState.isLoading() -> {
+                SrmSpacedColumn(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressIndicator()
+                    SrmText(text = "Loading ...")
+                }
+            }
+            userState.isSuccess() -> navigator.navigate(ManagerScreenDestination())
+        }
+    } else {
+        userSession.logout()
+        LoginForm(navigator = navigator, viewmodel = viewmodel, userSession = userSession)
+    }
+}
+
+
+@Composable
+fun LoginForm(navigator: DestinationsNavigator, viewmodel: LoginViewModel, userSession: UserSession) {
     var user by remember { mutableStateOf("q@q") }
     var password by remember { mutableStateOf("q") }
-    val loginState by viewmodel.getLoginState().observeAsState(Resource.Empty())
-
+    val loginState by viewmodel.loginState.observeAsState(Resource.Empty())
+    val loggedIn by userSession.loggedIn.observeAsState(false)
 
     SrmHeader(stringResource(id = R.string.login2)) { navigator.navigateUp() }
     Column(modifier = Modifier
@@ -64,7 +84,9 @@ fun LoginScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hi
         if (loginState is Resource.Loading)
             CircularProgressIndicator()
 
-        if (loginState is Resource.Success)
+        if (loggedIn) {
+            viewmodel.clearLoginStatus()
             navigator.navigate(ManagerScreenDestination())
+        }
     }
 }

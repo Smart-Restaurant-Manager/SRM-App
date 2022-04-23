@@ -1,29 +1,31 @@
 package com.srm.srmapp.data.models
 
 import android.os.Parcelable
+import com.srm.srmapp.data.dto.recipe.body.RecipeFoodObject
+import com.srm.srmapp.data.dto.recipe.body.RecipeObject
 import kotlinx.parcelize.Parcelize
-import timber.log.Timber
 
 @Parcelize
-data class Recipe(val type: RecipeType, val id: Int, val name: String, val price: Float, val food: List<Food>? = null) : Parcelable {
+data class Recipe(
+    val type: RecipeType,
+    val id: Int = -1,
+    val name: String,
+    val price: Float,
+    val available: Boolean? = null,
+    val food: List<Pair<Int, Float>>? = null, // Food_id and quantity
+) :
+    Parcelable {
     enum class RecipeType {
         NONE, ENTRANTE, FIRST_PLATE,
         SECOND_PLATE, DESERT, DRINK,
         COMPLEMENTS
     }
 
-    companion object {
-        fun parseId(id: Int) = when (id) {
-
-            else -> {
-                Timber.w("Unkown id $id")
-                Recipe.RecipeType.NONE
-            }
-        }
-    }
-
+    fun toJsonObject() = RecipeObject(name = name, price = price, available = available, food = food?.map { it.toRecipeFoodObject() })
     override fun toString(): String {
-        return "$name  $id  $price "
+        return "$name  $id  $price $food"
     }
 
 }
+
+fun Pair<Int, Float>.toRecipeFoodObject() = RecipeFoodObject(food_id = this.first, this.second)

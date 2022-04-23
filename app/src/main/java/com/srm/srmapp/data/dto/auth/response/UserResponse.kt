@@ -1,10 +1,11 @@
 package com.srm.srmapp.data.dto.auth.response
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.srm.srmapp.data.models.User
 import java.time.LocalDate
-import java.util.*
 
+@Keep
 data class UserResponse(
     @SerializedName("created_at")
     val createdAt: String,

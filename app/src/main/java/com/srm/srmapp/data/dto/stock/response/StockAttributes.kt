@@ -1,7 +1,9 @@
 package com.srm.srmapp.data.dto.stock.response
 
+import androidx.annotation.Keep
 import java.time.LocalDate
 
+@Keep
 data class StockAttributes(
     val created_at: LocalDate,
     val expiration_date: LocalDate,
