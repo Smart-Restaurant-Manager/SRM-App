@@ -196,7 +196,7 @@ fun RecipeItemPopUp(
             Spacer(modifier = Modifier.width(spacerWitdh))
             Icon(painter = painterResource(id = R.drawable.ic_baseline_add_24), contentDescription = "Mostrar ingredients")
             Spacer(modifier = Modifier.width(spacerWitdh))
-            SrmText(text = stringResource(R.string.show_ingredients))
+            SrmText(text = stringResource(R.string.show_ingredients) + "TODO")
         }
     }
 }
