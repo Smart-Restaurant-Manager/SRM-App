@@ -29,7 +29,7 @@ fun LoginScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hi
         when {
             userState.isEmpty() -> userSession.refresUser()
             userState.isLoading() -> {
-                SrmSpacedColumn {
+                SrmSpacedColumn(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator()
                     SrmText(text = "Loading ...")
                 }
@@ -38,16 +38,18 @@ fun LoginScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hi
         }
     } else {
         userSession.logout()
-        LoginForm(navigator = navigator, viewmodel = viewmodel)
+        LoginForm(navigator = navigator, viewmodel = viewmodel, userSession = userSession)
     }
 }
 
 
 @Composable
-fun LoginForm(navigator: DestinationsNavigator, viewmodel: LoginViewModel) {
+fun LoginForm(navigator: DestinationsNavigator, viewmodel: LoginViewModel, userSession: UserSession) {
     var user by remember { mutableStateOf("q@q") }
     var password by remember { mutableStateOf("q") }
     val loginState by viewmodel.loginState.observeAsState(Resource.Empty())
+    val loggedIn by userSession.loggedIn.observeAsState(false)
+
     SrmHeader(stringResource(id = R.string.login2)) { navigator.navigateUp() }
     Column(modifier = Modifier
         .fillMaxWidth()
@@ -82,7 +84,7 @@ fun LoginForm(navigator: DestinationsNavigator, viewmodel: LoginViewModel) {
         if (loginState is Resource.Loading)
             CircularProgressIndicator()
 
-        if (loginState is Resource.Success) {
+        if (loggedIn) {
             viewmodel.clearLoginStatus()
             navigator.navigate(ManagerScreenDestination())
         }

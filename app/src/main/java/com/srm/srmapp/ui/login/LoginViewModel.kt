@@ -29,6 +29,7 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository)
         Timber.d("login $username $password")
         fetchResource(_loginState) {
             val res = repository.login(username, password)
+            Timber.d("user resource $res")
             res
         }
     }
