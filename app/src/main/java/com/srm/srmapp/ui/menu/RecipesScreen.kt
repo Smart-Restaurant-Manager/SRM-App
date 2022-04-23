@@ -44,8 +44,6 @@ fun RecipeScreen(
     viewmodel: RecipeViewmodel,
 ) {
     val recipeList by viewmodel.recipeList.observeAsState(Resource.Empty())
-    val recipe by viewmodel.recipe.observeAsState(Resource.Empty())
-    val status by viewmodel.status.observeAsState(Resource.Empty())
     var popupState by remember { mutableStateOf(false) }
     var popupAddState by remember { mutableStateOf(false) }
     val refreshState = rememberSwipeRefreshState(recipeList.isLoading())
@@ -107,8 +105,8 @@ fun RecipeScreen(
             predicate = { recipeItem, query ->
                 recipeItem.name.startsWith(query, ignoreCase = true)
             }) { recipeItem ->
-            SrmSelectableRow(item = recipeItem,
-                onClick = { l.indexOf(it).let { idx -> itemIdx = idx } }) {
+            SrmSelectableRow(
+                onClick = { l.indexOf(recipeItem).let { idx -> itemIdx = idx } }) {
                 SrmText(text = recipeItem.name, textAlign = TextAlign.Center)
                 SrmText(text = recipeItem.price.toString(), textAlign = TextAlign.Center)
             }
@@ -164,8 +162,8 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, re
 }
 
 @Composable
-fun RecipeItem(recipe: Recipe, onClick: (Recipe) -> Unit) {
-    SrmSelectableRow(item = recipe, onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
+fun RecipeItem(recipe: Recipe, onClick: () -> Unit) {
+    SrmSelectableRow(onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
         SrmText(text = recipe.name, textAlign = TextAlign.Center)
         SrmText(text = recipe.price.toString(), textAlign = TextAlign.Center)
     }
@@ -179,10 +177,9 @@ fun RecipeItemPopUp(
 ) {
     SrmDialog(onDismissRequest = onDismissRequest) {
         SrmSelectableRow(
-            item = recipe,
             horizontalArrangement = Arrangement.Start,
             onClick = {
-                viewmodel.deleteRecipe(it.id)
+                viewmodel.deleteRecipe(recipe.id)
                 onDismissRequest.invoke()
             }) {
             Spacer(modifier = Modifier.width(spacerWitdh))
@@ -191,10 +188,9 @@ fun RecipeItemPopUp(
             SrmText(text = stringResource(R.string.delete))
         }
         SrmSelectableRow(
-            item = recipe,
             horizontalArrangement = Arrangement.Start,
             onClick = {
-                viewmodel.getRecipeBy(it.id)
+                viewmodel.getRecipeBy(recipe.id)
                 onDismissRequest.invoke()
             }) {
             Spacer(modifier = Modifier.width(spacerWitdh))
@@ -213,7 +209,7 @@ fun FoodSelector(foodList: List<Food>, onCheckedChange: (Food, Boolean, Float) -
             var checked by remember { mutableStateOf(false) }
             var quantity by remember { mutableStateOf("") }
             SrmSelectableRow(horizontalArrangement = Arrangement.SpaceEvenly,
-                item = food, onClick = {
+                onClick = {
                     checked = !checked
                     onCheckedChange.invoke(food, checked, quantity.toFloatOrNull() ?: 0.0f)
                 }) {

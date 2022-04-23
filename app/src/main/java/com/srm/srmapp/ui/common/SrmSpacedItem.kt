@@ -1,34 +1,26 @@
 package com.srm.srmapp.ui.common
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import timber.log.Timber
 
 @Composable
-fun <T> SrmSelectableRow(
-    item: T,
+fun SrmSelectableRow(
     modifier: Modifier = Modifier,
-    onClick: (T) -> Unit = {},
+    onClick: () -> Unit = {},
     horizontalArrangement: Arrangement.Horizontal = Arrangement.SpaceBetween,
     verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     content: @Composable RowScope.() -> Unit,
 ) {
-    var selectedItem by remember { mutableStateOf<T?>(null) }
     Row(modifier = modifier
         .height(60.dp)
         .fillMaxWidth()
-        .selectable(
-            selected = selectedItem == item,
-            onClick = {
-                selectedItem = item
-                Timber.d("Click on item $item")
-                onClick.invoke(item)
-            }
-        ),
+        .clickable {
+            onClick.invoke()
+        },
         horizontalArrangement = horizontalArrangement,
         verticalAlignment = verticalAlignment, content = content)
 }

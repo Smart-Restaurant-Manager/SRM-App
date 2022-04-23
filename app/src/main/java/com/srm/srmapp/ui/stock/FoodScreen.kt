@@ -1,20 +1,12 @@
 package com.srm.srmapp.ui.stock
 
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.RectF
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.TextButton
@@ -28,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -37,39 +28,12 @@ import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.ui.common.*
-import com.srm.srmapp.ui.theme.*
+import com.srm.srmapp.ui.theme.paddingEnd
+import com.srm.srmapp.ui.theme.paddingStart
+import com.srm.srmapp.ui.theme.spacerWitdh
 import timber.log.Timber
 import java.time.LocalDate
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun FoodMainScreen(navigator: DestinationsNavigator) {
-    val buttonNames = listOf(
-        R.string.carne,
-        R.string.cereales,
-        R.string.mariscos,
-        R.string.vegetales,
-        R.string.lacteos,
-        R.string.especias,
-    )
-    SrmHeader(title = stringResource(id = R.string.title_stock)) { navigator.navigateUp() }
-
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-            items(buttonNames) { buttonName ->
-                SrmButton(modifier = Modifier
-                    .padding(padding)
-                    .width(150.dp)
-                    .height(80.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor1),
-                    onClick = {
-//                        navigator.navigate(FoodListScreenDestination(id = buttonName))
-                    },
-                    text = stringResource(id = buttonName))
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -143,7 +107,7 @@ fun FoodListScreen(
                 else {
                     LazyColumn(modifier = Modifier.wrapContentSize()) {
                         items(it, key = { it.stockId }) { stock ->
-                            SrmSelectableRow(item = stock) {
+                            SrmSelectableRow() {
                                 SrmText(text = "${stock.quantity} ${stock.expirationDate}", textAlign = TextAlign.Center)
                                 IconButton(onClick = {
                                     viewmodel.deleteStock(stock)
@@ -187,8 +151,8 @@ fun FoodListScreen(
             predicate = { food, query ->
                 food.name.startsWith(query, ignoreCase = true)
             }) { food ->
-            SrmSelectableRow(item = food,
-                onClick = { l.indexOf(it).let { idx -> itemIdx = idx } }) {
+            SrmSelectableRow(
+                onClick = { l.indexOf(food).let { idx -> itemIdx = idx } }) {
                 SrmText(text = food.name, textAlign = TextAlign.Center)
                 SrmText(text = food.units, textAlign = TextAlign.Center)
             }
@@ -203,8 +167,8 @@ fun FoodListScreen(
 }
 
 @Composable
-fun FoodItem(food: Food, onClick: (Food) -> Unit) {
-    SrmSelectableRow(item = food, onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
+fun FoodItem(food: Food, onClick: () -> Unit) {
+    SrmSelectableRow(onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
         SrmText(text = food.name, textAlign = TextAlign.Center)
         SrmText(text = food.units, textAlign = TextAlign.Center)
     }
@@ -219,10 +183,9 @@ fun FoodItemPopup(
     var popupAddStockState by remember { mutableStateOf(false) }
     SrmDialog(onDismissRequest = onDismissRequest) {
         SrmSelectableRow(
-            item = food,
             horizontalArrangement = Arrangement.Start,
             onClick = {
-                viewmodel.getFoodStock(it)
+                viewmodel.getFoodStock(food)
                 onDismissRequest.invoke()
             }) {
             Spacer(modifier = Modifier.width(spacerWitdh))
@@ -231,7 +194,6 @@ fun FoodItemPopup(
             SrmText(text = stringResource(R.string.show_stock))
         }
         SrmSelectableRow(
-            item = food,
             horizontalArrangement = Arrangement.Start,
             onClick = {
                 popupAddStockState = true
@@ -243,10 +205,9 @@ fun FoodItemPopup(
             SrmText(text = stringResource(R.string.add_stock))
         }
         SrmSelectableRow(
-            item = food,
             horizontalArrangement = Arrangement.Start,
             onClick = {
-                viewmodel.deleteFood(it)
+                viewmodel.deleteFood(food)
                 onDismissRequest.invoke()
             }) {
             Spacer(modifier = Modifier.width(spacerWitdh))
@@ -289,59 +250,6 @@ fun FoodItemPopup(
         }
     }
 
-}
-
-@Composable
-fun PlotStock(yData: List<Float>, xLabel: List<String>) {
-    val textPaint = remember {
-        Paint().apply {
-            textSize = 40f
-        }
-    }
-    val textPath = remember {
-        Path()
-    }
-
-    val paint = remember {
-        Paint().apply {
-            style = Paint.Style.STROKE
-            strokeCap = Paint.Cap.ROUND
-            strokeWidth = 3.0f
-            isAntiAlias = true
-        }
-    }
-
-    val rectfList: MutableList<RectF> = remember {
-//        calcRectangles(yData,)
-        mutableListOf()
-    }
-    Canvas(modifier = Modifier.height(400.dp), onDraw = {
-        for ((rect, label) in rectfList.zip(xLabel)) {
-//            drawRoundRect(rect, 20f, 20f, paint)
-//            drawTextOnPath(label, textPath.apply {
-//                reset()
-//                val center = rect.centerX() + textPaint.textSize / 2
-//                moveTo(center, rect.bottom - 20)
-//                lineTo(center, rect.top)
-//            }, 0f, 0f, textPaint)
-        }
-    })
-}
-
-fun calcRectangles(yData: List<Float>, ww: Float, hh: Float): MutableList<RectF> {
-    val maxY = yData.maxOfOrNull { it } ?: return mutableListOf()
-    val barBottomPadding = 10f
-    val barTopPadding = 10f
-    val barWidht = ww / yData.size
-    var xOffset = 0f
-    val rectfList = mutableListOf<RectF>()
-    for (y in yData) {
-        val barHeight = (y / maxY) * hh - barTopPadding
-        val rect = RectF(xOffset, hh - barHeight, xOffset + barWidht, hh - barBottomPadding)
-        rectfList.add(rect)
-        xOffset += barWidht
-    }
-    return rectfList
 }
 
 @Preview(showBackground = true)
