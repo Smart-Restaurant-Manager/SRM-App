@@ -38,6 +38,7 @@ class UserSession @Inject constructor(context: Context, private val authInterfac
     fun getBearerToken() = "Bearer ${prefs.getString(prefKey, "")}"
 
     fun logout() {
+        _userObject.postValue(Resource.Loading())
         CoroutineScope(scope).launchException {
             authInterface.logout(getBearerToken())
         }.invokeOnCompletion {
@@ -48,6 +49,7 @@ class UserSession @Inject constructor(context: Context, private val authInterfac
     }
 
     fun refresUser() {
+        _userObject.postValue(Resource.Loading())
         CoroutineScope(scope).launchException {
             val res = authInterface.getUser(getBearerToken())
             Timber.d("Got user ${res.body()?.email}")

@@ -1,14 +1,17 @@
 package com.srm.srmapp.ui.menu
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -43,6 +46,8 @@ fun RecipeScreen(
     var popupState by remember { mutableStateOf(false) }
     var popupAddState by remember { mutableStateOf(false) }
     val refreshState = rememberSwipeRefreshState(recipeList.isLoading())
+    var popupSearchRecipe by remember { mutableStateOf(false) }
+    val lazyListState = rememberLazyListState()
 
     if (recipeList.isEmpty()) viewmodel.refreshRecipeList()
     Column(modifier = Modifier
@@ -51,17 +56,21 @@ fun RecipeScreen(
         horizontalAlignment = Alignment.CenterHorizontally)
     {
         SrmAddTitleSearch(stringResource(id = R.string.entrantes),
-            onClickSearch = {},
+            onClickSearch = { popupSearchRecipe = true },
             onClickAdd = { popupAddState = true },
             onClickBack = { navigator.navigateUp() })
         SwipeRefresh(
             state = refreshState,
             onRefresh = { viewmodel.refreshRecipeList() }) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
                 if (recipeList.isSuccess())
                     recipeList.data?.let { recipeList ->
                         stickyHeader {
-                            SrmSpacedRow(horizontalArrangement = Arrangement.SpaceEvenly) {
+                            Row(modifier = Modifier
+                                .background(Color.White)
+                                .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically) {
                                 SrmText(text = stringResource(R.string.recipe_name), textAlign = TextAlign.Center)
                                 SrmText(text = stringResource(R.string.preu_euros), textAlign = TextAlign.Center)
                             }
@@ -86,6 +95,29 @@ fun RecipeScreen(
             popupAddState = false
         }, viewmodel, recipeType)
     }
+
+    if (popupSearchRecipe) {
+        var itemIdx by remember { mutableStateOf(-1) }
+        val l = recipeList.data ?: emptyList()
+        SrmSearch(items = l,
+            onDismissRequest = { popupSearchRecipe = false },
+            predicate = { recipeItem, query ->
+                recipeItem.name.startsWith(query, ignoreCase = true)
+            }) { recipeItem ->
+            SrmSelectableRow(item = recipeItem,
+                onClick = { l.indexOf(it).let { idx -> itemIdx = idx } }) {
+                SrmText(text = recipeItem.name, textAlign = TextAlign.Center)
+                SrmText(text = recipeItem.price.toString(), textAlign = TextAlign.Center)
+            }
+        }
+        if (itemIdx >= 0) {
+            Timber.d("Scroll to $itemIdx")
+            LaunchedEffect(key1 = itemIdx, block = {
+                lazyListState.scrollToItem(itemIdx, 0)
+            })
+        }
+    }
+
 }
 
 

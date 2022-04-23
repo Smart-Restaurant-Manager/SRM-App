@@ -5,12 +5,14 @@ import android.graphics.Path
 import android.graphics.RectF
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -20,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -81,6 +84,8 @@ fun FoodListScreen(
     val refreshState = rememberSwipeRefreshState(foodListState.isLoading())
     var popupState by remember { mutableStateOf(false) }
     var popupAddFoodState by remember { mutableStateOf(false) }
+    var popupSearchFood by remember { mutableStateOf(false) }
+    val lazyListState = rememberLazyListState()
 
     if (foodListState.isEmpty()) viewmodel.refreshFoodList()
     Column(modifier = Modifier
@@ -88,28 +93,30 @@ fun FoodListScreen(
         .padding(start = paddingStart, end = paddingEnd),
         horizontalAlignment = Alignment.CenterHorizontally) {
         SrmAddTitleSearch(stringResource(R.string.food),
-            onClickSearch = {},
+            onClickSearch = { popupSearchFood = true },
             onClickAdd = { popupAddFoodState = true },
             onClickBack = { navigator.navigateUp() })
         SwipeRefresh(
             state = refreshState,
             onRefresh = { viewmodel.refreshFoodList() }) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                if (foodListState.isSuccess()) {
-                    foodListState.data?.let {
-                        stickyHeader {
-                            SrmSpacedRow {
-                                SrmText(text = stringResource(R.string.food_name))
-                                SrmText(text = stringResource(R.string.quantity))
-                                Spacer(modifier = Modifier.width(20.dp))
-                            }
+            LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
+                foodListState.data?.let {
+                    stickyHeader {
+                        Row(modifier = Modifier
+                            .background(Color.White)
+                            .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically) {
+                            SrmText(text = stringResource(R.string.food_name))
+                            SrmText(text = stringResource(R.string.quantity))
+                            Spacer(modifier = Modifier.width(20.dp))
                         }
-                        items(it, key = { it.foodId }) { food ->
-                            FoodItem(food = food) { popupState = !popupState }
-                            if (popupState)
-                                FoodItemPopup(food = food,
-                                    onDismissRequest = { popupState = !popupState }, viewmodel = viewmodel)
-                        }
+                    }
+                    items(it, key = { it.foodId }) { food ->
+                        FoodItem(food = food) { popupState = !popupState }
+                        if (popupState)
+                            FoodItemPopup(food = food,
+                                onDismissRequest = { popupState = !popupState }, viewmodel = viewmodel)
                     }
                 }
             }
@@ -157,17 +164,41 @@ fun FoodListScreen(
         var name by remember { mutableStateOf("") }
         var units by remember { mutableStateOf("") }
         var type by remember { mutableStateOf("") }
-        SrmDialog(onDismissRequest = { popupAddFoodState = false }) {
+        SrmDialog(onDismissRequest = {
+            popupAddFoodState = false
+            viewmodel.refreshFoodList()
+        }) {
             SrmTextFieldHint(value = name, placeholder = stringResource(R.string.food_name), onValueChange = { name = it })
             SrmTextFieldHint(value = units, placeholder = stringResource(R.string.unit), onValueChange = { units = it })
             SrmTextFieldHint(value = type, placeholder = stringResource(R.string.category), onValueChange = { type = it })
             TextButton(onClick = {
                 viewmodel.addFood(type, name, units)
-                viewmodel.refreshFoodList()
                 popupAddFoodState = false
             }) {
                 SrmText(text = stringResource(R.string.add_food))
             }
+        }
+    }
+
+    if (popupSearchFood) {
+        var itemIdx by remember { mutableStateOf(-1) }
+        val l = foodListState.data ?: emptyList()
+        SrmSearch(items = l,
+            onDismissRequest = { popupSearchFood = false },
+            predicate = { food, query ->
+                food.name.startsWith(query, ignoreCase = true)
+            }) { food ->
+            SrmSelectableRow(item = food,
+                onClick = { l.indexOf(it).let { idx -> itemIdx = idx } }) {
+                SrmText(text = food.name, textAlign = TextAlign.Center)
+                SrmText(text = food.units, textAlign = TextAlign.Center)
+            }
+        }
+        if (itemIdx >= 0) {
+            Timber.d("Scroll to $itemIdx")
+            LaunchedEffect(key1 = itemIdx, block = {
+                lazyListState.scrollToItem(itemIdx, 0)
+            })
         }
     }
 }
