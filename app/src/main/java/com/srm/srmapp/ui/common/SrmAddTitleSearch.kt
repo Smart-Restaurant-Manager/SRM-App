@@ -22,10 +22,13 @@ fun SrmAddTitleSearch(title: String, onClickAdd: () -> Unit = {}, onClickSearch:
     Box(Modifier
         .fillMaxWidth()) {
         Column(verticalArrangement = Arrangement.SpaceAround) {
-            IconButton(onClickBack,
-                modifier = Modifier
-                    .wrapContentSize()) {
-                Icon(painter = painterResource(id = R.drawable.back_arrow), contentDescription = "Go Back")
+            IconButton(onClickBack, modifier = Modifier.padding(0.dp, 10.dp)) {
+                Icon(
+                    painter = painterResource(id = R.drawable.back_arrow),
+                    contentDescription = "Go Back",
+                    modifier = Modifier.size(width = 25.dp, height = 25.dp),
+                )
+
             }
             Row(
                 modifier = Modifier
@@ -35,7 +38,11 @@ fun SrmAddTitleSearch(title: String, onClickAdd: () -> Unit = {}, onClickSearch:
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 IconButton(onClickAdd) {
-                    Icon(painter = painterResource(id = R.drawable.ic_baseline_add_24), contentDescription = "Add")
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_baseline_add_24),
+                        contentDescription = "Add",
+                        modifier = Modifier.size(25.dp, 25.dp)
+                    )
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Box(
@@ -55,7 +62,11 @@ fun SrmAddTitleSearch(title: String, onClickAdd: () -> Unit = {}, onClickSearch:
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 IconButton(onClickSearch) {
-                    Icon(painter = painterResource(id = R.drawable.search), contentDescription = "Search")
+                    Icon(
+                        painter = painterResource(id = R.drawable.search),
+                        contentDescription = "Search",
+                        modifier = Modifier.size(25.dp, 25.dp)
+                    )
                 }
             }
         }

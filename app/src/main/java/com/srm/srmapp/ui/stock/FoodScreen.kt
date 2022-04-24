@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -67,6 +68,7 @@ fun FoodListScreen(
             onClickBack = { navigator.navigateUp() })
         SwipeRefresh(
             state = refreshState,
+            modifier = Modifier.padding(0.dp, 30.dp),
             onRefresh = { viewmodel.refreshFoodList() }) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
                 stickyHeader {

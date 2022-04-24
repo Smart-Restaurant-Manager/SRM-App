@@ -71,6 +71,7 @@ fun RecipeScreen(
             onClickBack = { navigator.navigateUp() })
         SwipeRefresh(
             state = refreshState,
+            modifier = Modifier.padding(0.dp, 30.dp),
             onRefresh = { viewmodel.refreshRecipeList() }) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
                 stickyHeader {
