@@ -86,4 +86,5 @@
     <string name="recipe_name">Nombre</string>
     <string name="no_items_to_search">No hay elementos para buscar</string>
     <string name="show_ingredients">Mostrar ingredients</string>
+    <string name="Pedidos">Pedidos</string>
 </resources>

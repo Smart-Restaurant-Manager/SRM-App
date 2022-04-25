@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -29,6 +30,7 @@ import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.ui.common.*
+import com.srm.srmapp.ui.theme.ButtonColor2
 import com.srm.srmapp.ui.theme.paddingEnd
 import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
@@ -73,12 +75,36 @@ fun FoodListScreen(
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
                 stickyHeader {
                     Row(modifier = Modifier
+                        .height(50.dp)
                         .background(Color.White)
                         .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically) {
-                        SrmText(text = stringResource(R.string.food_name))
-                        SrmText(text = stringResource(R.string.quantity))
+                        Box(
+                            modifier = Modifier
+                                .background(color = ButtonColor2, RoundedCornerShape(20))
+                                .size(120.dp)
+                                .fillMaxHeight()
+
+
+
+                        ) {
+                            SrmText(text = stringResource(R.string.food_name),color = Color.White, modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                        Box(
+                                modifier = Modifier
+                                    .background(color = ButtonColor2, RoundedCornerShape(20))
+                                    .size(120.dp)
+                                    .fillMaxHeight()
+
+
+
+                                ) {
+                            SrmText(text = stringResource(R.string.quantity),color = Color.White, modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+
                     }
                 }
                 items(foodList, key = { it.foodId }) {

@@ -42,12 +42,13 @@ fun  BookingScreen ( navigator: DestinationsNavigator){
             onClickAdd = {popupAddState = true},
             onClickBack = {navigator.navigateUp()}
         )
+        Spacer(modifier = Modifier.width(20.dp))
 
         Row(modifier = Modifier
             .height(50.dp)
-            .fillMaxWidth()
-
-           ){
+            .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically){
             for(j in 0 until 3) {
                     Box(
                         modifier = Modifier

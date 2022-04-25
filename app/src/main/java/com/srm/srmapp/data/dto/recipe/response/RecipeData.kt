@@ -12,7 +12,7 @@ data class RecipeData(
 
 fun RecipeData.toRecipe() = Recipe(
     type = when (type) {
-        "Entrante" -> Recipe.RecipeType.ENTRANTE
+        "recipes" -> Recipe.RecipeType.ENTRANTE
         "FirstPlate" -> Recipe.RecipeType.FIRST_PLATE
         "SecondPlate" -> Recipe.RecipeType.SECOND_PLATE
         "Desert" -> Recipe.RecipeType.DESERT

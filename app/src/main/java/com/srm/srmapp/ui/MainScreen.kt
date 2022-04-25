@@ -20,6 +20,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
 import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.ui.common.*
+import com.srm.srmapp.ui.destinations.BookingScreenDestination
 import com.srm.srmapp.ui.destinations.FoodListScreenDestination
 import com.srm.srmapp.ui.destinations.MenuScreenDestination
 import com.srm.srmapp.ui.theme.ButtonColor1
@@ -30,9 +31,10 @@ import kotlin.system.exitProcess
 @com.ramcosta.composedestinations.annotation.Destination
 fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
     val buttonNames = listOf(
-        Pair(R.string.reservas) {},
+        Pair(R.string.reservas) {navigator.navigate(BookingScreenDestination())},
         Pair(R.string.food) { navigator.navigate(FoodListScreenDestination()) },
         Pair(R.string.menu) { navigator.navigate(MenuScreenDestination()) },
+        Pair(R.string.Pedidos){},
         Pair(R.string.predictions) {})
     var popupState by remember { mutableStateOf(false) }
     val loggedIn by userSession.loggedIn.observeAsState(true)

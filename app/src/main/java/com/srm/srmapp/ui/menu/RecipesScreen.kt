@@ -1,11 +1,13 @@
 package com.srm.srmapp.ui.menu
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.runtime.*
@@ -17,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -28,11 +31,13 @@ import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.stock.StockViewmodel
+import com.srm.srmapp.ui.theme.ButtonColor2
 import com.srm.srmapp.ui.theme.paddingEnd
 import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
 import timber.log.Timber
-
+import kotlin.math.log
+import kotlin.reflect.typeOf
 
 @OptIn(ExperimentalFoundationApi::class)
 @Destination
@@ -76,12 +81,36 @@ fun RecipeScreen(
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
                 stickyHeader {
                     Row(modifier = Modifier
+                        .height(50.dp)
                         .background(Color.White)
                         .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically) {
-                        SrmText(text = stringResource(R.string.recipe_name), textAlign = TextAlign.Center)
-                        SrmText(text = stringResource(R.string.preu_euros), textAlign = TextAlign.Center)
+                        Box(
+                            modifier = Modifier
+                                .background(color = ButtonColor2, RoundedCornerShape(20))
+                                .size(120.dp)
+                                .fillMaxHeight()
+
+
+
+                        ) {
+                            SrmText(text = stringResource(R.string.recipe_name),color = Color.White, modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .background(color = ButtonColor2, RoundedCornerShape(20))
+                                .size(120.dp)
+                                .fillMaxHeight()
+
+
+
+                        ) {
+                            SrmText(text = stringResource(R.string.preu_euros),color = Color.White, modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+
                     }
                 }
                 items(recipeList.filter {
@@ -174,6 +203,7 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, st
 
 @Composable
 fun RecipeItem(recipe: Recipe, onClick: () -> Unit) {
+
     SrmSelectableRow(onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
         SrmText(text = recipe.name, textAlign = TextAlign.Center)
         SrmText(text = recipe.price.toString(), textAlign = TextAlign.Center)
@@ -201,13 +231,14 @@ fun RecipeItemPopUp(
         SrmSelectableRow(
             horizontalArrangement = Arrangement.Start,
             onClick = {
-                viewmodel.getRecipeBy(recipe.id)
+                Timber.d("Get Ingredients ${recipe.name}")
+                 viewmodel.getRecipeBy(recipe.id)
                 onDismissRequest.invoke()
             }) {
             Spacer(modifier = Modifier.width(spacerWitdh))
             Icon(painter = painterResource(id = R.drawable.ic_baseline_add_24), contentDescription = "Mostrar ingredients")
             Spacer(modifier = Modifier.width(spacerWitdh))
-            SrmText(text = stringResource(R.string.show_ingredients) + "TODO")
+            SrmText(text = stringResource(R.string.show_ingredients), )
         }
     }
 }
