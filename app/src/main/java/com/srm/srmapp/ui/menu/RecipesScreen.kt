@@ -64,7 +64,6 @@ fun RecipeScreen(
     // Lazy list state
     val lazyListState = rememberLazyListState()
 
-
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(start = paddingStart, end = paddingEnd),

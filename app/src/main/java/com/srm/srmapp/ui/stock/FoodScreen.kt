@@ -60,6 +60,9 @@ fun FoodListScreen(
     var itemIdx by remember { mutableStateOf(-1) }
     val foodList = remember(foodListState.data) { foodListState.data ?: emptyList() }
 
+    //Categories
+    val categories = listOf<String>("Entrantes", "1r Plato", "2o Plato", "Postres", "Bebidas", "Complementos")
+
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(start = paddingStart, end = paddingEnd),

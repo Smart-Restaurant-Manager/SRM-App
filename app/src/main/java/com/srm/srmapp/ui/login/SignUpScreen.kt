@@ -79,19 +79,12 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
             label = stringResource(id = R.string.password_check),
             enabled = signUpState !is Resource.Loading,
             isError = signUpState is Resource.Error,
-            onValueChange = { password2 = it }
-        )
-
-        SrmButton(onClick = {
-            viewmodel.signup(email, name, password, password2)
-        }, text = stringResource(id = R.string.register),
-            enabled = signUpState !is Resource.Loading && checkBox,
-            modifier = Modifier.padding(0.dp, 20.dp)
+            onValueChange = { password2 = it },
         )
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(20.dp, 0.dp)
+            modifier = Modifier.padding(20.dp, 30.dp)
         ) {
             Checkbox(
                 checked = checkBox, onCheckedChange = { checkBox = it },
@@ -99,6 +92,13 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
             Spacer(modifier = Modifier.size(16.dp))
             SrmText(text = stringResource(id = R.string.terms_conditions), fontFamily = poppinsFontFamily, fontWeight = FontWeight.Normal)
         }
+
+        SrmButton(onClick = {
+            viewmodel.signup(email, name, password, password2)
+        }, text = stringResource(id = R.string.register),
+        enabled = signUpState !is Resource.Loading && checkBox,
+        //modifier = Modifier.padding(0.dp, 10.dp)
+        )
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             SrmText(text = stringResource(id = R.string.login_account), fontFamily = poppinsFontFamily, fontWeight = FontWeight.Normal)
