@@ -20,8 +20,16 @@ data class Recipe(
         SECOND_PLATE, DESERT, DRINK,
         COMPLEMENTS
     }
-
-    fun toJsonObject() = RecipeObject(name = name, price = price, available = available, food = food?.map { it.toRecipeFoodObject() })
+    fun toInt() = when(type){
+        RecipeType.ENTRANTE -> 0
+        RecipeType.FIRST_PLATE -> 1
+        RecipeType.SECOND_PLATE -> 2
+        RecipeType.DESERT -> 3
+        RecipeType.DRINK -> 4
+        RecipeType.COMPLEMENTS -> 5
+        else -> -1
+    }
+    fun toJsonObject() = RecipeObject(name = name, price = price, available = available,type = this.toInt(), food = food?.map { it.toRecipeFoodObject() })
     override fun toString(): String {
         return "$name  $id  $price $food"
     }
