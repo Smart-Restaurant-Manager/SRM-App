@@ -2,9 +2,6 @@
 
 package com.srm.srmapp.ui.stock
 
-import android.app.AlertDialog
-import android.app.PendingIntent.getActivity
-import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,7 +22,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -33,7 +29,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
-import com.srm.srmapp.ui.MainActivity
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.theme.ButtonColor2
 import com.srm.srmapp.ui.theme.paddingEnd
@@ -52,6 +47,7 @@ fun FoodListScreen(
 ) {
     // food list state
     val foodListState by viewmodel.foodList.observeAsState(Resource.Empty())
+    if (foodListState.isEmpty()) viewmodel.refreshFoodList()
 
     // Swipe to refresh state
     val refreshState = rememberSwipeRefreshState(foodListState.isLoading())
@@ -94,21 +90,19 @@ fun FoodListScreen(
                                 .fillMaxHeight()
 
 
-
                         ) {
-                            SrmText(text = stringResource(R.string.food_name),color = Color.White, modifier = Modifier.align(Alignment.Center)
+                            SrmText(text = stringResource(R.string.food_name), color = Color.White, modifier = Modifier.align(Alignment.Center)
                             )
                         }
                         Box(
-                                modifier = Modifier
-                                    .background(color = ButtonColor2, RoundedCornerShape(20))
-                                    .size(120.dp)
-                                    .fillMaxHeight()
+                            modifier = Modifier
+                                .background(color = ButtonColor2, RoundedCornerShape(20))
+                                .size(120.dp)
+                                .fillMaxHeight()
 
 
-
-                                ) {
-                            SrmText(text = stringResource(R.string.quantity),color = Color.White, modifier = Modifier.align(Alignment.Center)
+                        ) {
+                            SrmText(text = stringResource(R.string.quantity), color = Color.White, modifier = Modifier.align(Alignment.Center)
                             )
                         }
 
