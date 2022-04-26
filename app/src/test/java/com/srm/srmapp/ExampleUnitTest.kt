@@ -108,7 +108,7 @@ class ExampleUnitTest {
         foodlistRes?.forEach {
             assert(
                 runBlocking {
-                    stockapi.putFood(it.foodId, FoodObject(it.name.reversed(), it.units.reversed()))
+                    stockapi.putFood(it.foodId, FoodObject(it.name.reversed(), it.units.reversed(), ""))
                 }.isSuccessful
             )
         }
