@@ -167,15 +167,14 @@ fun FoodListScreen(
         var name by remember { mutableStateOf("") }
         var units by remember { mutableStateOf("") }
         var type by remember { mutableStateOf("") }
+        val options = Food.TYPES
+        var expanded by remember { mutableStateOf(false) }
         SrmDialog(onDismissRequest = {
             dialogAddFoodState = false
         }) {
             SrmTextFieldHint(value = name, placeholder = stringResource(R.string.food_name), onValueChange = { name = it })
             SrmTextFieldHint(value = units, placeholder = stringResource(R.string.unit), onValueChange = { units = it })
 
-            val options = arrayOf("Alimentos carnicos", "Lacteos", "Especias", "Vegetales", "Cereales", "Mariscos")
-            var expanded by remember { mutableStateOf(false) }
-            var selectedOptionText by remember { mutableStateOf(options[0]) }
 
             ExposedDropdownMenuBox(
                 expanded = expanded,
@@ -185,7 +184,7 @@ fun FoodListScreen(
             ) {
                 TextField(
                     readOnly = true,
-                    value = selectedOptionText,
+                    value = type,
                     onValueChange = { },
                     label = { Text("Categoria") },
                     trailingIcon = {
@@ -204,7 +203,7 @@ fun FoodListScreen(
                     options.forEach { selectionOption ->
                         DropdownMenuItem(
                             onClick = {
-                                selectedOptionText = selectionOption
+                                type = selectionOption
                                 expanded = false
                             }
                         ) {

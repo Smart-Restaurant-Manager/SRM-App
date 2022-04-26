@@ -18,6 +18,10 @@ data class Food(
         return "$name $units $foodId"
     }
 
+    companion object {
+        val TYPES = listOf("Alimentos carnicos", "Lacteos", "Especias", "Vegetales", "Cereales", "Mariscos")
+    }
+
     fun toJsonObject(): FoodObject = FoodObject(name, units, type)
     fun addStock(stock: Stock) {
         stock.foodId = this.foodId
