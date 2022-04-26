@@ -18,7 +18,7 @@ data class Food(
         return "$name $units $foodId"
     }
 
-    fun toJsonObject(): FoodObject = FoodObject(name, units)
+    fun toJsonObject(): FoodObject = FoodObject(name, units, type)
     fun addStock(stock: Stock) {
         stock.foodId = this.foodId
         stockList.add(stock)
