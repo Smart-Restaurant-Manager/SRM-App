@@ -11,12 +11,15 @@ data class RecipeData(
 )
 
 fun RecipeData.toRecipe() = Recipe(
-    type = when (type) {
-        "Entrante" -> Recipe.RecipeType.ENTRANTE
-        "FirstPlate" -> Recipe.RecipeType.FIRST_PLATE
-        "SecondPlate" -> Recipe.RecipeType.SECOND_PLATE
-        "Desert" -> Recipe.RecipeType.DESERT
-        "Bebida" -> Recipe.RecipeType.DRINK
-        "Complementos" -> Recipe.RecipeType.COMPLEMENTS
+    type = when (attributes.type) {
+        0 -> Recipe.RecipeType.ENTRANTE
+        1 -> Recipe.RecipeType.FIRST_PLATE
+        2 -> Recipe.RecipeType.SECOND_PLATE
+        3 -> Recipe.RecipeType.DESERT
+        4 -> Recipe.RecipeType.DRINK
+        5 -> Recipe.RecipeType.COMPLEMENTS
         else -> Recipe.RecipeType.NONE
-    }, id = id, name = attributes.name, price = attributes.price, available = attributes.available)
+    }, id = id,
+    name = attributes.name,
+    price = attributes.price,
+    available = attributes.available)

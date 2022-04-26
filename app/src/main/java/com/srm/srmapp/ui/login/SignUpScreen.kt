@@ -9,6 +9,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,6 +39,13 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
 
     SrmHeader(stringResource(id = R.string.new_account)) { navigator.navigateUp() }
 
+    val poppinsFontFamily = FontFamily(
+        Font(R.font.poppins_light, FontWeight.Light),
+        Font(R.font.poppins_regular, FontWeight.Normal),
+        Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic),
+        Font(R.font.poppins_medium, FontWeight.Medium),
+        Font(R.font.poppins_bold, FontWeight.Bold)
+    )
     Column(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight(),
@@ -45,41 +56,54 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
             label = stringResource(id = R.string.email),
             enabled = signUpState !is Resource.Loading,
             isError = signUpState is Resource.Error,
-            onValueChange = { email = it })
+            onValueChange = { email = it },
+            modifier = Modifier.padding(0.dp, 20.dp)
+        )
 
         SrmTextField(value = name,
             label = stringResource(id = R.string.name),
             enabled = signUpState !is Resource.Loading,
             isError = signUpState is Resource.Error,
-            onValueChange = { name = it })
+            onValueChange = { name = it },
+        )
 
         SrmTextField(value = password,
             label = stringResource(id = R.string.password),
             enabled = signUpState !is Resource.Loading,
             isError = signUpState is Resource.Error,
-            onValueChange = { password = it })
+            onValueChange = { password = it },
+            modifier = Modifier.padding(0.dp, 20.dp)
+        )
 
         SrmTextField(value = password2,
             label = stringResource(id = R.string.password_check),
             enabled = signUpState !is Resource.Loading,
             isError = signUpState is Resource.Error,
-            onValueChange = { password2 = it })
+            onValueChange = { password2 = it },
+        )
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(20.dp, 30.dp)
+        ) {
+            Checkbox(
+                checked = checkBox, onCheckedChange = { checkBox = it },
+            )
+            Spacer(modifier = Modifier.size(16.dp))
+            SrmText(text = stringResource(id = R.string.terms_conditions), fontFamily = poppinsFontFamily, fontWeight = FontWeight.Normal)
+        }
 
         SrmButton(onClick = {
             viewmodel.signup(email, name, password, password2)
         }, text = stringResource(id = R.string.register),
-            enabled = signUpState !is Resource.Loading && checkBox)
+        enabled = signUpState !is Resource.Loading && checkBox,
+        //modifier = Modifier.padding(0.dp, 10.dp)
+        )
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = checkBox, onCheckedChange = { checkBox = it })
-            Spacer(modifier = Modifier.size(16.dp))
-            SrmText(text = stringResource(id = R.string.terms_conditions))
-        }
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            SrmText(text = stringResource(id = R.string.login_account))
+            SrmText(text = stringResource(id = R.string.login_account), fontFamily = poppinsFontFamily, fontWeight = FontWeight.Normal)
             TextButton({ navigator.popBackStack() }) {
-                SrmText(text = stringResource(id = R.string.login_user))
+                SrmText(text = stringResource(id = R.string.login_user), fontFamily = poppinsFontFamily, fontWeight = FontWeight.Bold)
             }
         }
 
@@ -87,7 +111,7 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
             CircularProgressIndicator()
 
         if (signUpState is Resource.Success) {
-            SrmText(text = "Cuenta creada correctamente! Espere a ser rederigido.", textAlign = TextAlign.Center)
+            SrmText(text = "Cuenta creada correctamente! Espere a ser rederigido.", textAlign = TextAlign.Center, fontFamily = poppinsFontFamily, fontWeight = FontWeight.Normal)
             LaunchedEffect(key1 = signUpState) {
                 delay(4000)
                 navigator.popBackStack()

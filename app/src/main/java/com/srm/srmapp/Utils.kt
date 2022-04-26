@@ -55,7 +55,7 @@ object Utils {
         onSuccess: suspend (Resource<T>) -> Unit = {},
         repositoryCall: suspend () -> Resource<T>,
     ) {
-        livedataResource.value = Resource.Loading()
+        livedataResource.postValue(Resource.Loading())
         this.viewModelScope.launchException {
             val r = repositoryCall.invoke()
             if (r.isSuccess())

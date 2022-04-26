@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.srm.srmapp.ui.stock
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -6,10 +8,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.TextButton
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -20,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -28,6 +30,7 @@ import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.ui.common.*
+import com.srm.srmapp.ui.theme.ButtonColor2
 import com.srm.srmapp.ui.theme.paddingEnd
 import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
@@ -44,18 +47,21 @@ fun FoodListScreen(
 ) {
     // food list state
     val foodListState by viewmodel.foodList.observeAsState(Resource.Empty())
+    if (foodListState.isEmpty()) viewmodel.refreshFoodList()
 
     // Swipe to refresh state
     val refreshState = rememberSwipeRefreshState(foodListState.isLoading())
 
     // item add dialog state
     var dialogAddFoodState by remember { mutableStateOf(false) }
-
     // Search state dialog
     var dialogSearchFood by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
     var itemIdx by remember { mutableStateOf(-1) }
     val foodList = remember(foodListState.data) { foodListState.data ?: emptyList() }
+
+    //Categories
+    val categories = listOf<String>("Entrantes", "1r Plato", "2o Plato", "Postres", "Bebidas", "Complementos")
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -67,16 +73,39 @@ fun FoodListScreen(
             onClickBack = { navigator.navigateUp() })
         SwipeRefresh(
             state = refreshState,
+            modifier = Modifier.padding(0.dp, 30.dp),
             onRefresh = { viewmodel.refreshFoodList() }) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
                 stickyHeader {
                     Row(modifier = Modifier
+                        .height(50.dp)
                         .background(Color.White)
                         .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically) {
-                        SrmText(text = stringResource(R.string.food_name))
-                        SrmText(text = stringResource(R.string.quantity))
+                        Box(
+                            modifier = Modifier
+                                .background(color = ButtonColor2, RoundedCornerShape(20))
+                                .size(120.dp)
+                                .fillMaxHeight()
+
+
+                        ) {
+                            SrmText(text = stringResource(R.string.food_name), color = Color.White, modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .background(color = ButtonColor2, RoundedCornerShape(20))
+                                .size(120.dp)
+                                .fillMaxHeight()
+
+
+                        ) {
+                            SrmText(text = stringResource(R.string.quantity), color = Color.White, modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+
                     }
                 }
                 items(foodList, key = { it.foodId }) {
@@ -138,12 +167,51 @@ fun FoodListScreen(
         var name by remember { mutableStateOf("") }
         var units by remember { mutableStateOf("") }
         var type by remember { mutableStateOf("") }
+        val options = Food.TYPES
+        var expanded by remember { mutableStateOf(false) }
         SrmDialog(onDismissRequest = {
             dialogAddFoodState = false
         }) {
             SrmTextFieldHint(value = name, placeholder = stringResource(R.string.food_name), onValueChange = { name = it })
             SrmTextFieldHint(value = units, placeholder = stringResource(R.string.unit), onValueChange = { units = it })
-            SrmTextFieldHint(value = type, placeholder = stringResource(R.string.category), onValueChange = { type = it })
+
+
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = {
+                    expanded = !expanded
+                }
+            ) {
+                TextField(
+                    readOnly = true,
+                    value = type,
+                    onValueChange = { },
+                    label = { Text("Categoria") },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(
+                            expanded = expanded
+                        )
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors()
+                )
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = {
+                        expanded = false
+                    }
+                ) {
+                    options.forEach { selectionOption ->
+                        DropdownMenuItem(
+                            onClick = {
+                                type = selectionOption
+                                expanded = false
+                            }
+                        ) {
+                            Text(text = selectionOption)
+                        }
+                    }
+                }
+            }
             TextButton(onClick = {
                 viewmodel.addFood(type, name, units)
                 dialogAddFoodState = false

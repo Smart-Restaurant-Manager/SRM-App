@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.runtime.*
@@ -28,11 +29,11 @@ import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.stock.StockViewmodel
+import com.srm.srmapp.ui.theme.ButtonColor2
 import com.srm.srmapp.ui.theme.paddingEnd
 import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
 import timber.log.Timber
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Destination
@@ -45,6 +46,8 @@ fun RecipeScreen(
 ) {
     // recipe list state
     val recipeListState by viewmodel.recipeList.observeAsState(Resource.Empty())
+    if (recipeListState.isEmpty()) viewmodel.refreshRecipeList()
+
     // add item dialog state
     var dialogAddState by remember { mutableStateOf(false) }
 
@@ -59,7 +62,6 @@ fun RecipeScreen(
     // Lazy list state
     val lazyListState = rememberLazyListState()
 
-
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(start = paddingStart, end = paddingEnd),
@@ -71,22 +73,38 @@ fun RecipeScreen(
             onClickBack = { navigator.navigateUp() })
         SwipeRefresh(
             state = refreshState,
+            modifier = Modifier.padding(0.dp, 30.dp),
             onRefresh = { viewmodel.refreshRecipeList() }) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
                 stickyHeader {
                     Row(modifier = Modifier
+                        .height(50.dp)
                         .background(Color.White)
                         .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically) {
-                        SrmText(text = stringResource(R.string.recipe_name), textAlign = TextAlign.Center)
-                        SrmText(text = stringResource(R.string.preu_euros), textAlign = TextAlign.Center)
+                        Box(
+                            modifier = Modifier
+                                .background(color = ButtonColor2, RoundedCornerShape(20))
+                                .size(120.dp)
+                                .fillMaxHeight()
+                        ) {
+                            SrmText(text = stringResource(R.string.recipe_name), color = Color.White, modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .background(color = ButtonColor2, RoundedCornerShape(20))
+                                .size(120.dp)
+                                .fillMaxHeight()
+                        ) {
+                            SrmText(text = stringResource(R.string.preu_euros), color = Color.White, modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+
                     }
                 }
-                items(recipeList.filter {
-//                            it.type == recipeType // No implemented yet
-                    true
-                }, key = { it.id }) {
+                items(recipeList.filter { it.type == recipeType }, key = { it.id }) {
                     var dialogItemState by remember { mutableStateOf(false) }
                     RecipeItem(recipe = it) { dialogItemState = true }
                     if (dialogItemState) {
@@ -141,6 +159,7 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, st
     var precio by remember { mutableStateOf("") }
     val selectedFood = remember { arrayListOf<Pair<Int, Float>>() }
     val foodList by stockViewmodel.foodList.observeAsState(Resource.Empty())
+    if (foodList.isEmpty()) stockViewmodel.refreshFoodList()
 
     if (foodList.isSuccess()) {
         SrmDialog(onDismissRequest = onDismissRequest) {
@@ -173,6 +192,7 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, st
 
 @Composable
 fun RecipeItem(recipe: Recipe, onClick: () -> Unit) {
+
     SrmSelectableRow(onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
         SrmText(text = recipe.name, textAlign = TextAlign.Center)
         SrmText(text = recipe.price.toString(), textAlign = TextAlign.Center)
@@ -200,13 +220,14 @@ fun RecipeItemPopUp(
         SrmSelectableRow(
             horizontalArrangement = Arrangement.Start,
             onClick = {
+                Timber.d("Get Ingredients ${recipe.name}")
                 viewmodel.getRecipeBy(recipe.id)
                 onDismissRequest.invoke()
             }) {
             Spacer(modifier = Modifier.width(spacerWitdh))
             Icon(painter = painterResource(id = R.drawable.ic_baseline_add_24), contentDescription = "Mostrar ingredients")
             Spacer(modifier = Modifier.width(spacerWitdh))
-            SrmText(text = stringResource(R.string.show_ingredients) + "TODO")
+            SrmText(text = stringResource(R.string.show_ingredients))
         }
     }
 }
