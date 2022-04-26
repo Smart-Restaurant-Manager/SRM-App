@@ -1,6 +1,5 @@
 package com.srm.srmapp.ui.menu
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -36,8 +34,6 @@ import com.srm.srmapp.ui.theme.paddingEnd
 import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
 import timber.log.Timber
-import kotlin.math.log
-import kotlin.reflect.typeOf
 
 @OptIn(ExperimentalFoundationApi::class)
 @Destination
@@ -90,11 +86,8 @@ fun RecipeScreen(
                                 .background(color = ButtonColor2, RoundedCornerShape(20))
                                 .size(120.dp)
                                 .fillMaxHeight()
-
-
-
                         ) {
-                            SrmText(text = stringResource(R.string.recipe_name),color = Color.White, modifier = Modifier.align(Alignment.Center)
+                            SrmText(text = stringResource(R.string.recipe_name), color = Color.White, modifier = Modifier.align(Alignment.Center)
                             )
                         }
                         Box(
@@ -102,20 +95,14 @@ fun RecipeScreen(
                                 .background(color = ButtonColor2, RoundedCornerShape(20))
                                 .size(120.dp)
                                 .fillMaxHeight()
-
-
-
                         ) {
-                            SrmText(text = stringResource(R.string.preu_euros),color = Color.White, modifier = Modifier.align(Alignment.Center)
+                            SrmText(text = stringResource(R.string.preu_euros), color = Color.White, modifier = Modifier.align(Alignment.Center)
                             )
                         }
 
                     }
                 }
-                items(recipeList.filter {
-//                            it.type == recipeType // No implemented yet
-                    true
-                }, key = { it.id }) {
+                items(recipeList.filter { it.type == recipeType }, key = { it.id }) {
                     var dialogItemState by remember { mutableStateOf(false) }
                     RecipeItem(recipe = it) { dialogItemState = true }
                     if (dialogItemState) {
@@ -231,13 +218,13 @@ fun RecipeItemPopUp(
             horizontalArrangement = Arrangement.Start,
             onClick = {
                 Timber.d("Get Ingredients ${recipe.name}")
-                 viewmodel.getRecipeBy(recipe.id)
+                viewmodel.getRecipeBy(recipe.id)
                 onDismissRequest.invoke()
             }) {
             Spacer(modifier = Modifier.width(spacerWitdh))
             Icon(painter = painterResource(id = R.drawable.ic_baseline_add_24), contentDescription = "Mostrar ingredients")
             Spacer(modifier = Modifier.width(spacerWitdh))
-            SrmText(text = stringResource(R.string.show_ingredients), )
+            SrmText(text = stringResource(R.string.show_ingredients))
         }
     }
 }
