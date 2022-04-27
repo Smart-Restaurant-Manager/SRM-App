@@ -79,7 +79,6 @@ fun RecipeScreen(
                 stickyHeader {
                     Row(modifier = Modifier
                         .height(50.dp)
-                        .background(Color.White)
                         .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically) {

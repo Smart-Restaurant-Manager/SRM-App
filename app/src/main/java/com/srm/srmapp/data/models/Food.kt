@@ -19,7 +19,7 @@ data class Food(
     }
 
     companion object {
-        val TYPES = listOf("Alimentos carnicos", "Lacteos", "Especias", "Vegetales", "Cereales", "Mariscos")
+        val TYPES = listOf("Alimentos carnicos", "Lacteos", "Especias", "Vegetales", "Cereales", "Mariscos", "Otros")
     }
 
     fun toJsonObject(): FoodObject = FoodObject(name, units, type)
