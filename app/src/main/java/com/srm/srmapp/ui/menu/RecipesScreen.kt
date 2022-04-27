@@ -67,7 +67,7 @@ fun RecipeScreen(
         .padding(start = paddingStart, end = paddingEnd),
         horizontalAlignment = Alignment.CenterHorizontally)
     {
-        SrmAddTitleSearch(stringResource(id = R.string.entrantes),
+        SrmAddTitleSearch(stringResource(id = Recipe.getResource(recipeType)),
             onClickSearch = { dialogSearchRecipe = true },
             onClickAdd = { dialogAddState = true },
             onClickBack = { navigator.navigateUp() })

@@ -76,6 +76,7 @@
     <string name="postres">Postres</string>
     <string name="bebidas">Bebidas</string>
     <string name="complementos">Complementos</string>
+    <string name="error_type">Error type</string>
     <string name="Carta">Carta</string>
     <string name="show_stock">Mostrar stock</string>
     <string name="add_stock">Añadir stock</string>
