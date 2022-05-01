@@ -38,6 +38,8 @@ data class BookingResponse(
     }
 }
 
+fun BookingResponse.toBooking() = data.toBooking()
+
 fun BookingResponse.Data.toBooking() =
     Booking(name = attributes.name,
         id = id,
