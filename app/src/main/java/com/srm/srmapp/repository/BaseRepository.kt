@@ -4,8 +4,19 @@ import com.srm.srmapp.Resource
 import okio.IOException
 import retrofit2.HttpException
 import retrofit2.Response
+import java.time.LocalTime
+import kotlin.reflect.jvm.ExperimentalReflectionOnLambdas
 
+@OptIn(ExperimentalReflectionOnLambdas::class)
 abstract class BaseRepository {
+    data class CacheWrapper(val data: Any, val expireAfterSeconds: Long = 15) {
+        private val localTime = LocalTime.now()
+        fun isOutOfDate() = LocalTime.now().isAfter(this.localTime.plusSeconds(expireAfterSeconds))
+    }
+
+    private val cache: Map<Any, CacheWrapper> = emptyMap()
+
+
     suspend fun <R, T> safeApiCall(apiCall: suspend () -> Response<R>, responseConverter: (R) -> T): Resource<T> {
         return try {
             val res = apiCall.invoke()

@@ -138,6 +138,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.5.0'
 
     //Compose
-    debugImplementation "androidx.compose.ui:ui-tooling:1.0.1"
-    implementation "androidx.compose.ui:ui-tooling-preview:1.0.1"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+
+    // Kotlin reflection, used for caching in repositories
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.6.21"
+
 }
