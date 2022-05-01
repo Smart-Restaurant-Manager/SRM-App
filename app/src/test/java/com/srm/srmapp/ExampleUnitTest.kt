@@ -2,10 +2,14 @@ package com.srm.srmapp
 
 import com.google.gson.Gson
 import com.srm.srmapp.data.dto.auth.body.LoginObject
+import com.srm.srmapp.data.dto.bookings.body.BookingObject
+import com.srm.srmapp.data.dto.bookings.response.toBooking
+import com.srm.srmapp.data.dto.bookings.response.toBookingList
 import com.srm.srmapp.data.dto.stock.body.FoodObject
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.authentication.AuthInterface
+import com.srm.srmapp.repository.bookings.BookingInterface
 import com.srm.srmapp.repository.orders.OrdersInterface
 import com.srm.srmapp.repository.stock.StockInterface
 import kotlinx.coroutines.runBlocking
@@ -15,6 +19,7 @@ import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -147,5 +152,56 @@ class ExampleUnitTest {
             orderApi.getOrders()
         }
         assert(ordersRes.isSuccessful)
+    }
+
+
+    private val bookingApi = retrofit.create(BookingInterface::class.java)
+
+    @Test
+    fun testBooking() {
+        val bookingObject = BookingObject(name = "a", email = "a@a", phone = "1", date = LocalDateTime.now(), people = 1, table = "1")
+        val bookingPostRes = runBlocking {
+            bookingApi.postBookings(bookingObject = bookingObject)
+        }
+        assert(bookingPostRes.isSuccessful)
+
+        val bookingGetRes = runBlocking {
+            bookingApi.getBookings()
+        }
+        assert(bookingGetRes.isSuccessful)
+
+        val bookingList = bookingGetRes.body()?.toBookingList()
+
+        assert(bookingList != null)
+
+        val lastId = bookingList?.last()?.id
+
+        assert(lastId != null)
+        lastId!!
+
+        val bookingRes = runBlocking {
+            bookingApi.getBooking(lastId)
+        }
+        assert(bookingRes.isSuccessful)
+
+        val bo = bookingRes.body()?.data?.toBooking()
+
+        assert(bo != null)
+
+        bo!!
+
+        assert(bo.id == lastId)
+
+        assert(
+            runBlocking {
+                bookingApi.putBooking(lastId, bookingObject)
+            }.isSuccessful
+        )
+
+        assert(
+            runBlocking {
+                bookingApi.deleteBooking(lastId)
+            }.isSuccessful
+        )
     }
 }
