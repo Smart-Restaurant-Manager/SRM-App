@@ -76,6 +76,8 @@ object AppModule {
     fun provideGsonConverter(): Gson {
         val gson = GsonBuilder()
             .setDateFormat(DATE_PATTERM)
+
+        // LocalDate adapter
         gson.registerTypeAdapter(object : TypeToken<LocalDate>() {}.rawType, object : JsonSerializer<LocalDate?>, JsonDeserializer<LocalDate?> {
             private val FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
             private val FORMATTER2: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -88,8 +90,23 @@ object AppModule {
                 val datetime = LocalDateTime.from(FORMATTER.parse(s))
                 return datetime.toLocalDate()
             }
-
         })
+
+
+        // LocalDateTime adapter
+        gson.registerTypeAdapter(object : TypeToken<LocalDateTime>() {}.rawType,
+            object : JsonSerializer<LocalDateTime?>, JsonDeserializer<LocalDateTime?> {
+                private val FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+                private val FORMATTER2: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                override fun serialize(src: LocalDateTime?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
+                    return JsonPrimitive(FORMATTER2.format(src))
+                }
+
+                override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): LocalDateTime? {
+                    val s = json.asString.substringBefore(".").replace(" ", "T")
+                    return LocalDateTime.from(FORMATTER.parse(s))
+                }
+            })
         return gson.create()
     }
 
