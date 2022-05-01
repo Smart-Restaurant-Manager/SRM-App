@@ -22,21 +22,15 @@ interface OrdersInterface {
     @DELETE("api/v1/orders/{order}")
     suspend fun deleteOrder(@Path("order") order_id: Int): Response<Unit>
 
-    @GET("api/v1/orders/status/waiting")
-    suspend fun getOrdersWaiting(): Response<OrderListResponse>
+    @GET("api/v1/orders/status/{status}")
+    suspend fun getOrdersWaiting(status: String): Response<OrderListResponse>
 
-    @GET("api/v1/orders/status/confirmed")
-    suspend fun getOrdersConfirmed(): Response<OrderListResponse>
-
-    @GET("api/v1/orders/status/cancelled")
-    suspend fun getOrdersCanelled(): Response<OrderListResponse>
-
-    @GET("api/v1/orders/status/in-process")
-    suspend fun getOrdersInProgress(): Response<OrderListResponse>
-
-    @GET("api/v1/orders/status/delievered")
-    suspend fun getOrdersDelievered(): Response<OrderListResponse>
-
-    @GET("api/v1/orders/status/paid")
-    suspend fun getOrdersPaid(): Response<OrderListResponse>
+    companion object STATUS {
+        const val WAITING = "waiting"
+        const val CONFIRMED = "confirmed"
+        const val CANCELLED = "cancelled"
+        const val IN_PROCESS = "in-process"
+        const val DELIEVERED = "delievered"
+        const val PAID = "paid"
+    }
 }

@@ -13,7 +13,7 @@ data class OrderObject(
 ) {
     data class Recipe(
         @SerializedName("recipe_id")
-        val recipeId: String, // eius
+        val recipeId: Int, // eius
         @SerializedName("quantity")
         val quantity: Int, // 17
         @SerializedName("price")

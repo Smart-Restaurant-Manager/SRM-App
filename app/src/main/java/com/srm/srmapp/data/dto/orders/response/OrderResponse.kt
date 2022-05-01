@@ -4,6 +4,7 @@ package com.srm.srmapp.data.dto.orders.response
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.srm.srmapp.data.models.Order
+import com.srm.srmapp.data.models.Recipe
 import java.time.LocalDateTime
 
 @Keep
@@ -97,4 +98,9 @@ data class OrderResponse(
     }
 }
 
-fun OrderResponse.Data.toOrder() = Order(bookingId = id, recipeList = listOf())
+fun OrderResponse.toOrder() =
+    Order(bookingId = data.attributes.bookingId,
+        status = data.attributes.status.attributes.status,
+        recipeList = data.attributes.recipes.map {
+            it.recipeId
+        })

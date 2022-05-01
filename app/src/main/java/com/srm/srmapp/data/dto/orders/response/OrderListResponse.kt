@@ -8,3 +8,5 @@ data class OrderListResponse(
     @SerializedName("data")
     val data: List<OrderResponse>,
 )
+
+fun OrderListResponse.toOrderList() = data.map { it.toOrder()}
