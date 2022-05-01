@@ -102,5 +102,5 @@ fun OrderResponse.toOrder() =
     Order(bookingId = data.attributes.bookingId,
         status = data.attributes.status.attributes.status,
         recipeList = data.attributes.recipes.map {
-            it.recipeId
+            Order.OrderRecipe(it.recipeId, it.quantity, it.price, it.type)
         })
