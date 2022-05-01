@@ -5,12 +5,15 @@ import com.srm.srmapp.data.dto.auth.body.LoginObject
 import com.srm.srmapp.data.dto.bookings.body.BookingObject
 import com.srm.srmapp.data.dto.bookings.response.toBooking
 import com.srm.srmapp.data.dto.bookings.response.toBookingList
-import com.srm.srmapp.data.dto.stock.body.FoodObject
+import com.srm.srmapp.data.dto.recipe.response.toRecipe
+import com.srm.srmapp.data.dto.recipe.response.toRecipeList
 import com.srm.srmapp.data.models.Food
+import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.authentication.AuthInterface
 import com.srm.srmapp.repository.bookings.BookingInterface
 import com.srm.srmapp.repository.orders.OrdersInterface
+import com.srm.srmapp.repository.recipes.RecipeInterface
 import com.srm.srmapp.repository.stock.StockInterface
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
@@ -69,14 +72,6 @@ class ExampleUnitTest {
     }
 
     private val stockapi = retrofit.create(StockInterface::class.java)
-    private val stocklist = listOf(
-        Stock(-1, -1, 0f, LocalDate.now()),
-        Stock(-1, -1, 1f, LocalDate.now()),
-    )
-    private val foodList: List<Food> = listOf(
-        Food("", -1, "testFood1112", "kg"),
-        Food("", -1, "testFood32213", "l"),
-    )
 
     @Test
     fun login_logout() {
@@ -93,12 +88,13 @@ class ExampleUnitTest {
 
     @Test
     fun testStockApi() {
+        val food = Food("test", -1, "testFood32213", "l")
+
+
         // insert food
-        foodList.forEach {
-            assert(runBlocking {
-                stockapi.postFood(it.toJsonObject())
-            }.isSuccessful)
-        }
+        assert(runBlocking {
+            stockapi.postFood(food.toJsonObject())
+        }.isSuccessful)
 
         // get food list
         val response = runBlocking {
@@ -107,40 +103,89 @@ class ExampleUnitTest {
         assert(response.isSuccessful)
 
         val foodlistRes = response.body()?.toFoodList()
+
         assert(foodlistRes != null)
+        foodlistRes!!
+        val lastId = foodlistRes.last().foodId
 
         // put food
-        foodlistRes?.forEach {
-            assert(
-                runBlocking {
-                    stockapi.putFood(it.foodId, FoodObject(it.name.reversed(), it.units.reversed(), ""))
-                }.isSuccessful
-            )
+        assert(runBlocking {
+            stockapi.putFood(lastId, food.toJsonObject())
+        }.isSuccessful)
+
+        val stock = Stock(-1, lastId, 1f, LocalDate.now()).toJsonObject()
+        // insert stock
+        assert(runBlocking {
+            stockapi.postStock(stockObject = stock)
+        }.isSuccessful)
+
+        // get stock
+        val stockRes = runBlocking {
+            stockapi.getFoodStock(lastId)
         }
 
-        // get food list
-        val foodlistReversed = runBlocking {
-            stockapi.getFood()
-        }.body()?.toFoodList()
-        assert(foodlistReversed != null)
+        assert(stockRes.isSuccessful)
+        val a = stockRes.body()?.toStockList()
+        assert(a!!.size == 1)
 
-        // check if we modified correctly by counting
-        var count = 0
-        foodlistReversed?.forEach { res ->
-            if (foodList.find { it.name == res.name.reversed() && it.units == res.units.reversed() } != null) {
-                count++
-            }
-        }
-        assert(count == foodList.size)
+        // put stock
+
+        val lastStockId = a.last().stockId
+        assert(runBlocking {
+            stockapi.putStock(lastStockId, stock)
+        }.isSuccessful)
+
+
+        // delete stock
+        assert(runBlocking {
+            stockapi.deleteStock(lastStockId)
+        }.isSuccessful)
 
 
         // delete food
-        foodlistRes?.forEach { res ->
-            if (foodList.find { it.name == res.name } != null)
-                assert(runBlocking {
-                    stockapi.deleteFood(res.foodId)
-                }.isSuccessful)
+        assert(runBlocking {
+            stockapi.deleteFood(lastId)
+        }.isSuccessful)
+    }
+
+    private val recipeApi = retrofit.create(RecipeInterface::class.java)
+
+    @Test
+    fun testRecipe() {
+        val recipeModel = Recipe(name = "a", type = Recipe.RecipeType.NONE, id = 1, price = 1f)
+        assert(runBlocking {
+            recipeApi.postRecipe(recipeModel.toJsonObject())
+        }.isSuccessful)
+
+        val r = runBlocking {
+            recipeApi.getRecipes()
         }
+
+        assert(r.isSuccessful)
+        val o = r.body()?.toRecipeList()
+
+        assert(o != null)
+        o!!
+        val lastId = o.last().id
+
+        val recipeRes = runBlocking {
+            recipeApi.getRecipe(lastId)
+        }
+
+        assert(recipeRes.isSuccessful)
+
+        val recipe = recipeRes.body()?.toRecipe()
+
+        assert(recipe != null)
+        recipe!!
+
+        assert(runBlocking {
+            recipeApi.putRecipe(recipe.id, recipeModel.toJsonObject())
+        }.isSuccessful)
+
+        assert(runBlocking {
+            recipeApi.deleteRecipe(recipe.id)
+        }.isSuccessful)
     }
 
 
@@ -184,7 +229,7 @@ class ExampleUnitTest {
         }
         assert(bookingRes.isSuccessful)
 
-        val bo = bookingRes.body()?.data?.toBooking()
+        val bo = bookingRes.body()?.toBooking()
 
         assert(bo != null)
 
