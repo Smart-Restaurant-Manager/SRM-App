@@ -67,6 +67,9 @@ object AppModule {
     @Singleton
     fun provideHttpClient(userSession: UserSession) = OkHttpClient.Builder()
         .addInterceptor(httpInterceptor(userSession.getBearerToken()))
+        .addInterceptor(HttpLoggingInterceptor()
+            .setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+            else HttpLoggingInterceptor.Level.NONE))
         .followRedirects(false)
         .followSslRedirects(false)
         .build()
