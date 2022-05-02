@@ -1,7 +1,8 @@
 package com.srm.srmapp
 
-import com.google.gson.Gson
+import com.srm.srmapp.AppModule.BASE_URL
 import com.srm.srmapp.data.dto.auth.body.LoginObject
+import com.srm.srmapp.data.dto.auth.response.UserResponse
 import com.srm.srmapp.data.dto.bookings.body.BookingObject
 import com.srm.srmapp.data.dto.bookings.response.toBookingList
 import com.srm.srmapp.data.dto.orders.response.toOrderList
@@ -10,6 +11,7 @@ import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Order
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.data.models.Stock
+import com.srm.srmapp.repository.BaseRepository
 import com.srm.srmapp.repository.authentication.AuthInterface
 import com.srm.srmapp.repository.bookings.BookingInterface
 import com.srm.srmapp.repository.orders.OrdersInterface
@@ -20,8 +22,11 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.junit.Test
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -33,46 +38,34 @@ import java.time.LocalDateTime
 
 
 class ExampleUnitTest {
-    private val BASE_URL = "https://smart-restaurant-manager.herokuapp.com"
-
-    val gson: Gson = AppModule.provideGsonConverter()
-    private val retrofit2 = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .client(OkHttpClient.Builder()
-            .followRedirects(false)
-            .followSslRedirects(false)
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .build())
-        .build()
-
     private var token: String = ""
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .client(OkHttpClient.Builder()
-            .followRedirects(false)
-            .followSslRedirects(false)
-            .addInterceptor {
-                val req = it.request()
-                it.proceed(req
-                    .newBuilder()
-                    .addHeader("Authorization", "Bearer $token")
-                    .build())
-            }
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .build())
-        .build()
 
-    private val authapi = retrofit2.create(AuthInterface::class.java)
+    // set to true to add authorization header
+    // set to false to remove authorization header
+    private val retrofit: (String) -> Retrofit = { token ->
+        val interceptor = AppModule.httpInterceptor(if (token.isNotBlank()) "Bearer $token" else "")
+
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(AppModule.provideGsonConverter()))
+            .client(OkHttpClient.Builder()
+                .followRedirects(false)
+                .followSslRedirects(false)
+                .addInterceptor(interceptor)
+                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
+                .build())
+            .build()
+    }
+
+    private val authapi = retrofit(token).create(AuthInterface::class.java)
 
     init {
+        Timber.plant(Timber.DebugTree())
         token = runBlocking {
             authapi.login(LoginObject("123@123", "123", "123"))
         }.body()?.data?.token ?: ""
     }
 
-    private val stockapi = retrofit.create(StockInterface::class.java)
 
     @Test
     fun testLoginLogout() {
@@ -86,6 +79,8 @@ class ExampleUnitTest {
         }
         assert(response2.isSuccessful)
     }
+
+    private val stockapi = retrofit(token).create(StockInterface::class.java)
 
     @Test
     fun testStockApi() {
@@ -135,7 +130,7 @@ class ExampleUnitTest {
         assert(runBlocking { stockapi.deleteFood(lastId).isSuccessful })
     }
 
-    private val recipeApi = retrofit.create(RecipeInterface::class.java)
+    private val recipeApi = retrofit(token).create(RecipeInterface::class.java)
 
     @Test
     fun testRecipe() {
@@ -159,7 +154,7 @@ class ExampleUnitTest {
     }
 
 
-    private val orderApi = retrofit.create(OrdersInterface::class.java)
+    private val orderApi = retrofit(token).create(OrdersInterface::class.java)
 
     private fun createBooking(): Int {
         val bookingObject = BookingObject(name = "Unit Test", email = "Uni@a", phone = "1", date = LocalDateTime.now(), people = 1, table = "1")
@@ -243,7 +238,7 @@ class ExampleUnitTest {
         assert(runBlocking { orderRepository.getOrderByStatus(Order.Status.InProcess()).isSuccess() })
     }
 
-    private val bookingApi = retrofit.create(BookingInterface::class.java)
+    private val bookingApi = retrofit(token).create(BookingInterface::class.java)
 
     @Test
     fun testBooking() {
@@ -272,4 +267,37 @@ class ExampleUnitTest {
         assert(runBlocking { bookingApi.deleteBooking(lastId) }.isSuccessful)
     }
 
+    interface TestInterface {
+        @GET("/error404")
+        suspend fun getError404(): Response<String>
+
+        @GET("/")
+        suspend fun getHTMLContent(): Response<String>
+
+        @GET("/api/v1/user")
+        suspend fun getUser(): Response<UserResponse>
+    }
+
+    private val safeCallObject = object : BaseRepository() {
+        val unauthorized = retrofit("").create(TestInterface::class.java)
+        val authorized = retrofit(token).create(TestInterface::class.java)
+    }
+
+    @Test
+    fun testSafeCall() {
+        safeCallObject.apply {
+            val error404 = runBlocking { safeApiCall({ unauthorized.getError404() }) { "" } }
+            assert(error404.isError() && error404.errorCode == 404)
+
+            val error401 = runBlocking { safeApiCall({ unauthorized.getUser() }) { "" } }
+            assert(error401.isError() && error401.errorCode == 401)
+
+            val success1 = runBlocking { safeApiCall({ authorized.getUser() }) { "" } }
+            assert(success1.isSuccess())
+
+            val success2 = runBlocking { safeApiCall({ authorized.getHTMLContent() }) { "" } }
+            Timber.i("$success2")
+            assert(success2.isError())
+        }
+    }
 }
