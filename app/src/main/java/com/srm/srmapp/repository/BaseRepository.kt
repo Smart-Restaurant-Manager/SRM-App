@@ -1,9 +1,11 @@
 package com.srm.srmapp.repository
 
+import com.google.gson.stream.MalformedJsonException
 import com.srm.srmapp.Resource
 import okio.IOException
 import retrofit2.HttpException
 import retrofit2.Response
+import timber.log.Timber
 import java.time.LocalTime
 import kotlin.reflect.jvm.ExperimentalReflectionOnLambdas
 
@@ -27,13 +29,18 @@ abstract class BaseRepository {
             else
                 throw HttpException(res)
         } catch (e: HttpException) {
+            Timber.e(e)
             when (e.code()) {
-                404 -> Resource.Error("Not found")
-                401 -> Resource.Error("Unauthorized")
-                500 -> Resource.Error("Server Error, try later")
-                else -> Resource.Error("Http error ${e.code()} ${e.response()?.errorBody()}")
+                404 -> Resource.Error("Not found", e.code())
+                401 -> Resource.Error("Unauthorized", e.code())
+                500 -> Resource.Error("Server Error, try later", e.code())
+                else -> Resource.Error("Http error ${e.code()} ${e.response()?.errorBody()}", e.code())
             }
+        } catch (e: MalformedJsonException) {
+            Timber.e(e)
+            Resource.Error("No JSON content")
         } catch (e: IOException) {
+            Timber.e(e)
             Resource.Error("No internet")
         }
     }

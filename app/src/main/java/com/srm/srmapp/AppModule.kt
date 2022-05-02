@@ -14,11 +14,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import timber.log.Timber
 import java.lang.reflect.Type
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -29,13 +29,28 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "https://smart-restaurant-manager.herokuapp.com" // Test url
-    private const val DATE_PATTERM = "dd-MM-yyyy'T'HH:mm:ssz"
+    const val BASE_URL = "https://smart-restaurant-manager.herokuapp.com" // Test url
+
+    val httpInterceptor: (String) -> Interceptor = { token ->
+        Interceptor {
+            val re = it.request()
+                .newBuilder()
+                .addHeader("Accept", "application/json")
+                .addHeader("Content-Type", "application/json")
+
+            if (token.isNotBlank())
+                re.addHeader("Authorization", token)
+
+            val req = re.build()
+            it.proceed(req)
+        }
+    }
 
     @Provides
     @Singleton
     fun provideUserSession(@ApplicationContext context: Context, gson: Gson): UserSession {
         val client = OkHttpClient.Builder()
+            .addInterceptor(httpInterceptor(""))
             .addInterceptor(HttpLoggingInterceptor()
                 .setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
                 else HttpLoggingInterceptor.Level.NONE))
@@ -43,12 +58,7 @@ object AppModule {
             .followSslRedirects(false)
             .build()
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(client)
-            .build()
-
+        val retrofit = provideRetrofitClient(client, gson)
         val api = retrofit.create(AuthInterface::class.java)
         return UserSession(context, api)
     }
@@ -56,18 +66,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideHttpClient(userSession: UserSession) = OkHttpClient.Builder()
-        .addInterceptor {
-            val req = it.request()
-            Timber.i("request url ${req.url.encodedPathSegments}")
-            if (req.url.encodedPathSegments[1] == "fake")
-                it.proceed(req)
-            else
-                it.proceed(req
-                    .newBuilder()
-                    .addHeader("Authorization", userSession.getBearerToken())
-                    .build())
-        }
-        .addInterceptor(HttpLoggingInterceptor().setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE))
+        .addInterceptor(httpInterceptor(userSession.getBearerToken()))
         .followRedirects(false)
         .followSslRedirects(false)
         .build()
@@ -77,7 +76,7 @@ object AppModule {
     @Singleton
     fun provideGsonConverter(): Gson {
         val gson = GsonBuilder()
-            .setDateFormat(DATE_PATTERM)
+            .setDateFormat("dd-MM-yyyy'T'HH:mm:ssz")
 
         // LocalDate adapter
         gson.registerTypeAdapter(object : TypeToken<LocalDate>() {}.rawType, object : JsonSerializer<LocalDate?>, JsonDeserializer<LocalDate?> {
