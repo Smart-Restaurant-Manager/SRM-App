@@ -98,9 +98,11 @@ data class OrderResponse(
     }
 }
 
-fun OrderResponse.toOrder() =
-    Order(bookingId = data.attributes.bookingId,
-        status = data.attributes.status.attributes.status,
-        recipeList = data.attributes.recipes.map {
-            Order.OrderRecipe(it.recipeId, it.quantity, it.price, it.type)
-        })
+fun OrderResponse.toOrder() = data.toOrder()
+
+fun OrderResponse.Data.toOrder() =
+    Order(
+        orderId = id,
+        bookingId = attributes.bookingId,
+        status = attributes.status.attributes.status,
+        recipeList = attributes.recipes.map { Order.OrderRecipe(it.recipeId, it.quantity, it.price, it.type) })
