@@ -3,10 +3,8 @@ package com.srm.srmapp
 import com.google.gson.Gson
 import com.srm.srmapp.data.dto.auth.body.LoginObject
 import com.srm.srmapp.data.dto.bookings.body.BookingObject
-import com.srm.srmapp.data.dto.bookings.response.toBooking
 import com.srm.srmapp.data.dto.bookings.response.toBookingList
 import com.srm.srmapp.data.dto.orders.response.toOrderList
-import com.srm.srmapp.data.dto.recipe.response.toRecipe
 import com.srm.srmapp.data.dto.recipe.response.toRecipeList
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Order
@@ -15,6 +13,7 @@ import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.authentication.AuthInterface
 import com.srm.srmapp.repository.bookings.BookingInterface
 import com.srm.srmapp.repository.orders.OrdersInterface
+import com.srm.srmapp.repository.orders.OrdersRepository
 import com.srm.srmapp.repository.recipes.RecipeInterface
 import com.srm.srmapp.repository.stock.StockInterface
 import kotlinx.coroutines.runBlocking
@@ -76,7 +75,7 @@ class ExampleUnitTest {
     private val stockapi = retrofit.create(StockInterface::class.java)
 
     @Test
-    fun login_logout() {
+    fun testLoginLogout() {
         val response = runBlocking {
             authapi.login(LoginObject("123@123", "123", "123"))
         }
@@ -90,8 +89,7 @@ class ExampleUnitTest {
 
     @Test
     fun testStockApi() {
-        val food = Food("test", -1, "testFood32213", "l")
-
+        val food = Food("test", -1, "test", "l")
 
         // insert food
         assert(runBlocking {
@@ -133,13 +131,7 @@ class ExampleUnitTest {
         // put stock
         val lastStockId = a.last().stockId
         assert(runBlocking { stockapi.putStock(lastStockId, stock).isSuccessful })
-
-
-        // delete stock
         assert(runBlocking { stockapi.deleteStock(lastStockId).isSuccessful })
-
-
-        // delete food
         assert(runBlocking { stockapi.deleteFood(lastId).isSuccessful })
     }
 
@@ -147,14 +139,12 @@ class ExampleUnitTest {
 
     @Test
     fun testRecipe() {
-        val recipeModel = Recipe(name = "a", type = Recipe.RecipeType.NONE, id = 1, price = 1f)
+        val recipeModel = Recipe(name = "Unit Test", type = Recipe.RecipeType.NONE, id = 1, price = 1f)
         assert(runBlocking {
             recipeApi.postRecipe(recipeModel.toJsonObject())
         }.isSuccessful)
 
-        val r = runBlocking {
-            recipeApi.getRecipes()
-        }
+        val r = runBlocking { recipeApi.getRecipes() }
 
         assert(r.isSuccessful)
         val o = r.body()?.toRecipeList()
@@ -163,27 +153,16 @@ class ExampleUnitTest {
         o!!
         val lastId = o.last().id
 
-        val recipeRes = runBlocking {
-            recipeApi.getRecipe(lastId)
-        }
-
-        assert(recipeRes.isSuccessful)
-
-        val recipe = recipeRes.body()?.toRecipe()
-
-        assert(recipe != null)
-        recipe!!
-
-        assert(runBlocking { recipeApi.putRecipe(recipe.id, recipeModel.toJsonObject()).isSuccessful })
-
-        assert(runBlocking { recipeApi.deleteRecipe(recipe.id).isSuccessful })
+        assert(runBlocking { recipeApi.getRecipe(lastId).isSuccessful })
+        assert(runBlocking { recipeApi.putRecipe(lastId, recipeModel.toJsonObject()).isSuccessful })
+        assert(runBlocking { recipeApi.deleteRecipe(lastId).isSuccessful })
     }
 
 
     private val orderApi = retrofit.create(OrdersInterface::class.java)
 
     private fun createBooking(): Int {
-        val bookingObject = BookingObject(name = "a", email = "a@a", phone = "1", date = LocalDateTime.now(), people = 1, table = "1")
+        val bookingObject = BookingObject(name = "Unit Test", email = "Uni@a", phone = "1", date = LocalDateTime.now(), people = 1, table = "1")
 
         val bookingGetRes = runBlocking {
             assert(bookingApi.postBookings(bookingObject = bookingObject).isSuccessful)
@@ -229,9 +208,7 @@ class ExampleUnitTest {
         lastOrderId!!
 
         assert(runBlocking { orderApi.getOrder(lastOrderId).isSuccessful })
-
         assert(runBlocking { orderApi.putOrder(lastOrderId, orderJson).isSuccessful })
-
         assert(runBlocking { orderApi.deleteOrder(lastOrderId).isSuccessful })
     }
 
@@ -290,21 +267,8 @@ class ExampleUnitTest {
         assert(lastId != null)
         lastId!!
 
-        val bookingRes = runBlocking {
-            bookingApi.getBooking(lastId)
-        }
-        assert(bookingRes.isSuccessful)
-
-        val bo = bookingRes.body()?.toBooking()
-
-        assert(bo != null)
-
-        bo!!
-
-        assert(bo.id == lastId)
-
+        assert(runBlocking { bookingApi.getBooking(lastId).isSuccessful })
         assert(runBlocking { bookingApi.putBooking(lastId, bookingObject).isSuccessful })
-
         assert(runBlocking { bookingApi.deleteBooking(lastId) }.isSuccessful)
     }
 
