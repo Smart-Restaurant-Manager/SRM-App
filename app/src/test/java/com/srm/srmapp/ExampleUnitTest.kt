@@ -40,8 +40,8 @@ import java.time.LocalDateTime
 class ExampleUnitTest {
     private var token: String = ""
 
-    // set to true to add authorization header
-    // set to false to remove authorization header
+    // set token to add authorization header
+    // set to blank to remove authorization header
     private val retrofit: (String) -> Retrofit = { token ->
         val interceptor = AppModule.httpInterceptor(if (token.isNotBlank()) "Bearer $token" else "")
 
