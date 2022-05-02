@@ -12,7 +12,6 @@ sealed class Resource<T>(
     fun isSuccess(): Boolean = this is Success
     fun isEmpty(): Boolean = this is Empty
     fun isLoading(): Boolean = this is Loading
-    fun isSuccessAndDataNotNull(): Boolean = this is Success && this.data != null
     fun isError(): Boolean = this is Error
     override fun toString(): String {
         return when (this) {

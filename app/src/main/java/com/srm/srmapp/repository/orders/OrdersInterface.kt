@@ -23,14 +23,14 @@ interface OrdersInterface {
     suspend fun deleteOrder(@Path("order") order_id: Int): Response<Unit>
 
     @GET("api/v1/orders/status/{status}")
-    suspend fun getOrdersWaiting(status: String): Response<OrderListResponse>
+    suspend fun getOrdersWaiting(@Path("status") status: String): Response<OrderListResponse>
 
     companion object STATUS {
         const val WAITING = "waiting"
         const val CONFIRMED = "confirmed"
         const val CANCELLED = "cancelled"
         const val IN_PROCESS = "in-process"
-        const val DELIEVERED = "delievered"
+        const val DELIEVERED = "delivered"
         const val PAID = "paid"
     }
 }

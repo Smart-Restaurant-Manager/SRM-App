@@ -1,10 +1,10 @@
 package com.srm.srmapp.repository.orders
 
-import com.srm.srmapp.data.dto.orders.body.OrderObject
 import com.srm.srmapp.data.dto.orders.response.toOrder
 import com.srm.srmapp.data.dto.orders.response.toOrderList
 import com.srm.srmapp.data.models.Order
 import com.srm.srmapp.repository.BaseRepository
+import timber.log.Timber
 import javax.inject.Inject
 
 class OrdersRepository @Inject constructor(private val ordersInterface: OrdersInterface) : BaseRepository() {
@@ -20,8 +20,8 @@ class OrdersRepository @Inject constructor(private val ordersInterface: OrdersIn
         it.toOrder()
     }
 
-    suspend fun postOrder(orderObject: OrderObject) = safeApiCall({
-        ordersInterface.postOrder(orderObject)
+    suspend fun postOrder(order: Order) = safeApiCall({
+        ordersInterface.postOrder(order.toJsonObject())
     }) {
         "Order added"
     }
@@ -39,8 +39,10 @@ class OrdersRepository @Inject constructor(private val ordersInterface: OrdersIn
     }
 
 
-    suspend fun getOrderByStatus(status: String) = safeApiCall({
-        ordersInterface.getOrdersWaiting(status)
+    suspend fun getOrderByStatus(status: Order.Status) = safeApiCall({
+        if (status is Order.Status.None)
+            Timber.e("Requesting order by None")
+        ordersInterface.getOrdersWaiting(status.toString())
     }) {
         it.toOrderList()
     }
