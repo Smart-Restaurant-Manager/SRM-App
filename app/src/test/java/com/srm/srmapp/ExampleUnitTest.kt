@@ -236,6 +236,36 @@ class ExampleUnitTest {
     }
 
 
+    private val orderRepository = OrdersRepository(orderApi)
+
+    @Test
+    fun testOrderRepository() {
+        val bookingId = createBooking()
+        val recipeId = createRecipe()
+        val order = Order(bookingId = bookingId,
+            recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1, price = 1.0, type = 0)))
+
+        assert(runBlocking { orderRepository.postOrder(order).isSuccess() })
+
+        val orderListRes = runBlocking { orderRepository.getOrders() }
+
+        assert(orderListRes.isSuccess())
+
+        val orderList = orderListRes.data!!
+        val orderLast = orderList.last()
+
+        assert(runBlocking { orderRepository.getOrder(orderLast.orderId).isSuccess() })
+        assert(runBlocking { orderRepository.putOrder(orderLast).isSuccess() })
+        assert(runBlocking { orderRepository.deleteOrder(orderLast.orderId).isSuccess() })
+
+        assert(runBlocking { orderRepository.getOrderByStatus(Order.Status.Waiting()).isSuccess() })
+        assert(runBlocking { orderRepository.getOrderByStatus(Order.Status.Confirmed()).isSuccess() })
+        assert(runBlocking { orderRepository.getOrderByStatus(Order.Status.Delievered()).isSuccess() })
+        assert(runBlocking { orderRepository.getOrderByStatus(Order.Status.Paid()).isSuccess() })
+        assert(runBlocking { orderRepository.getOrderByStatus(Order.Status.Cancelled()).isSuccess() })
+        assert(runBlocking { orderRepository.getOrderByStatus(Order.Status.InProcess()).isSuccess() })
+    }
+
     private val bookingApi = retrofit.create(BookingInterface::class.java)
 
     @Test
