@@ -14,13 +14,50 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BookingViewModel @Inject constructor(val bookingRepository: BookingRepository) : BaseViewModel() {
-    private val _recipeList: MutableLiveData<Resource<List<Recipe>>> = MutableLiveData()
-    val recipeList: LiveData<Resource<List<Recipe>>>
-        get() = _recipeList
+    //Refresh list
+    private val _bookingList: MutableLiveData<Resource<List<Booking>>> = MutableLiveData()
+    val bookingList: LiveData<Resource<List<Booking>>>
+        get() = _bookingList
+
+    //get booking by ID
+    private val _book: MutableLiveData<Resource<Booking>> = MutableLiveData()
+    val book: LiveData<Resource<Booking>>
+        get() = _book
+
 
     fun addBooking(name: String, amountPeople: Int, date: String, telephone: String, mail: String, table: String) {
         fetchResource(this._status) {
             bookingRepository.postBooking(Booking(id = null, name, mail, telephone, LocalDateTime.now(), amountPeople, table))
         }
     }
+
+    fun refreshBookingsList(){
+        fetchResource(this._bookingList){
+            bookingRepository.getBookings()
+        }
+    }
+    fun getBookingBy(id: Int){
+        fetchResource(this._book){
+            bookingRepository.getBooking(id)
+        }
+    }
+
+    fun deleteBooking(id: Int){
+        fetchResource(_status, onSuccess = {
+            _bookingList.value?.data?.toMutableList()?.let{ list ->
+                list.removeIf {it.id == id}
+                _bookingList.postValue(Resource.Success(list.toList()))
+            }
+        }){
+            bookingRepository.deleteBooking(id)
+
+        }
+    }
+
+    fun putBooking(id:Int, book: Booking){
+        fetchResource(_status){
+            bookingRepository.putBooking(id, book)
+        }
+    }
+
 }
