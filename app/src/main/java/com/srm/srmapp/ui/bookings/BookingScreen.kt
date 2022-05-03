@@ -43,9 +43,6 @@ fun BookingScreen(
     navigator: DestinationsNavigator,
     viewmodel: BookingViewModel = hiltViewModel(),
 ) {
-    val array = listOf("Nombre", "Personas", "Fecha")
-
-
     // booking list state
     val bookingListState by viewmodel.bookingList.observeAsState(Resource.Empty())
     if(bookingListState.isEmpty()) viewmodel.refreshBookingsList()
@@ -87,37 +84,14 @@ fun BookingScreen(
             onRefresh = { viewmodel.refreshBookingsList()}) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
                 stickyHeader {
-                    Row(
-                        modifier = Modifier
-                            .height(50.dp)
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        for (j in 0 until 3) {
-                            Box(
-                                modifier = Modifier
-                                    .background(color = ButtonColor2, RoundedCornerShape(20))
-                                    .size(120.dp)
-                                    .fillMaxHeight()
-
-
-                            ) {
-                                Text(
-                                    text = array[j],
-                                    color = Color.White,
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
-                            }
-                            Spacer(modifier = Modifier.width(5.dp))
-
-                        }
-                    }
+                    SrmStickyHeader(headers = listOf(stringResource(id = R.string.name),
+                        stringResource(id = R.string.amount_of_people_short),
+                        stringResource(id = R.string.date)))
                 }
-                items(bookingList, key = { it.id!! }){
-                    var dialogItemState by remember { mutableStateOf(false)}
-                    BookItem(book = it){dialogItemState = true}
-                    if(dialogItemState){
+                items(bookingList, key = { it.id }) {
+                    var dialogItemState by remember { mutableStateOf(false) }
+                    BookItem(book = it) { dialogItemState = true }
+                    if (dialogItemState) {
                         BookItemPopup(
                             book = it,
                             viewmodel = viewmodel,
