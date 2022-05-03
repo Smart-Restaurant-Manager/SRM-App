@@ -1,20 +1,15 @@
 package com.srm.srmapp.ui.bookings
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -28,8 +23,6 @@ import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Booking
 import com.srm.srmapp.ui.common.*
-import com.srm.srmapp.ui.stock.FoodItemPopup
-import com.srm.srmapp.ui.theme.ButtonColor2
 import com.srm.srmapp.ui.theme.paddingEnd
 import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
@@ -45,7 +38,7 @@ fun BookingScreen(
 ) {
     // booking list state
     val bookingListState by viewmodel.bookingList.observeAsState(Resource.Empty())
-    if(bookingListState.isEmpty()) viewmodel.refreshBookingsList()
+    if (bookingListState.isEmpty()) viewmodel.refreshBookingsList()
 
     // add book item
     var popupAddState by remember { mutableStateOf(false) }
@@ -55,33 +48,30 @@ fun BookingScreen(
 
 
     // Search booking
-    val bookingList = remember(bookingListState.data) {bookingListState.data ?: emptyList()}
-    var dialogSearchBook by remember{ mutableStateOf(false)}
+    val bookingList = remember(bookingListState.data) { bookingListState.data ?: emptyList() }
+    var dialogSearchBook by remember { mutableStateOf(false) }
 
     var itemIdx by remember { mutableStateOf(-1) }
     val status by viewmodel.status.observeAsState(Resource.Empty())
     val lazyListState = rememberLazyListState()
 
     // Allow composabel inside function
-    var popupSeeBooking by remember{ mutableStateOf(false)}
-
-
-
+    var popupSeeBooking by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(start = paddingStart, end = paddingEnd),
         horizontalAlignment = Alignment.CenterHorizontally) {
         SrmAddTitleSearch(title = stringResource(id = R.string.reservas),
-            onClickSearch = { dialogSearchBook = true},
+            onClickSearch = { dialogSearchBook = true },
             onClickAdd = { popupAddState = true },
             onClickBack = { navigator.navigateUp() }
         )
         Spacer(modifier = Modifier.width(20.dp))
         SwipeRefresh(
             state = refreshState,
-            modifier = Modifier.padding(0.dp,30.dp),
-            onRefresh = { viewmodel.refreshBookingsList()}) {
+            modifier = Modifier.padding(0.dp, 30.dp),
+            onRefresh = { viewmodel.refreshBookingsList() }) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
                 stickyHeader {
                     SrmStickyHeader(headers = listOf(stringResource(id = R.string.name),
@@ -95,12 +85,12 @@ fun BookingScreen(
                         BookItemPopup(
                             book = it,
                             viewmodel = viewmodel,
-                            onDismissRequest = { dialogItemState = false },
-
-                            )
+                            onDismissRequest = { dialogItemState = false }
+                        )
                     }
                 }
-        }   }
+            }
+        }
     }
 
     if (status.isSuccess()) {
@@ -110,91 +100,83 @@ fun BookingScreen(
 
     //Añadir Reserva
     if (popupAddState) {
-        var name by remember { mutableStateOf("") }
-        var amountPeople by remember { mutableStateOf("") }
-        var date by remember { mutableStateOf("") }
-        var telephone by remember { mutableStateOf("") }
-        var mail by remember { mutableStateOf("") }
-        var table by remember { mutableStateOf("") }
-        SrmDialog(onDismissRequest = {
-            popupAddState = false
-        }) {
-            SrmTextFieldHint(value = name, placeholder = stringResource(R.string.food_name), onValueChange = { name = it })
-            SrmTextFieldHint(value = amountPeople, placeholder = stringResource(R.string.amount_of_people), onValueChange = { amountPeople = it })
-            SrmTextFieldHint(value = date, placeholder = stringResource(R.string.date), onValueChange = { date = it })
-            SrmTextFieldHint(value = telephone, placeholder = stringResource(R.string.tel), onValueChange = { telephone = it })
-            SrmTextFieldHint(value = mail, placeholder = stringResource(R.string.mail), onValueChange = { mail = it })
-            SrmTextFieldHint(value = table, placeholder = stringResource(R.string.table), onValueChange = { table = it })
-
-            TextButton(onClick = {
-                val people = try {
-                    amountPeople.toInt()
-                } catch (e: NumberFormatException) {
-                    return@TextButton
-                }
-                viewmodel.addBooking(name, people, date, telephone, mail, table)
-                popupAddState = false
-            }) {
-                SrmText(text = stringResource(R.string.add_booking))
-            }
+        val booking = remember { BookingDataHolder() }
+        BookingDialog(resId = R.string.add_booking,
+            booking = booking,
+            onDismissRequest = { popupAddState = false },
+            onNameChange = { booking.name = it },
+            onPeopleChange = { booking.people = it },
+            onDateChange = { booking.date = it },
+            onPhoneChange = { booking.phone = it },
+            onEmailChange = { booking.email = it },
+            onTableChange = { booking.table = it }) {
+            viewmodel.addBooking(booking)
         }
     }
 
     //Editar Reserva
-    if(dialogSearchBook){
+    if (dialogSearchBook) {
         SrmSearch(items = bookingList, onDismissRequest = { dialogSearchBook = false },
-            predicate = {book, query ->
-                book.name.startsWith(query,ignoreCase = true)
-            } ) { book ->
+            predicate = { book, query ->
+                book.name.startsWith(query, ignoreCase = true)
+            }) { book ->
             SrmSelectableRow(
-                onClick = {
-                    popupSeeBooking = true
-
-                }
+                onClick = { popupSeeBooking = true }
             ) {
                 SrmText(text = book.name, textAlign = TextAlign.Center)
                 SrmText(text = book.people.toString(), textAlign = TextAlign.Center)
                 SrmText(text = book.date.toString(), textAlign = TextAlign.Center)
-
-
             }
-            if(popupSeeBooking) {
-                BookItemPopup(book = book, viewmodel = viewmodel,onDismissRequest = {popupSeeBooking = false} )
-
+            if (popupSeeBooking) {
+                BookItemPopup(book = book, viewmodel = viewmodel, onDismissRequest = { popupSeeBooking = false })
             }
-
-
-
-
         }
-
-
     }
-
-
-
 }
 
-
+@Composable
+fun BookingDialog(
+    resId: Int,
+    booking: BookingDataHolder,
+    onDismissRequest: () -> Unit,
+    onNameChange: (String) -> Unit,
+    onPeopleChange: (String) -> Unit,
+    onDateChange: (String) -> Unit,
+    onPhoneChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onTableChange: (String) -> Unit,
+    onClick: () -> Unit,
+) {
+    SrmDialog(onDismissRequest = onDismissRequest) {
+        SrmTextFieldHint(value = booking.name, placeholder = stringResource(R.string.food_name), onValueChange = onNameChange)
+        SrmTextFieldHint(value = booking.people, placeholder = stringResource(R.string.amount_of_people), onValueChange = onPeopleChange)
+        SrmTextFieldHint(value = booking.date, placeholder = stringResource(R.string.date), onValueChange = onDateChange)
+        SrmTextFieldHint(value = booking.phone, placeholder = stringResource(R.string.tel), onValueChange = onPhoneChange)
+        SrmTextFieldHint(value = booking.email, placeholder = stringResource(R.string.mail), onValueChange = onEmailChange)
+        SrmTextFieldHint(value = booking.table, placeholder = stringResource(R.string.table), onValueChange = onTableChange)
+        SrmTextButton(text = stringResource(resId), onClick = {
+            onClick.invoke()
+            onDismissRequest.invoke()
+        })
+    }
+}
 
 @Composable
-
-fun BookItem(book: Booking, onClick: () -> Unit){
+fun BookItem(book: Booking, onClick: () -> Unit) {
     SrmSelectableRow(onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
-        SrmText(text = book.name, textAlign = TextAlign.Center )
-        SrmText(text = book.people.toString(),textAlign = TextAlign.Center)
+        SrmText(text = book.name, textAlign = TextAlign.Center)
+        SrmText(text = book.people.toString(), textAlign = TextAlign.Center)
         SrmText(text = book.date.toString(), textAlign = TextAlign.Center)
     }
 }
 
 @Composable
-
 fun BookItemPopup(
     book: Booking,
     viewmodel: BookingViewModel,
     onDismissRequest: () -> Unit = {},
-    
-){
+
+    ) {
     // see bookings
     var popupSeeBooking by remember { mutableStateOf(false) }
     var popupEditBooking by remember { mutableStateOf(false) }
@@ -203,7 +185,8 @@ fun BookItemPopup(
     SrmDialog(onDismissRequest = onDismissRequest) {
         SrmSelectableRow(
             horizontalArrangement = Arrangement.Start,
-            onClick = { popupSeeBooking = true
+            onClick = {
+                popupSeeBooking = true
 
             }
         ) {
@@ -220,15 +203,15 @@ fun BookItemPopup(
             }
         ) {
             Spacer(modifier = Modifier.width(spacerWitdh))
-            Icon(painter = painterResource(id = com.google.android.material.R.drawable.material_ic_edit_black_24dp), contentDescription = stringResource(R.string.Editar))
+            Icon(painter = painterResource(id = R.drawable.ic_baseline_edit_24),
+                contentDescription = stringResource(R.string.Editar))
             Spacer(modifier = Modifier.width(spacerWitdh))
             SrmText(text = stringResource(R.string.Editar))
-
         }
         SrmSelectableRow(
             horizontalArrangement = Arrangement.Start,
             onClick = {
-                book.id?.let { viewmodel.deleteBooking(it) }
+                viewmodel.deleteBooking(book.id)
                 onDismissRequest.invoke()
             }
         ) {
@@ -236,13 +219,12 @@ fun BookItemPopup(
             Icon(painter = painterResource(id = R.drawable.ic_baseline_delete_24), contentDescription = stringResource(R.string.delete))
             Spacer(modifier = Modifier.width(spacerWitdh))
             SrmText(text = stringResource(R.string.delete))
-
         }
     }
-    // Ver reserva
-    if(popupSeeBooking){
 
-        SrmDialog(onDismissRequest = { popupSeeBooking = false}) {
+    // Ver reserva
+    if (popupSeeBooking) {
+        SrmDialog(onDismissRequest = { popupSeeBooking = false }) {
             Spacer(modifier = Modifier.size(20.dp))
 
             SrmText(text = "Nombre:  ${book.name}")
@@ -262,11 +244,21 @@ fun BookItemPopup(
 
             SrmText(text = "Mesa:  ${book.table}")
             Spacer(modifier = Modifier.size(20.dp))
-
-
         }
     }
 
-
-
+    if (popupEditBooking) {
+        val booking = remember { BookingDataHolder.fromBooking(book) }
+        BookingDialog(resId = R.string.mod_booking,
+            booking = booking,
+            onDismissRequest = { popupEditBooking = false },
+            onNameChange = { booking.name = it },
+            onPeopleChange = { booking.people = it },
+            onDateChange = { booking.date = it },
+            onPhoneChange = { booking.phone = it },
+            onEmailChange = { booking.email = it },
+            onTableChange = { booking.table = it }) {
+            viewmodel.putBooking(book.id, booking)
+        }
+    }
 }

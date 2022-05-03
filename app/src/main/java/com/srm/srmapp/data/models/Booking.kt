@@ -4,7 +4,7 @@ import com.srm.srmapp.data.dto.bookings.body.BookingObject
 import java.time.LocalDateTime
 
 data class Booking(
-    val id: Int? = null,
+    val id: Int = -1,
     val name: String,
     val email: String,
     val phone: String,
