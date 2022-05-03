@@ -23,8 +23,6 @@ import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.destinations.ManagerScreenDestination
 import com.srm.srmapp.ui.destinations.SignUpScreenDestination
-import com.srm.srmapp.ui.menu.RecipeViewmodel
-import com.srm.srmapp.ui.stock.StockViewmodel
 
 
 @Destination
