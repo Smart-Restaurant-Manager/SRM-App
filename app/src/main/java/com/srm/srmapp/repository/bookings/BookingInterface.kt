@@ -7,18 +7,18 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface BookingInterface {
-    @GET("https://smart-restaurant-manager.herokuapp.com/api/v1/bookings")
+    @GET("api/v1/bookings")
     suspend fun getBookings(): Response<BookingListResponse>
 
-    @POST("https://smart-restaurant-manager.herokuapp.com/api/v1/bookings")
+    @POST("api/v1/bookings")
     suspend fun postBookings(@Body bookingObject: BookingObject): Response<Unit>
 
-    @GET("https://smart-restaurant-manager.herokuapp.com/api/v1/bookings/{id}")
+    @GET("api/v1/bookings/{id}")
     suspend fun getBooking(@Path("id") id: Int): Response<BookingResponse>
 
-    @DELETE("https://smart-restaurant-manager.herokuapp.com/api/v1/bookings/{id}")
+    @DELETE("api/v1/bookings/{id}")
     suspend fun deleteBooking(@Path("id") id: Int): Response<Unit>
 
-    @PUT("https://smart-restaurant-manager.herokuapp.com/api/v1/bookings/{id}")
+    @PUT("api/v1/bookings/{id}")
     suspend fun putBooking(@Path("id") id: Int, @Body bookingObject: BookingObject): Response<Unit>
 }
