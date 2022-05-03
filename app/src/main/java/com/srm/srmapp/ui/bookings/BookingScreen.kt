@@ -1,8 +1,13 @@
 package com.srm.srmapp.ui.bookings
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
@@ -10,72 +15,126 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
-import com.srm.srmapp.ui.common.SrmAddTitleSearch
-import com.srm.srmapp.ui.common.SrmDialog
-import com.srm.srmapp.ui.common.SrmText
-import com.srm.srmapp.ui.common.SrmTextFieldHint
+import com.srm.srmapp.data.models.Booking
+import com.srm.srmapp.ui.common.*
+import com.srm.srmapp.ui.stock.FoodItemPopup
 import com.srm.srmapp.ui.theme.ButtonColor2
 import com.srm.srmapp.ui.theme.paddingEnd
 import com.srm.srmapp.ui.theme.paddingStart
+import com.srm.srmapp.ui.theme.spacerWitdh
 import timber.log.Timber
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Destination
 fun BookingScreen(
     navigator: DestinationsNavigator,
     viewmodel: BookingViewModel = hiltViewModel(),
 ) {
-
     val array = listOf("Nombre", "Personas", "Fecha")
+
+
+    // booking list state
+    val bookingListState by viewmodel.bookingList.observeAsState(Resource.Empty())
+    if(bookingListState.isEmpty()) viewmodel.refreshBookingsList()
+
+    // add book item
     var popupAddState by remember { mutableStateOf(false) }
+
+    //Refresh booking List
+    val refreshState = rememberSwipeRefreshState(bookingListState.isLoading())
+
+
+    // Search booking
+    val bookingList = remember(bookingListState.data) {bookingListState.data ?: emptyList()}
+    var dialogSearchBook by remember{ mutableStateOf(false)}
+
+    var itemIdx by remember { mutableStateOf(-1) }
     val status by viewmodel.status.observeAsState(Resource.Empty())
+    val lazyListState = rememberLazyListState()
+
+    // Allow composabel inside function
+    var popupSeeBooking by remember{ mutableStateOf(false)}
+
+
+
 
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(start = paddingStart, end = paddingEnd),
         horizontalAlignment = Alignment.CenterHorizontally) {
         SrmAddTitleSearch(title = stringResource(id = R.string.reservas),
-            onClickSearch = {},
+            onClickSearch = { dialogSearchBook = true},
             onClickAdd = { popupAddState = true },
             onClickBack = { navigator.navigateUp() }
         )
         Spacer(modifier = Modifier.width(20.dp))
+        SwipeRefresh(
+            state = refreshState,
+            modifier = Modifier.padding(0.dp,30.dp),
+            onRefresh = { viewmodel.refreshBookingsList()}) {
+            LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
+                stickyHeader {
+                    Row(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        for (j in 0 until 3) {
+                            Box(
+                                modifier = Modifier
+                                    .background(color = ButtonColor2, RoundedCornerShape(20))
+                                    .size(120.dp)
+                                    .fillMaxHeight()
 
-        Row(modifier = Modifier
-            .height(50.dp)
-            .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically) {
-            for (j in 0 until 3) {
-                Box(
-                    modifier = Modifier
-                        .background(color = ButtonColor2, RoundedCornerShape(20))
-                        .size(120.dp)
-                        .fillMaxHeight()
 
+                            ) {
+                                Text(
+                                    text = array[j],
+                                    color = Color.White,
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(5.dp))
 
-                ) {
-                    Text(text = array[j], color = Color.White, modifier = Modifier.align(Alignment.Center)
-                    )
+                        }
+                    }
                 }
-                Spacer(modifier = Modifier.width(5.dp))
+                items(bookingList, key = { it.id!! }){
+                    var dialogItemState by remember { mutableStateOf(false)}
+                    BookItem(book = it){dialogItemState = true}
+                    if(dialogItemState){
+                        BookItemPopup(
+                            book = it,
+                            viewmodel = viewmodel,
+                            onDismissRequest = { dialogItemState = false },
 
-            }
-        }
+                            )
+                    }
+                }
+        }   }
     }
 
     if (status.isSuccess()) {
         Timber.d("got status $status")
     }
 
+
+    //Añadir Reserva
     if (popupAddState) {
         var name by remember { mutableStateOf("") }
         var amountPeople by remember { mutableStateOf("") }
@@ -106,5 +165,134 @@ fun BookingScreen(
             }
         }
     }
+
+    //Editar Reserva
+    if(dialogSearchBook){
+        SrmSearch(items = bookingList, onDismissRequest = { dialogSearchBook = false },
+            predicate = {book, query ->
+                book.name.startsWith(query,ignoreCase = true)
+            } ) { book ->
+            SrmSelectableRow(
+                onClick = {
+                    popupSeeBooking = true
+
+                }
+            ) {
+                SrmText(text = book.name, textAlign = TextAlign.Center)
+                SrmText(text = book.people.toString(), textAlign = TextAlign.Center)
+                SrmText(text = book.date.toString(), textAlign = TextAlign.Center)
+
+
+            }
+            if(popupSeeBooking) {
+                BookItemPopup(book = book, viewmodel = viewmodel,onDismissRequest = {popupSeeBooking = false} )
+
+            }
+
+
+
+
+        }
+
+
+    }
+
+
+
+}
+
+
+
+@Composable
+
+fun BookItem(book: Booking, onClick: () -> Unit){
+    SrmSelectableRow(onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
+        SrmText(text = book.name, textAlign = TextAlign.Center )
+        SrmText(text = book.people.toString(),textAlign = TextAlign.Center)
+        SrmText(text = book.date.toString(), textAlign = TextAlign.Center)
+    }
+}
+
+@Composable
+
+fun BookItemPopup(
+    book: Booking,
+    viewmodel: BookingViewModel,
+    onDismissRequest: () -> Unit = {},
+    
+){
+    // see bookings
+    var popupSeeBooking by remember { mutableStateOf(false) }
+    var popupEditBooking by remember { mutableStateOf(false) }
+
+
+    SrmDialog(onDismissRequest = onDismissRequest) {
+        SrmSelectableRow(
+            horizontalArrangement = Arrangement.Start,
+            onClick = { popupSeeBooking = true
+
+            }
+        ) {
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            Icon(painter = painterResource(id = R.drawable.ic_baseline_history_24), contentDescription = stringResource(R.string.mostrar_reserva))
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            SrmText(text = stringResource(R.string.mostrar_reserva))
+
+        }
+        SrmSelectableRow(
+            horizontalArrangement = Arrangement.Start,
+            onClick = {
+                popupEditBooking = true
+            }
+        ) {
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            Icon(painter = painterResource(id = com.google.android.material.R.drawable.material_ic_edit_black_24dp), contentDescription = stringResource(R.string.Editar))
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            SrmText(text = stringResource(R.string.Editar))
+
+        }
+        SrmSelectableRow(
+            horizontalArrangement = Arrangement.Start,
+            onClick = {
+                book.id?.let { viewmodel.deleteBooking(it) }
+                onDismissRequest.invoke()
+            }
+        ) {
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            Icon(painter = painterResource(id = R.drawable.ic_baseline_delete_24), contentDescription = stringResource(R.string.delete))
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            SrmText(text = stringResource(R.string.delete))
+
+        }
+    }
+    // Ver reserva
+    if(popupSeeBooking){
+
+        SrmDialog(onDismissRequest = { popupSeeBooking = false}) {
+            Spacer(modifier = Modifier.size(20.dp))
+
+            SrmText(text = "Nombre:  ${book.name}")
+            Spacer(modifier = Modifier.size(20.dp))
+
+            SrmText(text = "Telefono:  ${book.phone}")
+            Spacer(modifier = Modifier.size(20.dp))
+
+            SrmText(text = "Email:  ${book.email}")
+            Spacer(modifier = Modifier.size(20.dp))
+
+            SrmText(text = "Personas:  ${book.people}")
+            Spacer(modifier = Modifier.size(20.dp))
+
+            SrmText(text = "Fecha:  ${book.date}")
+            Spacer(modifier = Modifier.size(20.dp))
+
+            SrmText(text = "Mesa:  ${book.table}")
+            Spacer(modifier = Modifier.size(20.dp))
+
+
+        }
+    }
+
+
 
 }
