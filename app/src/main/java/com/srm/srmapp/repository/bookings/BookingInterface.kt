@@ -17,7 +17,7 @@ interface BookingInterface {
     suspend fun getBooking(@Path("id") id: Int): Response<BookingResponse>
 
     @DELETE("https://smart-restaurant-manager.herokuapp.com/api/v1/bookings/{id}")
-    suspend fun deleteBooking(@Path("id") id: Int): Response<BookingResponse>
+    suspend fun deleteBooking(@Path("id") id: Int): Response<Unit>
 
     @PUT("https://smart-restaurant-manager.herokuapp.com/api/v1/bookings/{id}")
     suspend fun putBooking(@Path("id") id: Int, @Body bookingObject: BookingObject): Response<Unit>
