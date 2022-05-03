@@ -94,4 +94,6 @@
     <string name="tel">Teléfono</string>
     <string name="mail">Correo Electrónico</string>
     <string name="table">Mesa</string>
+    <string name="mostrar_reserva">Mostrar Reserva</string>
+    <string name="Editar">Editar Reserva</string>
 </resources>
