@@ -89,7 +89,9 @@
     <string name="show_ingredients">Mostrar ingredients</string>
     <string name="Pedidos">Pedidos</string>
     <string name="add_booking">Añadir reserva</string>
+    <string name="mod_booking">Modificar reserva</string>
     <string name="amount_of_people">Número de personas</string>
+    <string name="amount_of_people_short">Personas</string>
     <string name="date">Fecha</string>
     <string name="tel">Teléfono</string>
     <string name="mail">Correo Electrónico</string>
