@@ -29,18 +29,19 @@ abstract class BaseRepository {
             else
                 throw HttpException(res)
         } catch (e: HttpException) {
-            Timber.e(e)
+            Timber.w("Handle http exception ${e.code()}")
             when (e.code()) {
                 404 -> Resource.Error("Not found", e.code())
                 401 -> Resource.Error("Unauthorized", e.code())
+                422 -> Resource.Error("Error in data", e.code())
                 500 -> Resource.Error("Server Error, try later", e.code())
                 else -> Resource.Error("Http error ${e.code()} ${e.response()?.errorBody()}", e.code())
             }
         } catch (e: MalformedJsonException) {
-            Timber.e(e)
+            Timber.w(e)
             Resource.Error("No JSON content")
         } catch (e: IOException) {
-            Timber.e(e)
+            Timber.w(e)
             Resource.Error("No internet")
         }
     }
