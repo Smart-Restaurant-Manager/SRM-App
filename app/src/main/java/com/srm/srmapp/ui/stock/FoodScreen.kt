@@ -3,19 +3,16 @@
 package com.srm.srmapp.ui.stock
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,7 +27,6 @@ import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.ui.common.*
-import com.srm.srmapp.ui.theme.ButtonColor2
 import com.srm.srmapp.ui.theme.paddingEnd
 import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
@@ -61,7 +57,7 @@ fun FoodListScreen(
     val foodList = remember(foodListState.data) { foodListState.data ?: emptyList() }
 
     //Categories
-    val categories = listOf<String>("Entrantes", "1r Plato", "2o Plato", "Postres", "Bebidas", "Complementos")
+    val categories = listOf("Entrantes", "1r Plato", "2o Plato", "Postres", "Bebidas", "Complementos")
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -77,36 +73,8 @@ fun FoodListScreen(
             onRefresh = { viewmodel.refreshFoodList() }) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
                 stickyHeader {
-                    Row(modifier = Modifier
-                        .height(50.dp)
-                        .background(Color.White)
-                        .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .background(color = ButtonColor2, RoundedCornerShape(20))
-                                .size(120.dp)
-                                .fillMaxHeight()
-
-
-                        ) {
-                            SrmText(text = stringResource(R.string.food_name), color = Color.White, modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .background(color = ButtonColor2, RoundedCornerShape(20))
-                                .size(120.dp)
-                                .fillMaxHeight()
-
-
-                        ) {
-                            SrmText(text = stringResource(R.string.quantity), color = Color.White, modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
-
-                    }
+                    SrmStickyHeader(headers =
+                    listOf(stringResource(R.string.food_name), stringResource(R.string.quantity)))
                 }
                 items(foodList, key = { it.foodId }) {
                     var dialogItemState by remember { mutableStateOf(false) }
@@ -135,7 +103,8 @@ fun FoodListScreen(
             }
         }
     }
-    // stock for one food
+
+// stock for one food
     val stockList by viewmodel.stockList.observeAsState(Resource.Empty())
     if (stockList.isSuccess()) {
         stockList.data?.let {

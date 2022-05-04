@@ -64,7 +64,7 @@ class ExampleInstrumentedTest {
         val login = runBlocking {
             authRepository.login("frank@srm.com", "frank.srm")
         }
-        assert(login.isSuccessAndDataNotNull())
+        assert(login.isSuccess())
         val user = runBlocking {
             authInterface.getUser(userSession.getBearerToken())
         }

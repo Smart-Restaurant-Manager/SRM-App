@@ -3,6 +3,9 @@ package com.srm.srmapp.data.dto.orders.response
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
+import com.srm.srmapp.data.models.Order
+import com.srm.srmapp.data.models.Recipe
+import java.time.LocalDateTime
 
 @Keep
 data class OrderResponse(
@@ -29,7 +32,7 @@ data class OrderResponse(
             @SerializedName("recipes")
             val recipes: List<Recipe>,
             @SerializedName("created_at")
-            val createdAt: String, // 2012/03/06 17:33:07
+            val createdAt: LocalDateTime, // 2012/03/06 17:33:07
             @SerializedName("updated_at")
             val updatedAt: String, // 2012/03/06 17:33:07
         ) {
@@ -45,7 +48,7 @@ data class OrderResponse(
                     @SerializedName("status")
                     val status: String, // Completada
                     @SerializedName("created_at")
-                    val createdAt: String, // 2012/03/06 17:33:07
+                    val createdAt: LocalDateTime, // 2012/03/06 17:33:07
                     @SerializedName("updated_at")
                     val updatedAt: String, // 2012/03/06 17:33:07
                 )
@@ -87,10 +90,19 @@ data class OrderResponse(
                 @SerializedName("type")
                 val type: Int, // 1
                 @SerializedName("created_at")
-                val createdAt: String, // 2012/03/06 17:33:07
+                val createdAt: LocalDateTime, // 2012/03/06 17:33:07
                 @SerializedName("updated_at")
                 val updatedAt: String, // 2012/03/06 17:33:07
             )
         }
     }
 }
+
+fun OrderResponse.toOrder() = data.toOrder()
+
+fun OrderResponse.Data.toOrder() =
+    Order(
+        orderId = id,
+        bookingId = attributes.bookingId,
+        status = Order.parseStatus(attributes.status.attributes.status),
+        recipeList = attributes.recipes.map { Order.OrderRecipe(it.recipeId, it.quantity, it.price, it.type) })

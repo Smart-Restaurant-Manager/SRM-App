@@ -6,5 +6,7 @@ import com.google.gson.annotations.SerializedName
 @Keep
 data class OrderListResponse(
     @SerializedName("data")
-    val data: List<OrderResponse>,
+    val data: List<OrderResponse.Data>,
 )
+
+fun OrderListResponse.toOrderList() = data.map { it.toOrder()}
