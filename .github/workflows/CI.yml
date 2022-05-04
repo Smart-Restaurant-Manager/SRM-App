@@ -3,9 +3,7 @@ name: CI
 on:
   push:
     paths-ignore:
-      - '.github/**/*.md'
-      - '.github/FUNDING.yml'
-      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/**/*'
 
 
   workflow_dispatch:
@@ -23,11 +21,5 @@ jobs:
         with:
           java-version: 11
 
-      - name: Runn unitests
-        run: ./gradlew lintDebug testDebugUnitTest --stacktrace -DskipFormatKtlint
-
-      - name: Upload Lint report
-        uses: actions/upload-artifact@v3
-        with:
-          name: report.html
-          path: app/build/reports/lint-results-debug.html
+      - name: Run Test
+        run: ./gradlew testDebugUnitTest --stacktrace -DskipFormatKtlint
