@@ -1,15 +1,12 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
-
 name: Android build app
 
 on:
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - '.github/**'
+      - 'README.md'
+
   workflow_dispatch:
   
 jobs:
@@ -26,20 +23,16 @@ jobs:
           java-version: 11
 
       - name: Generate Debug APK
-        run: ./gradlew assembleDebug --stacktrace
-        
-#       - name: Generate Release APK
-#         run: ./gradlew assembleRelease --stacktrace
-        
-#       - name: Upload release APK
-#         uses: actions/upload-artifact@v3
-#         with:
-#           name: app-release.apk
-#           path: app/build/outputs/apk/release/app-release-unsigned.apk
+        run: ./gradlew assembleDebug lintDebug testDebugUnitTest --stacktrace -DskipFormatKtlint
+
+      - name: Upload Lint report
+        uses: actions/upload-artifact@v3
+        with:
+          name: report
+          path: app/build/reports/lint-results-debug.html
           
       - name: Upload debug APK
         uses: actions/upload-artifact@v3
         with:
-          name: app-debug.apk
+          name: app
           path: app/build/outputs/apk/debug/app-debug.apk
-

@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    paths-ignore:
+      - '.github/**/*'
+
+
+  workflow_dispatch:
+  
+jobs:
+  package-release-apk:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code for app release
+        uses: actions/checkout@v2
+
+      - name: setup jdk
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Run Test
+        run: ./gradlew testDebugUnitTest --stacktrace -DskipFormatKtlint
