@@ -1,7 +1,5 @@
 package com.srm.srmapp.ui.menu
 
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,7 +10,6 @@ import com.srm.srmapp.repository.recipes.RecipeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
 
 @HiltViewModel
 class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRepository) : ViewModel() {
@@ -31,6 +28,7 @@ class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRe
     init {
         Timber.d("INIT")
     }
+
     fun clearStatus() {
         Timber.d("Clear Status ${_status.value}")
         _status.value = Resource.Empty()

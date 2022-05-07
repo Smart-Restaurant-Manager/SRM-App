@@ -1,7 +1,5 @@
 package com.srm.srmapp.ui.login
 
-import android.graphics.drawable.Icon
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -121,7 +118,7 @@ fun LoginForm(
 
                 val description = if (passwordVisibility) "Hide password" else "Show password"
 
-                IconButton(onClick = {passwordVisibility = !passwordVisibility}){
+                IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
                     Image(image, contentDescription = description)
                 }
             },

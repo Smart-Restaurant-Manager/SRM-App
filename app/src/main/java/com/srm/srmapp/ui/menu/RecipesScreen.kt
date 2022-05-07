@@ -1,6 +1,5 @@
 package com.srm.srmapp.ui.menu
 
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,7 +8,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -20,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -52,7 +53,7 @@ fun RecipeScreen(
 
     // add item dialog state
     var dialogAddState by remember { mutableStateOf(false) }
-    var addRecipe : Boolean = false
+    var addRecipe: Boolean = false
 
     // Swipe to refresh satte
     val refreshState = rememberSwipeRefreshState(recipeListState.isLoading())
@@ -126,7 +127,7 @@ fun RecipeScreen(
         val msg = statusMessage.data ?: statusMessage.message
         msg?.let {
             val openDialog = remember { mutableStateOf(true) }
-            if (openDialog.value){
+            if (openDialog.value) {
                 AlertDialog(
                     onDismissRequest = {
                         viewmodel.clearStatus()
@@ -138,7 +139,7 @@ fun RecipeScreen(
                         })
                         { Text(text = "Confirmar") }
                     },
-                    text = { Text(text=it) }
+                    text = { Text(text = it) }
                 )
             }
 
@@ -184,7 +185,7 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, st
     var precio by remember { mutableStateOf("") }
     val selectedFood = remember { arrayListOf<Pair<Int, Float>>() }
     val foodList by stockViewmodel.foodList.observeAsState(Resource.Empty())
-    var (showDialog, setShowDialog) =  remember { mutableStateOf(false) }
+    var (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     if (foodList.isEmpty()) stockViewmodel.refreshFoodList()
 
     if (foodList.isSuccess()) {

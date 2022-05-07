@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -68,7 +67,8 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
 
         )
 
-        SrmTextField(value = name,
+        SrmTextField(
+            value = name,
             label = stringResource(id = R.string.name),
             enabled = signUpState !is Resource.Loading,
             isError = signUpState is Resource.Error,
@@ -88,7 +88,7 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
 
                 val description = if (passwordVisibility) "Hide password" else "Show password"
 
-                IconButton(onClick = {passwordVisibility = !passwordVisibility}){
+                IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
                     Image(image, contentDescription = description)
                 }
             },
@@ -96,7 +96,8 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
             modifier = Modifier.padding(0.dp, 20.dp)
         )
 
-        SrmTextField(value = password2,
+        SrmTextField(
+            value = password2,
             label = stringResource(id = R.string.password_check),
             enabled = signUpState !is Resource.Loading,
             isError = signUpState is Resource.Error,
@@ -109,7 +110,7 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
 
                 val description = if (passwordVisibility) "Hide password" else "Show password"
 
-                IconButton(onClick = {passwordVisibility = !passwordVisibility}){
+                IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
                     Image(image, contentDescription = description)
                 }
             },
@@ -127,11 +128,13 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
             SrmText(text = stringResource(id = R.string.terms_conditions), fontFamily = poppinsFontFamily, fontWeight = FontWeight.Normal)
         }
 
-        SrmButton(onClick = {
-            viewmodel.signup(email, name, password, password2)
-        }, text = stringResource(id = R.string.register),
-        enabled = signUpState !is Resource.Loading && checkBox,
-        //modifier = Modifier.padding(0.dp, 10.dp)
+        SrmButton(
+            onClick = {
+                viewmodel.signup(email, name, password, password2)
+            },
+            text = stringResource(id = R.string.register),
+            enabled = signUpState !is Resource.Loading && checkBox,
+            //modifier = Modifier.padding(0.dp, 10.dp)
         )
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -145,14 +148,20 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
             CircularProgressIndicator()
 
         if (signUpState is Resource.Success) {
-            SrmText(text = "Cuenta creada correctamente! Espere a ser rederigido.", textAlign = TextAlign.Center, fontFamily = poppinsFontFamily, fontWeight = FontWeight.Normal)
+            SrmText(text = "Cuenta creada correctamente! Espere a ser rederigido.",
+                textAlign = TextAlign.Center,
+                fontFamily = poppinsFontFamily,
+                fontWeight = FontWeight.Normal)
             LaunchedEffect(key1 = signUpState) {
                 delay(4000)
                 navigator.popBackStack()
             }
         }
-        if (signUpState is Resource.Error){
-            SrmText(text = "Cuenta no creada. Revise los datos introducidos", textAlign = TextAlign.Center, fontFamily = poppinsFontFamily, fontWeight = FontWeight.Normal)
+        if (signUpState is Resource.Error) {
+            SrmText(text = "Cuenta no creada. Revise los datos introducidos",
+                textAlign = TextAlign.Center,
+                fontFamily = poppinsFontFamily,
+                fontWeight = FontWeight.Normal)
         }
     }
 }

@@ -97,7 +97,7 @@ fun FoodListScreen(
         val msg = statusMessage.data ?: statusMessage.message
         msg?.let {
             val openDialog = remember { mutableStateOf(true) }
-            if (openDialog.value){
+            if (openDialog.value) {
                 AlertDialog(
                     onDismissRequest = {
                         viewmodel.clearStatus()
@@ -109,7 +109,7 @@ fun FoodListScreen(
                         })
                         { Text(text = "Confirmar") }
                     },
-                    text = { Text(text=it) }
+                    text = { Text(text = it) }
                 )
             }
 
@@ -129,7 +129,7 @@ fun FoodListScreen(
                 else {
                     LazyColumn(modifier = Modifier.wrapContentSize()) {
                         items(it, key = { it.stockId }) { stock ->
-                            SrmSelectableRow() {
+                            SrmSelectableRow {
                                 SrmText(text = "${stock.quantity} ${stock.expirationDate}", textAlign = TextAlign.Center)
                                 IconButton(onClick = {
                                     viewmodel.deleteStock(stock)

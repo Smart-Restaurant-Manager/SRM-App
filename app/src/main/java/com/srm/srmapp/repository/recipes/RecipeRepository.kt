@@ -1,6 +1,5 @@
 package com.srm.srmapp.repository.recipes
 
-import android.util.Log
 import com.srm.srmapp.data.dto.recipe.response.toRecipe
 import com.srm.srmapp.data.dto.recipe.response.toRecipeList
 import com.srm.srmapp.data.models.Recipe

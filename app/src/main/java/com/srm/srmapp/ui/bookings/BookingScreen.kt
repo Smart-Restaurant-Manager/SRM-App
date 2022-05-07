@@ -101,7 +101,6 @@ fun BookingScreen(
     }
 
 
-
     //Añadir Reserva
     if (popupAddState) {
         val booking = remember { BookingDataHolder() }
@@ -126,7 +125,7 @@ fun BookingScreen(
         val msg = statusMessage.data ?: statusMessage.message
         msg?.let {
             val openDialog = remember { mutableStateOf(true) }
-            if (openDialog.value){
+            if (openDialog.value) {
                 AlertDialog(
                     onDismissRequest = {
                         viewmodel.clearStatus()
@@ -138,7 +137,7 @@ fun BookingScreen(
                         })
                         { Text(text = "Confirmar") }
                     },
-                    text = { Text(text=it) }
+                    text = { Text(text = it) }
                 )
             }
 
