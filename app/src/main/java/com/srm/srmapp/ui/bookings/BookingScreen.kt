@@ -1,6 +1,7 @@
 package com.srm.srmapp.ui.bookings
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,6 +30,9 @@ import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.theme.paddingEnd
 import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import timber.log.Timber
 
 
@@ -180,7 +184,7 @@ fun BookingDialog(
     SrmDialog(onDismissRequest = onDismissRequest) {
         SrmTextFieldHint(value = booking.name, placeholder = stringResource(R.string.food_name), onValueChange = onNameChange)
         SrmTextFieldHint(value = booking.people, placeholder = stringResource(R.string.amount_of_people), onValueChange = onPeopleChange)
-        SrmTextFieldHint(value = booking.date, placeholder = stringResource(R.string.date), onValueChange = onDateChange)
+        SrmTextFieldHint(value = booking.date, placeholder = stringResource(R.string.date), readOnly = true, onValueChange = onDateChange)
         SrmTextFieldHint(value = booking.phone, placeholder = stringResource(R.string.tel), onValueChange = onPhoneChange)
         SrmTextFieldHint(value = booking.email, placeholder = stringResource(R.string.mail), onValueChange = onEmailChange)
         SrmTextFieldHint(value = booking.table, placeholder = stringResource(R.string.table), onValueChange = onTableChange)

@@ -220,9 +220,9 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, st
 @Composable
 fun RecipeItem(recipe: Recipe, onClick: () -> Unit) {
 
-    SrmSelectableRow(onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
-        SrmText(text = recipe.name, textAlign = TextAlign.Center)
-        SrmText(text = recipe.price.toString(), textAlign = TextAlign.Center)
+    SrmSelectableRow(onClick = onClick) {
+        SrmText(text = recipe.name, textAlign = TextAlign.Start, modifier = Modifier.padding(start = 40.dp, end = paddingEnd))
+        SrmText(text = recipe.price.toString(), textAlign = TextAlign.End, modifier = Modifier.padding(start = paddingStart, end = 100.dp))
     }
 }
 

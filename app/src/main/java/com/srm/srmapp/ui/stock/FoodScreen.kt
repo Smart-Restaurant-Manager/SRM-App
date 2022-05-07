@@ -61,8 +61,7 @@ fun FoodListScreen(
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .padding(start = paddingStart, end = paddingEnd),
-        horizontalAlignment = Alignment.CenterHorizontally) {
+        .padding(start = paddingStart, end = paddingEnd)) {
         SrmAddTitleSearch(stringResource(R.string.food),
             onClickSearch = { dialogSearchFood = true },
             onClickAdd = { dialogAddFoodState = true },
@@ -229,9 +228,9 @@ fun FoodListScreen(
 
 @Composable
 fun FoodItem(food: Food, onClick: () -> Unit) {
-    SrmSelectableRow(onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
-        SrmText(text = food.name, textAlign = TextAlign.Center)
-        SrmText(text = food.units, textAlign = TextAlign.Center)
+    SrmSelectableRow(onClick = onClick) {
+        SrmText(text = food.name, textAlign = TextAlign.Start, modifier = Modifier.padding(start = 40.dp, end = paddingEnd))
+        SrmText(text = food.units, textAlign = TextAlign.End, modifier = Modifier.padding(start = paddingStart, end = 100.dp))
     }
 }
 
