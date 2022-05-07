@@ -5,6 +5,7 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.srm.srmapp.data.models.Order
 import com.srm.srmapp.data.models.Recipe
+import timber.log.Timber
 import java.time.LocalDateTime
 
 @Keep
@@ -100,9 +101,22 @@ data class OrderResponse(
 
 fun OrderResponse.toOrder() = data.toOrder()
 
+fun parseStatus(s: String): Order.Status = when (s) {
+    "En espera" -> Order.Status.Waiting()
+    "Confirmada" -> Order.Status.Confirmed()
+    "En procés" -> Order.Status.InProcess()
+    "Cancel·lada" -> Order.Status.Cancelled()
+    "Pagada" -> Order.Status.Paid()
+    "Servida" -> Order.Status.Delievered()
+    else -> {
+        Timber.e("Order status not found!")
+        Order.Status.None()
+    }
+}
+
 fun OrderResponse.Data.toOrder() =
     Order(
         orderId = id,
         bookingId = attributes.bookingId,
-        status = Order.parseStatus(attributes.status.attributes.status),
+        status = parseStatus(attributes.status.attributes.status),
         recipeList = attributes.recipes.map { Order.OrderRecipe(it.recipeId, it.quantity, it.price, it.type) })

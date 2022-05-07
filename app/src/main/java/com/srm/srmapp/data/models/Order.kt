@@ -1,15 +1,31 @@
 package com.srm.srmapp.data.models
 
+import com.srm.srmapp.R
 import com.srm.srmapp.data.dto.orders.body.OrderObject
 import com.srm.srmapp.repository.orders.OrdersInterface
-import timber.log.Timber
 
-data class Order(val orderId: Int = -1, val bookingId: Int = -1, val status: Status = Status.None(), val recipeList: List<OrderRecipe>) {
+data class Order(val orderId: Int = -1, val bookingId: Int = -1, var status: Status = Status.None(), val recipeList: List<OrderRecipe>) {
     data class OrderRecipe(val recipeId: Int, val quantity: Int, val price: Double, val type: Int)
 
     sealed class Status(val data: String) {
         override fun toString(): String {
             return data
+        }
+
+        fun getStringId() = when (this) {
+            is Cancelled -> R.string.cancelled
+            is Confirmed -> R.string.confirmed
+            is Delievered -> R.string.delievered
+            is InProcess -> R.string.inprocess
+            is Paid -> R.string.paid
+            is Waiting -> R.string.waiting
+            is None -> R.string.all
+        }
+
+        companion object {
+            val STAUS_UI =
+                listOf(None(), Waiting(), Confirmed(), InProcess(),
+                    Cancelled(), Delievered(), Paid())
         }
 
         class None : Status("")
@@ -19,23 +35,6 @@ data class Order(val orderId: Int = -1, val bookingId: Int = -1, val status: Sta
         class Cancelled : Status(OrdersInterface.WAITING)
         class Delievered : Status(OrdersInterface.DELIEVERED)
         class Paid : Status(OrdersInterface.PAID)
-
-
-    }
-
-    companion object {
-        fun parseStatus(s: String): Status = when (s) {
-            OrdersInterface.WAITING -> Status.Waiting()
-            OrdersInterface.CONFIRMED -> Status.Confirmed()
-            OrdersInterface.IN_PROCESS -> Status.InProcess()
-            OrdersInterface.CANCELLED -> Status.Cancelled()
-            OrdersInterface.PAID -> Status.Paid()
-            OrdersInterface.DELIEVERED -> Status.Delievered()
-            else -> {
-                Timber.e("Order status not found!")
-                Status.None()
-            }
-        }
     }
 
     fun toJsonObject() =

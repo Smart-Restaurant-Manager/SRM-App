@@ -98,4 +98,11 @@
     <string name="table">Mesa</string>
     <string name="mostrar_reserva">Mostrar Reserva</string>
     <string name="Editar">Editar Reserva</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="delievered">Delievered</string>
+    <string name="inprocess">In process</string>
+    <string name="paid">Paid</string>
+    <string name="waiting">Waiting</string>
+    <string name="all">All</string>
 </resources>

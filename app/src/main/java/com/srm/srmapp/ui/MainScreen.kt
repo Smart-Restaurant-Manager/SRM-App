@@ -23,6 +23,7 @@ import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.destinations.BookingScreenDestination
 import com.srm.srmapp.ui.destinations.FoodListScreenDestination
 import com.srm.srmapp.ui.destinations.MenuScreenDestination
+import com.srm.srmapp.ui.destinations.OrderScreenDestination
 import com.srm.srmapp.ui.theme.ButtonColor1
 import com.srm.srmapp.ui.theme.padding
 import kotlin.system.exitProcess
@@ -31,10 +32,10 @@ import kotlin.system.exitProcess
 @com.ramcosta.composedestinations.annotation.Destination
 fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
     val buttonNames = listOf(
-        Pair(R.string.reservas) {navigator.navigate(BookingScreenDestination())},
+        Pair(R.string.reservas) { navigator.navigate(BookingScreenDestination()) },
         Pair(R.string.food) { navigator.navigate(FoodListScreenDestination()) },
         Pair(R.string.menu) { navigator.navigate(MenuScreenDestination()) },
-        Pair(R.string.Pedidos){},
+        Pair(R.string.Pedidos) { navigator.navigate(OrderScreenDestination()) },
         Pair(R.string.predictions) {})
     var popupState by remember { mutableStateOf(false) }
     val loggedIn by userSession.loggedIn.observeAsState(true)
@@ -66,7 +67,7 @@ fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
     SrmHeader(title = stringResource(R.string.start)) { popupState = true }
     BackHandler { popupState = true }
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        LazyColumn{
+        LazyColumn {
             items(buttonNames) { (id, onclick) ->
                 SrmButton(modifier = Modifier
                     .padding(padding)
