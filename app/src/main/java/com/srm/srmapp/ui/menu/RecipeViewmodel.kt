@@ -44,7 +44,9 @@ class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRe
     }
 
     fun addRecipe(recipe: Recipe) {
-        fetchResource(_status) {
+        fetchResource(_status, onSuccess = {
+            refreshRecipeList()
+        }) {
             recipeRepository.postRecipe(recipe)
         }
     }

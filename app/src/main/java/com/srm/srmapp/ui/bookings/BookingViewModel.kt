@@ -46,7 +46,9 @@ class BookingViewModel @Inject constructor(
 
 
     fun addBooking(bookingDataHolder: BookingDataHolder) {
-        fetchResource(this._status) {
+        fetchResource(this._status, onSuccess = {
+            refreshBookingsList()
+        }) {
             bookingRepository.postBooking(bookingDataHolder.toBooking())
         }
     }
