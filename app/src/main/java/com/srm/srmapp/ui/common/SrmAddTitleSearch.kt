@@ -18,7 +18,14 @@ import com.srm.srmapp.ui.theme.ButtonColor2
 import com.srm.srmapp.ui.theme.TextColor
 
 @Composable
-fun SrmAddTitleSearch(title: String, onClickAdd: () -> Unit = {}, onClickSearch: () -> Unit = {}, onClickBack: () -> Unit = {}) {
+fun SrmAddTitleSearch(
+    title: String,
+    onClickAdd: () -> Unit = {},
+    onClickSearch: () -> Unit = {},
+    onClickBack: () -> Unit = {},
+    showAdd: Boolean = true,
+    showSearch: Boolean = true,
+) {
     Box(Modifier
         .fillMaxWidth()) {
         Column(verticalArrangement = Arrangement.SpaceAround) {
@@ -37,12 +44,16 @@ fun SrmAddTitleSearch(title: String, onClickAdd: () -> Unit = {}, onClickSearch:
                     .padding(8.dp),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                IconButton(onClickAdd) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_baseline_add_24),
-                        contentDescription = "Add",
-                        modifier = Modifier.size(25.dp, 25.dp)
-                    )
+                if (showAdd) {
+                    IconButton(onClickAdd) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_baseline_add_24),
+                            contentDescription = "Add",
+                            modifier = Modifier.size(25.dp, 25.dp)
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.size(25.dp, 25.dp))
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Box(
@@ -61,12 +72,16 @@ fun SrmAddTitleSearch(title: String, onClickAdd: () -> Unit = {}, onClickSearch:
                     )
                 }
                 Spacer(modifier = Modifier.width(16.dp))
-                IconButton(onClickSearch) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.search),
-                        contentDescription = "Search",
-                        modifier = Modifier.size(25.dp, 25.dp)
-                    )
+                if (showSearch) {
+                    IconButton(onClickSearch) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.search),
+                            contentDescription = "Search",
+                            modifier = Modifier.size(25.dp, 25.dp)
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.size(25.dp, 25.dp))
                 }
             }
         }
@@ -76,5 +91,5 @@ fun SrmAddTitleSearch(title: String, onClickAdd: () -> Unit = {}, onClickSearch:
 @Composable
 @Preview(showBackground = true)
 fun PreviewButtonTitleButton() {
-    SrmAddTitleSearch("Preview")
+    SrmAddTitleSearch("Preview", showAdd = false, showSearch = true)
 }
