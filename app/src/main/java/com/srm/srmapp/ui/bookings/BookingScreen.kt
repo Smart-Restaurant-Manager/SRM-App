@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -98,6 +101,7 @@ fun BookingScreen(
     }
 
 
+
     //Añadir Reserva
     if (popupAddState) {
         val booking = remember { BookingDataHolder() }
@@ -109,11 +113,37 @@ fun BookingScreen(
             onDateChange = { booking.date = it },
             onPhoneChange = { booking.phone = it },
             onEmailChange = { booking.email = it },
-            onTableChange = { booking.table = it }) {
+            onTableChange = { booking.table = it })
+        {
             viewmodel.addBooking(booking)
+
         }
     }
 
+    val statusMessage by viewmodel.status.observeAsState(Resource.Empty())
+
+    if (statusMessage.isSuccess() || statusMessage.isError()) {
+        val msg = statusMessage.data ?: statusMessage.message
+        msg?.let {
+            val openDialog = remember { mutableStateOf(true) }
+            if (openDialog.value){
+                AlertDialog(
+                    onDismissRequest = {
+                        viewmodel.clearStatus()
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            openDialog.value = false
+                            viewmodel.clearStatus()
+                        })
+                        { Text(text = "Confirmar") }
+                    },
+                    text = { Text(text=it) }
+                )
+            }
+
+        }
+    }
     //Editar Reserva
     if (dialogSearchBook) {
         SrmSearch(items = bookingList, onDismissRequest = { dialogSearchBook = false },
@@ -132,6 +162,7 @@ fun BookingScreen(
             }
         }
     }
+
 }
 
 @Composable
@@ -247,6 +278,7 @@ fun BookItemPopup(
         }
     }
 
+
     if (popupEditBooking) {
         val booking = remember { BookingDataHolder.fromBooking(book) }
         BookingDialog(resId = R.string.mod_booking,
@@ -261,4 +293,5 @@ fun BookItemPopup(
             viewmodel.putBooking(book.id, booking)
         }
     }
+
 }

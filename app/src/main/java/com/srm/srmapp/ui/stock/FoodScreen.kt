@@ -96,13 +96,26 @@ fun FoodListScreen(
     if (statusMessage.isSuccess() || statusMessage.isError()) {
         val msg = statusMessage.data ?: statusMessage.message
         msg?.let {
-            SrmDialog(onDismissRequest = {
-                viewmodel.clearStatus()
-            }) {
-                SrmText(text = it, textAlign = TextAlign.Center)
+            val openDialog = remember { mutableStateOf(true) }
+            if (openDialog.value){
+                AlertDialog(
+                    onDismissRequest = {
+                        viewmodel.clearStatus()
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            openDialog.value = false
+                            viewmodel.clearStatus()
+                        })
+                        { Text(text = "Confirmar") }
+                    },
+                    text = { Text(text=it) }
+                )
             }
+
         }
     }
+
 
 // stock for one food
     val stockList by viewmodel.stockList.observeAsState(Resource.Empty())

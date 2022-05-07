@@ -9,6 +9,7 @@ import com.srm.srmapp.repository.bookings.BookingRepository
 import com.srm.srmapp.repository.orders.OrdersRepository
 import com.srm.srmapp.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import timber.log.Timber
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -44,9 +45,13 @@ class BookingViewModel @Inject constructor(
     val book: LiveData<Resource<Booking>>
         get() = _book
 
+    fun clearStatus() {
+        Timber.d("Clear Status ${_status.value}")
+        _status.value = Resource.Empty()
+    }
 
     fun addBooking(bookingDataHolder: BookingDataHolder) {
-        fetchResource(this._status, onSuccess = {
+        fetchResource(_status, onSuccess = {
             refreshBookingsList()
         }) {
             bookingRepository.postBooking(bookingDataHolder.toBooking())
