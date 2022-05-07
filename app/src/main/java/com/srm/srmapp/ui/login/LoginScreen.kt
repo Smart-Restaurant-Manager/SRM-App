@@ -1,6 +1,7 @@
 package com.srm.srmapp.ui.login
 
 import android.graphics.drawable.Icon
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -44,6 +46,13 @@ fun LoginScreen(
     userSession: UserSession,
 ) {
 
+    val poppinsFontFamily = FontFamily(
+        Font(R.font.poppins_light, FontWeight.Light),
+        Font(R.font.poppins_regular, FontWeight.Normal),
+        Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic),
+        Font(R.font.poppins_medium, FontWeight.Medium),
+        Font(R.font.poppins_bold, FontWeight.Bold)
+    )
     val userState by userSession.userObject.observeAsState(Resource.Empty())
     if (userSession.isLoggedIn()) {
         when {
