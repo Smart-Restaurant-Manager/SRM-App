@@ -23,6 +23,8 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.srm.srmapp.AppModule
+import com.srm.srmapp.AppModule_ProvideAuthInterfaceFactory
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
@@ -50,14 +52,11 @@ fun FoodListScreen(
 
     // item add dialog state
     var dialogAddFoodState by remember { mutableStateOf(false) }
+
     // Search state dialog
     var dialogSearchFood by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
-    var itemIdx by remember { mutableStateOf(-1) }
     val foodList = remember(foodListState.data) { foodListState.data ?: emptyList() }
-
-    //Categories
-    val categories = listOf("Entrantes", "1r Plato", "2o Plato", "Postres", "Bebidas", "Complementos")
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -130,7 +129,7 @@ fun FoodListScreen(
                     LazyColumn(modifier = Modifier.wrapContentSize()) {
                         items(it, key = { it.stockId }) { stock ->
                             SrmSelectableRow {
-                                SrmText(text = "${stock.quantity} ${stock.expirationDate}", textAlign = TextAlign.Center)
+                                SrmText(text = "${stock.quantity} ${stock.expirationDate.format(AppModule.dateFormatter)}", textAlign = TextAlign.Center)
                                 IconButton(onClick = {
                                     viewmodel.deleteStock(stock)
                                 }) {
@@ -209,21 +208,21 @@ fun FoodListScreen(
             predicate = { food, query ->
                 food.name.startsWith(query, ignoreCase = true)
             }) { food ->
+            var dialogItemState by remember { mutableStateOf(false) }
             SrmSelectableRow(
-                onClick = {
-                    foodList.indexOf(food).let { idx -> itemIdx = idx }
-                    dialogSearchFood = false
-                }) {
+                onClick = { dialogItemState = true }) {
                 SrmText(text = food.name, textAlign = TextAlign.Center)
                 SrmText(text = food.units, textAlign = TextAlign.Center)
             }
+            if (dialogItemState) {
+                FoodItemPopup(
+                    food = food,
+                    viewmodel = viewmodel,
+                    onDismissRequest = { dialogItemState = false },
+                )
+            }
         }
-        if (itemIdx >= 0) {
-            Timber.d("Scroll to $itemIdx")
-            LaunchedEffect(key1 = itemIdx, block = {
-                lazyListState.scrollToItem(itemIdx, 0)
-            })
-        }
+
     }
 }
 

@@ -59,6 +59,7 @@ data class Recipe(
             5 -> R.string.complementos
             else -> R.string.error_type
         }
+        val RECIPE_ERROR = Recipe(Recipe.RecipeType.NONE, -1, "Error", 0f)
     }
 }
 

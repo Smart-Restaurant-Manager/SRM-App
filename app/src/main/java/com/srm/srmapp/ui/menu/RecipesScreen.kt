@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
@@ -60,11 +59,7 @@ fun RecipeScreen(
 
     // Search dialog state
     var dialogSearchRecipe by remember { mutableStateOf(false) }
-    var itemIdx by remember { mutableStateOf(-1) }
     val recipeList = remember(recipeListState.data) { recipeListState.data ?: emptyList() }
-
-    // Lazy list state
-    val lazyListState = rememberLazyListState()
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -79,7 +74,7 @@ fun RecipeScreen(
             state = refreshState,
             modifier = Modifier.padding(0.dp, 30.dp),
             onRefresh = { viewmodel.refreshRecipeList() }) {
-            LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
                 stickyHeader {
                     Row(modifier = Modifier
                         .height(50.dp)
@@ -159,23 +154,22 @@ fun RecipeScreen(
             predicate = { recipeItem, query ->
                 recipeItem.name.startsWith(query, ignoreCase = true)
             }) { recipeItem ->
+            var dialogItemState by remember { mutableStateOf(false) }
             SrmSelectableRow(
-                onClick = {
-                    recipeList.indexOf(recipeItem).let { idx -> itemIdx = idx }
-                    dialogSearchRecipe = false
-                }) {
+                onClick = { dialogItemState = true }) {
                 SrmText(text = recipeItem.name, textAlign = TextAlign.Center)
                 SrmText(text = recipeItem.price.toString(), textAlign = TextAlign.Center)
             }
-        }
-        if (itemIdx >= 0) {
-            Timber.d("Scroll to $itemIdx")
-            LaunchedEffect(key1 = itemIdx, block = {
-                lazyListState.scrollToItem(itemIdx, 0)
-            })
+
+            if (dialogItemState) {
+                RecipeItemPopUp(
+                    recipe = recipeItem,
+                    viewmodel = viewmodel,
+                    onDismissRequest = { dialogItemState = false }
+                )
+            }
         }
     }
-
 }
 
 

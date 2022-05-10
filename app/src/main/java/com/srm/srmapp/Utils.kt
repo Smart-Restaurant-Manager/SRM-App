@@ -40,10 +40,14 @@ object Utils {
     }
 
 
+    val exceptionHandler = CoroutineExceptionHandler { context, ex ->
+        Timber.e("${ex.message} \n${Log.getStackTraceString(ex)}")
+    }
+
+    val Dispatchers.CUSTOM_DISPATCHER: CoroutineContext
+        get() = exceptionHandler + IO
+
     fun CoroutineScope.launchException(coroutineContext: CoroutineContext = Dispatchers.IO, call: suspend CoroutineScope.() -> Unit): Job {
-        val exceptionHandler = CoroutineExceptionHandler { context, ex ->
-            Timber.e("${ex.message} \n${Log.getStackTraceString(ex)}")
-        }
 
         return this.launch(exceptionHandler + coroutineContext) {
             call()

@@ -3,8 +3,18 @@ package com.srm.srmapp.data.models
 import com.srm.srmapp.R
 import com.srm.srmapp.data.dto.orders.body.OrderObject
 import com.srm.srmapp.repository.orders.OrdersInterface
+import java.time.LocalDateTime
 
-data class Order(val orderId: Int = -1, val bookingId: Int = -1, var status: Status = Status.None(), val recipeList: List<OrderRecipe>) {
+data class Order(
+    val orderId: Int = -1,
+    val bookingId: Int = -1,
+    var status: Status = Status.None(),
+    val createdAt: LocalDateTime? = null,
+    val updatedAt: LocalDateTime? = null,
+    val booking: Booking? = null,
+    val recipe: List<Recipe>? = null,
+    val recipeList: List<OrderRecipe>,
+) {
     data class OrderRecipe(val recipeId: Int, val quantity: Int, val price: Double, val type: Int)
 
     sealed class Status(val data: String) {

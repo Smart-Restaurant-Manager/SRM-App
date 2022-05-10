@@ -54,9 +54,7 @@ fun BookingScreen(
     val bookingList = remember(bookingListState.data) { bookingListState.data ?: emptyList() }
     var dialogSearchBook by remember { mutableStateOf(false) }
 
-    var itemIdx by remember { mutableStateOf(-1) }
     val status by viewmodel.status.observeAsState(Resource.Empty())
-    val lazyListState = rememberLazyListState()
 
     // Allow composabel inside function
     var popupSeeBooking by remember { mutableStateOf(false) }
@@ -75,7 +73,7 @@ fun BookingScreen(
             state = refreshState,
             modifier = Modifier.padding(0.dp, 30.dp),
             onRefresh = { viewmodel.refreshBookingsList() }) {
-            LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
                 stickyHeader {
                     SrmStickyHeader(headers = listOf(stringResource(id = R.string.name),
                         stringResource(id = R.string.amount_of_people_short),
