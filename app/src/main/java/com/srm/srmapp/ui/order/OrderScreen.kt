@@ -81,7 +81,7 @@ fun OrderScreen(
             orderList.data?.let { orderList ->
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(orderList, key = { it.orderId }) {
-                        OrderItem(order = it) {
+                        OrderItem(order = it, orderStatus) {
                             viewmodel.getOrderRecipe(it)
                             orderDialog = true
                         }
@@ -155,8 +155,12 @@ fun DropDownChangeStatus(text: String, onStatusChange: (Order.Status) -> Unit) {
 }
 
 @Composable
-fun OrderItem(order: Order, onClick: () -> Unit = {}) {
+fun OrderItem(order: Order, orderStatus: Order.Status, onClick: () -> Unit = {}) {
     SrmSelectableRow(onClick = onClick) {
-        SrmText(text = "${order.orderId}")
+        if (orderStatus !is Order.Status.None)
+            SrmText(text = "${order.orderId}")
+        else
+            SrmText(text = "${order.orderId} ${order.status}")
+
     }
 }
