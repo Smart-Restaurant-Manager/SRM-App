@@ -17,10 +17,11 @@ import com.srm.srmapp.repository.recipes.RecipeInterface
 import com.srm.srmapp.repository.recipes.RecipeRepository
 import com.srm.srmapp.repository.stock.StockInterface
 import com.srm.srmapp.repository.stock.StockRepository
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.junit.Test
+import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -28,6 +29,7 @@ import retrofit2.http.GET
 import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlinx.coroutines.runBlocking as runBlocking2
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -37,6 +39,20 @@ import java.time.LocalDateTime
 
 
 class ExampleUnitTest {
+    private fun <T> runBlocking(block: suspend CoroutineScope.() -> T): T {
+        Thread.sleep(1000)
+        val a = runBlocking2 {
+            block()
+        }
+        if (a is Response<*> && !a.isSuccessful) {
+            val e = HttpException(a)
+
+            println("${e.code()} ${e.localizedMessage}")
+        }
+        return a
+    }
+
+
     private var token: String = ""
 
     // set token to add authorization header
@@ -132,7 +148,7 @@ class ExampleUnitTest {
     private val stockRepository = StockRepository(stockapi)
 
     @Test
-    fun testStockRepository(){
+    fun testStockRepository() {
 
         val food = Food("test", -1, "test", "l")
 
@@ -147,13 +163,12 @@ class ExampleUnitTest {
         val foodLast = foodList.last().foodId
 
         assert(runBlocking { stockRepository.getFood(foodLast) }.isSuccess())
-       // assert(runBlocking { stockRepository.putFood(food) }.isSuccess())
+        // assert(runBlocking { stockRepository.putFood(food) }.isSuccess())
 
 
+        val stock = Stock(-1, foodLast, 1f, LocalDate.now())
 
-        val stock = Stock(-1, foodLast,1f,LocalDate.now())
-
-        assert(runBlocking { stockRepository.postStock(stock ).isSuccess() })
+        assert(runBlocking { stockRepository.postStock(stock).isSuccess() })
         val stockRes = runBlocking {
             stockapi.getStock()
         }
@@ -193,12 +208,13 @@ class ExampleUnitTest {
     }
 
     private val recipeRepository = RecipeRepository(recipeApi)
+
     @Test
-    fun testRecipeRepository(){
+    fun testRecipeRepository() {
         val recipeModel = Recipe(name = "Unit Test", type = Recipe.RecipeType.NONE, id = 1, price = 1f)
 
-        assert(runBlocking {recipeRepository.postRecipe(recipeModel).isSuccess()})
-        val recipeListRes =  runBlocking { recipeRepository.getRecipes()}
+        assert(runBlocking { recipeRepository.postRecipe(recipeModel).isSuccess() })
+        val recipeListRes = runBlocking { recipeRepository.getRecipes() }
 
         assert(recipeListRes.isSuccess())
 
@@ -212,7 +228,7 @@ class ExampleUnitTest {
     }
 
 
-private val orderApi = retrofit(token).create(OrdersInterface::class.java)
+    private val orderApi = retrofit(token).create(OrdersInterface::class.java)
 
     private fun createBooking(): Int {
         val bookingObject = BookingObject(name = "Unit Test", email = "Uni@a", phone = "1", date = LocalDateTime.now(), people = 1, table = "1")
@@ -326,6 +342,7 @@ private val orderApi = retrofit(token).create(OrdersInterface::class.java)
     }
 
     private val BookingRepository = com.srm.srmapp.repository.bookings.BookingRepository(bookingApi)
+
     @Test
     fun testBookingRepository() {
 
@@ -343,8 +360,8 @@ private val orderApi = retrofit(token).create(OrdersInterface::class.java)
         assert(lastId != null)
         lastId!!
 
-        assert(runBlocking { BookingRepository.getBooking(lastId).isSuccess()})
-        assert(runBlocking { BookingRepository.putBooking(lastId,bookingObject).isSuccess() })
+        assert(runBlocking { BookingRepository.getBooking(lastId).isSuccess() })
+        assert(runBlocking { BookingRepository.putBooking(lastId, bookingObject).isSuccess() })
         assert(runBlocking { BookingRepository.deleteBooking(lastId).isSuccess() })
     }
 
