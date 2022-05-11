@@ -105,4 +105,6 @@
     <string name="paid">Paid</string>
     <string name="waiting">Waiting</string>
     <string name="all">All</string>
+    <string name="EditarStock">Editar Stock</string>
+    <string name="mod_stock">Modificar Stock</string>
 </resources>

@@ -66,8 +66,8 @@ class StockRepository @Inject constructor(private val api: StockInterface) : Bas
         "Stock añadido"
     }
 
-    suspend fun putStock(stock: Stock) = safeApiCall({
-        api.putStock(stock.stockId, stock.toJsonObject())
+    suspend fun putStock(id: Int, stock: Stock) = safeApiCall({
+        api.putStock(id, stock.toJsonObject())
     }) {
         "Stock modificado"
     }

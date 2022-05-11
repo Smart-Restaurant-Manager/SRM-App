@@ -10,8 +10,21 @@ import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.stock.StockRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
+import java.lang.Float.parseFloat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
+
+data class StockDataHodle(
+    var quantity: String = "",
+    var date : String  = ""
+){
+    fun toStock() = Stock(-1,1, parseFloat(quantity), LocalDate.now())
+
+    companion object{
+        fun fromStock(b:Stock): StockDataHodle = StockDataHodle(b.quantity.toString(),b.expirationDate.toString())
+    }
+}
 
 @HiltViewModel
 class StockViewmodel @Inject constructor(private val stockRepository: StockRepository) : ViewModel() {
@@ -133,6 +146,12 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
             list.find { it.foodId == id }?.let {
                 _food.value = Resource.Success(data = it)
             }
+        }
+    }
+
+    fun putStock(id:Int, stock:StockDataHodle){
+        fetchResource(_status){
+            stockRepository.putStock(id,stock.toStock())
         }
     }
 
