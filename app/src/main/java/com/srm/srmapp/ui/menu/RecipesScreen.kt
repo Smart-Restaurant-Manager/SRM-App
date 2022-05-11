@@ -226,6 +226,11 @@ fun RecipeItemPopUp(
     viewmodel: RecipeViewmodel,
     onDismissRequest: () -> Unit = {},
 ) {
+
+    var popupSeeReceipt by remember { mutableStateOf(false) }
+    var popupEditReceipt by remember { mutableStateOf(false) }
+
+
     SrmDialog(onDismissRequest = onDismissRequest) {
         SrmSelectableRow(
             horizontalArrangement = Arrangement.Start,
@@ -241,15 +246,45 @@ fun RecipeItemPopUp(
         SrmSelectableRow(
             horizontalArrangement = Arrangement.Start,
             onClick = {
-                Timber.d("Get Ingredients ${recipe.name}")
-                viewmodel.getRecipeBy(recipe.id)
-                onDismissRequest.invoke()
+                popupEditReceipt= true
+            }
+        ) {
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            Icon(painter = painterResource(id = R.drawable.ic_baseline_edit_24),
+                contentDescription = stringResource(R.string.Editar))
+            Spacer(modifier = Modifier.width(spacerWitdh))
+            SrmText(text = stringResource(R.string.Editar))
+        }
+        SrmSelectableRow(
+            horizontalArrangement = Arrangement.Start,
+            onClick = {
+                popupSeeReceipt = true
+
             }) {
             Spacer(modifier = Modifier.width(spacerWitdh))
             Icon(painter = painterResource(id = R.drawable.ic_baseline_add_24), contentDescription = "Mostrar ingredients")
             Spacer(modifier = Modifier.width(spacerWitdh))
             SrmText(text = stringResource(R.string.show_ingredients))
         }
+    }
+    //Hablar con Pablo
+    if(popupSeeReceipt){
+        SrmDialog(onDismissRequest = { popupSeeReceipt = false }) {
+            Spacer(modifier = Modifier.size(20.dp))
+            SrmText(text = "Ingrediente= ${recipe.food}")
+            /*
+            for (element in recipe.food!!){
+                Spacer(modifier = Modifier.size(20.dp))
+                SrmText(text = "Ingrediente ID:  ${element.first}   Cantidad: ${element.second}"  )
+
+            }
+            */
+
+        }
+    }
+
+    if(popupEditReceipt){
+
     }
 }
 
