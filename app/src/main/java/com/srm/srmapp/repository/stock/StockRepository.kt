@@ -1,6 +1,10 @@
 package com.srm.srmapp.repository.stock
 
 import com.srm.srmapp.Resource
+import com.srm.srmapp.data.dto.stock.response.toFood
+import com.srm.srmapp.data.dto.stock.response.toFoodList
+import com.srm.srmapp.data.dto.stock.response.toStock
+import com.srm.srmapp.data.dto.stock.response.toStockList
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.BaseRepository

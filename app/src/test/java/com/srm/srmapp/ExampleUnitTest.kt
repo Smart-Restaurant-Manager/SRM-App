@@ -7,6 +7,8 @@ import com.srm.srmapp.data.dto.bookings.body.BookingObject
 import com.srm.srmapp.data.dto.bookings.response.toBookingList
 import com.srm.srmapp.data.dto.orders.response.toOrderList
 import com.srm.srmapp.data.dto.recipe.response.toRecipeList
+import com.srm.srmapp.data.dto.stock.response.toFoodList
+import com.srm.srmapp.data.dto.stock.response.toStockList
 import com.srm.srmapp.data.models.*
 import com.srm.srmapp.repository.BaseRepository
 import com.srm.srmapp.repository.authentication.AuthInterface
