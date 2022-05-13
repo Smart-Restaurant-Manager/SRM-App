@@ -68,10 +68,6 @@ fun FoodListScreen(
             modifier = Modifier.padding(0.dp, 30.dp),
             onRefresh = { viewmodel.refreshFoodList() }) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
-                stickyHeader {
-                    SrmStickyHeader(headers =
-                    listOf(stringResource(R.string.food_name), stringResource(R.string.quantity)))
-                }
                 items(foodList, key = { it.foodId }) {
                     var dialogItemState by remember { mutableStateOf(false) }
                     FoodItem(food = it) { dialogItemState = true }
@@ -114,7 +110,7 @@ fun FoodListScreen(
 
 
 // stock for one food
-    var popupEditStock by remember { mutableStateOf(false)}
+    var popupEditStock by remember { mutableStateOf(false) }
 
     val stockList by viewmodel.stockList.observeAsState(Resource.Empty())
     if (stockList.isSuccess()) {
@@ -128,9 +124,10 @@ fun FoodListScreen(
                     LazyColumn(modifier = Modifier.wrapContentSize()) {
                         items(it, key = { it.stockId }) { stock ->
                             SrmSelectableRow(onClick = {
-                                 popupEditStock = true
+                                popupEditStock = true
                             }) {
-                                SrmText(text = " Cantidad: ${stock.quantity}    Fecha: ${stock.expirationDate.format(AppModule.dateFormatter)}", textAlign = TextAlign.Center)
+                                SrmText(text = " Cantidad: ${stock.quantity}    Fecha: ${stock.expirationDate.format(AppModule.dateFormatter)}",
+                                    textAlign = TextAlign.Center)
                                 IconButton(onClick = {
                                     viewmodel.deleteStock(stock)
                                 }) {
@@ -139,14 +136,14 @@ fun FoodListScreen(
                                 }
                             }
 
-                            if(popupEditStock){
-                                val stocka = remember {StockDataHodle.fromStock(stock)}
+                            if (popupEditStock) {
+                                val stocka = remember { StockDataHodle.fromStock(stock) }
                                 StockDialog(resId = R.string.mod_stock,
-                                    stock =stocka,
-                                    onDismissRequest = {popupEditStock = false},
-                                    onQuantityChange = {stocka.quantity = it},
-                                    onDateChange = {stocka.date = it}){
-                                    viewmodel.putStock(stock.stockId,stocka)
+                                    stock = stocka,
+                                    onDismissRequest = { popupEditStock = false },
+                                    onQuantityChange = { stocka.quantity = it },
+                                    onDateChange = { stocka.date = it }) {
+                                    viewmodel.putStock(stock.stockId, stocka)
                                 }
                             }
                         }
@@ -264,10 +261,17 @@ fun StockDialog(
 
 @Composable
 fun FoodItem(food: Food, onClick: () -> Unit) {
-    SrmSelectableRow(onClick = onClick) {
-        SrmText(text = food.name, textAlign = TextAlign.Start, modifier = Modifier.padding(start = 40.dp, end = paddingEnd))
-        SrmText(text = food.units, textAlign = TextAlign.End, modifier = Modifier.padding(start = paddingStart, end = 100.dp))
+    SrmListItem(startText = "${food.name}\n${20}${food.units}", endText = "${food.type}", onClick = onClick)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun It() {
+    FoodItem(food = Food("Type", 12, "name", "unit")) {
+
     }
+
+
 }
 
 @Composable
@@ -348,7 +352,6 @@ fun FoodItemPopup(
             }
         }
     }
-
 
 
 }
