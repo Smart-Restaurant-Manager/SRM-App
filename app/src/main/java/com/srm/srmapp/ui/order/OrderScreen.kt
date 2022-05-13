@@ -38,7 +38,7 @@ import kotlin.time.Duration.Companion.seconds
 @Destination
 fun OrderScreen(
     navigator: DestinationsNavigator,
-    viewmodel: OrderViewModel = hiltViewModel(),
+    viewmodel: OrderViewModel,
 ) {
     val orderListState by viewmodel.orderList.observeAsState(Resource.Empty())
     if (orderListState.isEmpty()) viewmodel.refreshOrder()
