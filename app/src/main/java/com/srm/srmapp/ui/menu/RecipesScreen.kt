@@ -1,11 +1,9 @@
 package com.srm.srmapp.ui.menu
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
@@ -15,11 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -31,7 +29,6 @@ import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.stock.StockViewmodel
-import com.srm.srmapp.ui.theme.ButtonColor2
 import com.srm.srmapp.ui.theme.paddingEnd
 import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
@@ -75,33 +72,6 @@ fun RecipeScreen(
             modifier = Modifier.padding(0.dp, 30.dp),
             onRefresh = { viewmodel.refreshRecipeList() }) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                stickyHeader {
-                    Row(modifier = Modifier
-                        .height(50.dp)
-                        .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .background(color = ButtonColor2, RoundedCornerShape(20))
-                                .size(120.dp)
-                                .fillMaxHeight()
-                        ) {
-                            SrmText(text = stringResource(R.string.recipe_name), color = Color.White, modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .background(color = ButtonColor2, RoundedCornerShape(20))
-                                .size(120.dp)
-                                .fillMaxHeight()
-                        ) {
-                            SrmText(text = stringResource(R.string.preu_euros), color = Color.White, modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
-
-                    }
-                }
                 items(recipeList.filter { it.type == recipeType }, key = { it.id }) {
                     var dialogItemState by remember { mutableStateOf(false) }
                     RecipeItem(recipe = it) { dialogItemState = true }
@@ -211,13 +181,13 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, st
     }
 }
 
-@Composable
+ @Composable
 fun RecipeItem(recipe: Recipe, onClick: () -> Unit) {
-
-    SrmSelectableRow(onClick = onClick) {
-        SrmText(text = recipe.name, textAlign = TextAlign.Start, modifier = Modifier.padding(start = 40.dp, end = paddingEnd))
-        SrmText(text = recipe.price.toString(), textAlign = TextAlign.End, modifier = Modifier.padding(start = paddingStart, end = 100.dp))
-    }
+    SrmListItem(startText = "${recipe.name}\n${recipe.price}€",
+        endText = "${recipe.id}\n" + if (recipe.available == true) "Disponible" else "No disponible",
+        icon = painterResource(id = R.drawable.ic_baseline_image_not_supported_24),
+        enableSelect = true,
+        onClick = onClick)
 }
 
 @Composable
@@ -232,6 +202,9 @@ fun RecipeItemPopUp(
 
 
     SrmDialog(onDismissRequest = onDismissRequest) {
+        Icon(modifier = Modifier.size(150.dp, 150.dp),
+            painter = painterResource(id = R.drawable.ic_baseline_image_not_supported_24),
+            contentDescription = "")
         SrmSelectableRow(
             horizontalArrangement = Arrangement.Start,
             onClick = {
@@ -246,14 +219,14 @@ fun RecipeItemPopUp(
         SrmSelectableRow(
             horizontalArrangement = Arrangement.Start,
             onClick = {
-                popupEditReceipt= true
+                popupEditReceipt = true
             }
         ) {
             Spacer(modifier = Modifier.width(spacerWitdh))
             Icon(painter = painterResource(id = R.drawable.ic_baseline_edit_24),
-                contentDescription = stringResource(R.string.Editar))
+                contentDescription = stringResource(R.string.mod_menu))
             Spacer(modifier = Modifier.width(spacerWitdh))
-            SrmText(text = stringResource(R.string.Editar))
+            SrmText(text = stringResource(R.string.mod_menu))
         }
         SrmSelectableRow(
             horizontalArrangement = Arrangement.Start,
@@ -268,7 +241,7 @@ fun RecipeItemPopUp(
         }
     }
     //Hablar con Pablo
-    if(popupSeeReceipt){
+    if (popupSeeReceipt) {
         SrmDialog(onDismissRequest = { popupSeeReceipt = false }) {
             Spacer(modifier = Modifier.size(20.dp))
             SrmText(text = "Ingrediente= ${recipe.food}")
@@ -283,7 +256,7 @@ fun RecipeItemPopUp(
         }
     }
 
-    if(popupEditReceipt){
+    if (popupEditReceipt) {
 
     }
 }
