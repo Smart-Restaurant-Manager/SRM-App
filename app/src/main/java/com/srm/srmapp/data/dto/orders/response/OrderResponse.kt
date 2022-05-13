@@ -131,7 +131,5 @@ fun OrderResponse.Data.toOrder() =
         orderId = id,
         bookingId = attributes.bookingId,
         status = parseStatus(attributes.status.attributes.status),
-        createdAt = attributes.createdAt,
-        updatedAt = attributes.updatedAt,
         booking = getBooking(),
         recipeList = attributes.recipes.map { Order.OrderRecipe(it.recipeId, it.quantity, it.price, it.type) })

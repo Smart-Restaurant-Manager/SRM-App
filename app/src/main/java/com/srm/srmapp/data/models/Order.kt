@@ -9,8 +9,6 @@ data class Order(
     val orderId: Int = -1,
     val bookingId: Int = -1,
     var status: Status = Status.None(),
-    val createdAt: LocalDateTime? = null,
-    val updatedAt: LocalDateTime? = null,
     val booking: Booking? = null,
     val recipe: List<Recipe>? = null,
     val recipeList: List<OrderRecipe>,
