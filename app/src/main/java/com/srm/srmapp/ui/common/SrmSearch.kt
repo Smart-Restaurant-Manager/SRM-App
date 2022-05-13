@@ -1,7 +1,7 @@
 package com.srm.srmapp.ui.common
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
@@ -33,7 +33,9 @@ fun <T> SrmSearch(
 
     SrmDialog(onDismissRequest = onDismissRequest) {
         SrmTextField(label = label, value = query, onValueChange = { query = it })
-        LazyColumn(modifier = Modifier.heightIn(0.dp, 200.dp), contentPadding = PaddingValues(padding)) {
+        LazyColumn(modifier = Modifier
+            .heightIn(0.dp, 300.dp)
+            .padding(top = padding)) {
             items(itemsFound, itemContent = itemContent)
         }
     }
