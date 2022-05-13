@@ -3,14 +3,12 @@ package com.srm.srmapp.data.models
 import com.srm.srmapp.R
 import com.srm.srmapp.data.dto.orders.body.OrderObject
 import com.srm.srmapp.repository.orders.OrdersInterface
-import java.time.LocalDateTime
 
 data class Order(
     val orderId: Int = -1,
     val bookingId: Int = -1,
     var status: Status = Status.None(),
     val booking: Booking? = null,
-    val recipe: List<Recipe>? = null,
     val recipeList: List<OrderRecipe>,
 ) {
     data class OrderRecipe(val recipeId: Int, val quantity: Int, val price: Double, val type: Int)
@@ -30,6 +28,16 @@ data class Order(
             is None -> R.string.all
         }
 
+        fun getId() = when (this) {
+            is Waiting -> 1
+            is Confirmed -> 2
+            is Cancelled -> 3
+            is InProcess -> 4
+            is Delievered -> 5
+            is Paid -> 6
+            is None -> 1
+        }
+
         companion object {
             val STAUS_UI =
                 listOf(None(), Waiting(), Confirmed(), InProcess(),
@@ -46,5 +54,7 @@ data class Order(
     }
 
     fun toJsonObject() =
-        OrderObject(bookingId = bookingId, recipes = recipeList.map { OrderObject.Recipe(it.recipeId, it.quantity, it.price, it.type) })
+        OrderObject(orderStatus = status.getId(),
+            bookingId = bookingId,
+            recipes = recipeList.map { OrderObject.Recipe(it.recipeId, it.quantity, it.price, it.type) })
 }

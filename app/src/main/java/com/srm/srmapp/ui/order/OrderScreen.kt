@@ -215,10 +215,9 @@ fun DropDownChangeStatus(text: String, onStatusChange: (Order.Status) -> Unit) {
 
 @Composable
 fun OrderItem(order: Order, orderStatus: Order.Status, onClick: () -> Unit = {}) {
-    SrmSelectableRow(onClick = onClick) {
-        val status: String = if (orderStatus is Order.Status.None) stringResource(id = order.status.getStringId()) else ""
-        val date = order.booking?.date?.format(AppModule.dateTimeFormatter)
-        val table = order.booking?.table
-        SrmText(text = "${order.orderId} $date $table $status")
-    }
+    val status: String = if (orderStatus is Order.Status.None) stringResource(id = order.status.getStringId()) else ""
+    val date = order.booking?.date?.format(AppModule.dateTimeFormatter)
+    val table = order.booking?.table ?: ""
+    val name = order.booking?.name ?: ""
+    SrmListItem(startText = "${name}\n$table", endText = "$status\n$date", onClick = onClick)
 }

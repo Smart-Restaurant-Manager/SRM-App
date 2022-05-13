@@ -123,6 +123,7 @@ class OrderViewModel @Inject constructor(
                     }
                 }
             }) {
+            order.status = status
             api.putOrder(order)
         }
     }
