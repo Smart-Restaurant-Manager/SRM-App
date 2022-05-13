@@ -1,7 +1,7 @@
 package com.srm.srmapp.ui.common
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
@@ -15,6 +15,7 @@ import timber.log.Timber
 @Composable
 fun <T> SrmSearch(
     items: List<T>,
+    label: String,
     onDismissRequest: () -> Unit,
     predicate: (T, String) -> Boolean,
     itemContent: @Composable LazyItemScope.(item: T) -> Unit,
@@ -31,8 +32,8 @@ fun <T> SrmSearch(
     Timber.d("Items found $itemsFound")
 
     SrmDialog(onDismissRequest = onDismissRequest) {
-        SrmTextFieldHint(value = query, onValueChange = { query = it })
-        LazyColumn(modifier = Modifier.height(200.dp), contentPadding = PaddingValues(padding)) {
+        SrmTextField(label = label, value = query, onValueChange = { query = it })
+        LazyColumn(modifier = Modifier.heightIn(0.dp, 200.dp), contentPadding = PaddingValues(padding)) {
             items(itemsFound, itemContent = itemContent)
         }
     }

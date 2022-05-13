@@ -217,6 +217,7 @@ fun FoodListScreen(
 
     if (dialogSearchFood) {
         SrmSearch(items = foodList,
+            label = "Buscar alimentos",
             onDismissRequest = { dialogSearchFood = false },
             predicate = { food, query ->
                 food.name.startsWith(query, ignoreCase = true)

@@ -16,8 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -120,17 +118,13 @@ fun RecipeScreen(
 
     if (dialogSearchRecipe) {
         SrmSearch(items = recipeList,
+            label = "Buscar recetas",
             onDismissRequest = { dialogSearchRecipe = false },
             predicate = { recipeItem, query ->
                 recipeItem.name.startsWith(query, ignoreCase = true)
             }) { recipeItem ->
             var dialogItemState by remember { mutableStateOf(false) }
-            SrmSelectableRow(
-                onClick = { dialogItemState = true }) {
-                SrmText(text = recipeItem.name, textAlign = TextAlign.Center)
-                SrmText(text = recipeItem.price.toString(), textAlign = TextAlign.Center)
-            }
-
+            RecipeItem(recipe = recipeItem, minimal = true) { dialogItemState = true }
             if (dialogItemState) {
                 RecipeItemPopUp(
                     recipe = recipeItem,
@@ -181,13 +175,19 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, st
     }
 }
 
- @Composable
-fun RecipeItem(recipe: Recipe, onClick: () -> Unit) {
-    SrmListItem(startText = "${recipe.name}\n${recipe.price}€",
-        endText = "${recipe.id}\n" + if (recipe.available == true) "Disponible" else "No disponible",
-        icon = painterResource(id = R.drawable.ic_baseline_image_not_supported_24),
-        enableSelect = true,
-        onClick = onClick)
+@Composable
+fun RecipeItem(recipe: Recipe, minimal: Boolean = false, onClick: () -> Unit) {
+    if (minimal)
+        SrmListItem(startText = recipe.name,
+            endText = "${recipe.price}€",
+            enableSelect = true,
+            onClick = onClick)
+    else
+        SrmListItem(startText = "${recipe.name}\n${recipe.price}€",
+            endText = "${recipe.id}\n" + if (recipe.available == true) "Disponible" else "No disponible",
+            icon = painterResource(id = R.drawable.ic_baseline_image_not_supported_24),
+            enableSelect = true,
+            onClick = onClick)
 }
 
 @Composable

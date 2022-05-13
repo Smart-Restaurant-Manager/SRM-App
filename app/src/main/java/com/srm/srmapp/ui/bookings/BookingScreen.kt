@@ -14,12 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.srm.srmapp.AppModule
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Booking
@@ -72,11 +72,6 @@ fun BookingScreen(
             modifier = Modifier.padding(0.dp, 30.dp),
             onRefresh = { viewmodel.refreshBookingsList() }) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
-                stickyHeader {
-                    SrmStickyHeader(headers = listOf(stringResource(id = R.string.name),
-                        stringResource(id = R.string.amount_of_people_short),
-                        stringResource(id = R.string.date)))
-                }
                 items(bookingList, key = { it.id }) {
                     var dialogItemState by remember { mutableStateOf(false) }
                     BookItem(book = it) { dialogItemState = true }
@@ -141,17 +136,11 @@ fun BookingScreen(
     }
     //Editar Reserva
     if (dialogSearchBook) {
-        SrmSearch(items = bookingList, onDismissRequest = { dialogSearchBook = false },
+        SrmSearch(items = bookingList, label = "Buscar reservas", onDismissRequest = { dialogSearchBook = false },
             predicate = { book, query ->
                 book.name.startsWith(query, ignoreCase = true)
             }) { book ->
-            SrmSelectableRow(
-                onClick = { popupSeeBooking = true }
-            ) {
-                SrmText(text = book.name, textAlign = TextAlign.Center)
-                SrmText(text = book.people.toString(), textAlign = TextAlign.Center)
-                SrmText(text = book.date.toString(), textAlign = TextAlign.Center)
-            }
+            BookItem(book = book, minimal = true) { popupSeeBooking = true }
             if (popupSeeBooking) {
                 BookItemPopup(book = book, viewmodel = viewmodel, onDismissRequest = { popupSeeBooking = false })
             }
@@ -188,12 +177,15 @@ fun BookingDialog(
 }
 
 @Composable
-fun BookItem(book: Booking, onClick: () -> Unit) {
-    SrmSelectableRow(onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
-        SrmText(text = book.name, textAlign = TextAlign.Center)
-        SrmText(text = book.people.toString(), textAlign = TextAlign.Center)
-        SrmText(text = book.date.toString(), textAlign = TextAlign.Center)
-    }
+fun BookItem(book: Booking, minimal: Boolean = false, onClick: () -> Unit) {
+    if (minimal)
+        SrmListItem(startText = book.name,
+            endText = "Taula: ${book.table}",
+            onClick = onClick)
+    else
+        SrmListItem(startText = "${book.name}\n${book.people} personas",
+            endText = "Taula: ${book.table}\n${book.date.format(AppModule.dateTimeFormatter)}",
+            onClick = onClick)
 }
 
 @Composable

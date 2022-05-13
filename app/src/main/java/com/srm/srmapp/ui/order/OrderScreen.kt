@@ -15,7 +15,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -120,10 +119,11 @@ fun OrderScreen(
 
     if (searchDialog) {
         SrmSearch(items = orderList,
+            label = "Buscar pedidos",
             onDismissRequest = { searchDialog = false },
             predicate = viewmodel.predicate) { order ->
             var dialogItemState by remember { mutableStateOf(false) }
-            OrderItem(order = order, orderStatus = orderStatus) {
+            OrderItem(order = order, orderStatus = orderStatus, minimal = true) {
                 dialogItemState = true
             }
             if (dialogItemState) {
@@ -214,10 +214,13 @@ fun DropDownChangeStatus(text: String, onStatusChange: (Order.Status) -> Unit) {
 }
 
 @Composable
-fun OrderItem(order: Order, orderStatus: Order.Status, onClick: () -> Unit = {}) {
+fun OrderItem(order: Order, orderStatus: Order.Status, minimal: Boolean = false, onClick: () -> Unit = {}) {
     val status: String = if (orderStatus is Order.Status.None) stringResource(id = order.status.getStringId()) else ""
     val date = order.booking?.date?.format(AppModule.dateTimeFormatter)
     val table = order.booking?.table ?: ""
-    val name = order.booking?.name ?: ""
-    SrmListItem(startText = "${name}\n$table", endText = "$status\n$date", onClick = onClick)
+
+    if (minimal)
+        SrmListItem(startText = "${order.orderId}", endText = "Taula $table", onClick = onClick)
+    else
+        SrmListItem(startText = "${order.orderId}\nTaula: $table", endText = "$status\n$date", onClick = onClick)
 }
