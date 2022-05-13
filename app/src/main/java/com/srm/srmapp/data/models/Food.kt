@@ -23,8 +23,4 @@ data class Food(
     }
 
     fun toJsonObject(): FoodObject = FoodObject(name, units, type)
-    fun addStock(stock: Stock) {
-        stock.foodId = this.foodId
-        stockList.add(stock)
-    }
 }
