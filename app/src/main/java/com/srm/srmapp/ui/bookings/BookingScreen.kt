@@ -59,7 +59,6 @@ fun BookingScreen(
             onClickAdd = { popupAddState = true },
             onClickBack = { navigator.navigateUp() }
         )
-        Spacer(modifier = Modifier.width(20.dp))
         SwipeRefresh(
             state = rememberSwipeRefreshState(bookingListState.isLoading()),
             onRefresh = { viewmodel.refreshBookingsList() }) {

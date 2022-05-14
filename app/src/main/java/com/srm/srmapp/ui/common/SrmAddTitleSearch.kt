@@ -30,7 +30,7 @@ fun SrmAddTitleSearch(
 ) {
     ConstraintLayout(modifier = Modifier
         .fillMaxWidth()
-        .height(150.dp)) {
+        .height(125.dp)) {
         val (iconRef, addRef, titleRef, searchRef) = createRefs()
         IconButton(modifier = Modifier
             .constrainAs(iconRef) {

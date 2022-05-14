@@ -3,9 +3,7 @@ package com.srm.srmapp.ui.order
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuBox
 import androidx.compose.material.Icon
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -13,8 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -64,15 +60,12 @@ fun OrderScreen(
             onClickAdd = { addDialog = true },
             onClickBack = { navigator.popBackStack() },
             onClickSearch = { searchDialog = true })
-
         DropDownChangeStatus(text = stringResource(id = orderStatus.getStringId()), onStatusChange = {
             viewmodel.setOrderStatus(it)
             viewmodel.refreshOrder()
         })
-
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing = orderListState.isLoading()),
-            modifier = Modifier.padding(0.dp, 30.dp),
             onRefresh = { viewmodel.refreshOrder() }) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(orderList, key = { it.orderId }) {
@@ -188,24 +181,12 @@ fun OrderPopUp(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DropDownChangeStatus(text: String, onStatusChange: (Order.Status) -> Unit) {
-    var dropdownStatus by remember { mutableStateOf(false) }
-    ExposedDropdownMenuBox(modifier = Modifier.fillMaxWidth(),
-        expanded = dropdownStatus,
-        onExpandedChange = { dropdownStatus = !dropdownStatus }) {
-        SrmText(textAlign = TextAlign.Center, text = text)
-        ExposedDropdownMenu(expanded = dropdownStatus, onDismissRequest = { dropdownStatus = false }) {
-            Order.Status.STAUS_UI.forEach {
-                DropdownMenuItem(onClick = {
-                    onStatusChange.invoke(it)
-                    dropdownStatus = false
-                }) {
-                    SrmText(text = stringResource(id = it.getStringId()))
-                }
-            }
-        }
+    SrmDropDownMenu(text = text, options = Order.Status.STAUS_UI,
+        onClick = onStatusChange
+    ) {
+        SrmText(text = stringResource(id = it.getStringId()))
     }
 }
 

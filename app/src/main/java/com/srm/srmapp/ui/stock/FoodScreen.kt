@@ -164,43 +164,8 @@ fun FoodListScreen(
         }) {
             SrmTextFieldHint(value = name, placeholder = stringResource(R.string.food_name), onValueChange = { name = it })
             SrmTextFieldHint(value = units, placeholder = stringResource(R.string.unit), onValueChange = { units = it })
-
-
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = {
-                    expanded = !expanded
-                }
-            ) {
-                TextField(
-                    readOnly = true,
-                    value = type,
-                    onValueChange = { },
-                    label = { Text("Categoria") },
-                    trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(
-                            expanded = expanded
-                        )
-                    },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors()
-                )
-                ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = {
-                        expanded = false
-                    }
-                ) {
-                    options.forEach { selectionOption ->
-                        DropdownMenuItem(
-                            onClick = {
-                                type = selectionOption
-                                expanded = false
-                            }
-                        ) {
-                            Text(text = selectionOption)
-                        }
-                    }
-                }
+            SrmDropDownMenu(text = "Categoria", options = options, onClick = { type = it }) {
+                SrmText(text = it)
             }
             TextButton(onClick = {
                 viewmodel.addFood(type, name, units)
