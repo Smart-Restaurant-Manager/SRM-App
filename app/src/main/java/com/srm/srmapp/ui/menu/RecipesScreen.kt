@@ -26,8 +26,6 @@ import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.stock.StockViewmodel
-import com.srm.srmapp.ui.theme.paddingEnd
-import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
 import timber.log.Timber
 
@@ -53,8 +51,7 @@ fun RecipeScreen(
     val recipeList = remember(recipeListState.data) { recipeListState.data ?: emptyList() }
 
     Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(start = paddingStart, end = paddingEnd),
+        .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally)
     {
         SrmAddTitleSearch(stringResource(id = Recipe.getResource(recipeType)),

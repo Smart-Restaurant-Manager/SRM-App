@@ -25,8 +25,6 @@ import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Order
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.ui.common.*
-import com.srm.srmapp.ui.theme.paddingEnd
-import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
 import kotlinx.coroutines.delay
 import timber.log.Timber
@@ -60,10 +58,8 @@ fun OrderScreen(
     var addDialog by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(start = paddingStart, end = paddingEnd),
-        horizontalAlignment = Alignment.CenterHorizontally)
-    {
+        .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally) {
         SrmAddTitleSearch(title = "Orders",
             onClickAdd = { addDialog = true },
             onClickBack = { navigator.popBackStack() },

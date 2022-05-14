@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,8 +28,6 @@ import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.ui.common.*
-import com.srm.srmapp.ui.theme.paddingEnd
-import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
 import timber.log.Timber
 import java.time.LocalDate
@@ -54,8 +53,8 @@ fun FoodListScreen(
     val foodList = remember(foodListState.data) { foodListState.data ?: emptyList() }
 
     Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(start = paddingStart, end = paddingEnd)) {
+        .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally) {
         SrmAddTitleSearch(stringResource(R.string.food),
             onClickSearch = { dialogSearchFood = true },
             onClickAdd = { dialogAddFoodState = true },

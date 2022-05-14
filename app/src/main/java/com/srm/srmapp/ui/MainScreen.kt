@@ -2,8 +2,6 @@ package com.srm.srmapp.ui
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -21,7 +19,6 @@ import com.srm.srmapp.ui.destinations.FoodListScreenDestination
 import com.srm.srmapp.ui.destinations.MenuScreenDestination
 import com.srm.srmapp.ui.destinations.OrderScreenDestination
 import com.srm.srmapp.ui.theme.ButtonColor1
-import com.srm.srmapp.ui.theme.padding
 import kotlin.system.exitProcess
 
 @Composable
@@ -50,15 +47,13 @@ fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
             }
         }
     }
-
-
-    SrmHeader(title = stringResource(R.string.start)) { popupState = true }
     BackHandler { popupState = true }
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        LazyColumn {
-            items(buttonNames) { (id, onclick) ->
+    Column(modifier = Modifier
+        .fillMaxSize()) {
+        SrmHeader(title = stringResource(R.string.start)) { popupState = true }
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly, Alignment.CenterHorizontally) {
+            buttonNames.forEach { (id, onclick) ->
                 SrmButton(modifier = Modifier
-                    .padding(padding)
                     .width(150.dp)
                     .height(80.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = ButtonColor1),

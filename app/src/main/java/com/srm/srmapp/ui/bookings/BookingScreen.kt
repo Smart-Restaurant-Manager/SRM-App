@@ -24,8 +24,6 @@ import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Booking
 import com.srm.srmapp.ui.common.*
-import com.srm.srmapp.ui.theme.paddingEnd
-import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
 import timber.log.Timber
 
@@ -54,8 +52,7 @@ fun BookingScreen(
     var popupSeeBooking by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(start = paddingStart, end = paddingEnd),
+        .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally) {
         SrmAddTitleSearch(title = stringResource(id = R.string.reservas),
             onClickSearch = { dialogSearchBook = true },
