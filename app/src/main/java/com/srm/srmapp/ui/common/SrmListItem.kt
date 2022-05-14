@@ -24,6 +24,7 @@ fun SrmListItem(
     endText: String = "",
     icon: Painter? = null,
     enableSelect: Boolean = true,
+    endContent: (@Composable RowScope.() -> Unit)? = null,
     onClick: () -> Unit = {},
 ) {
     ConstraintLayout(modifier = modifier
@@ -32,6 +33,15 @@ fun SrmListItem(
         .padding(start = paddingStart, end = paddingEnd)
         .clickable(enabled = enableSelect, onClick = onClick)) {
         val (iconRef, textStartRef, textEndRef, bottomLineRef) = createRefs()
+
+        val (iconWitdh: Float, startStartWitdh: Float, endTextWitdh: Float, endContentWitdh: Float) = when {
+            icon == null && endContent == null -> listOf(0.0f, 0.7f, 0.3f, 0.0f)
+            icon != null && endContent != null -> listOf(0.1f, 0.6f, 0.2f, 0.1f)
+            icon == null && endContent != null -> listOf(0.0f, 0.6f, 0.3f, 0.1f)
+            icon != null && endContent == null -> listOf(0.1f, 0.6f, 0.3f, 0.0f)
+            else -> listOf(0.25f, 0.25f, 0.25f, 0.25f)
+        }
+
         if (icon != null) {
             Icon(modifier = Modifier
                 .constrainAs(iconRef) {
@@ -40,7 +50,7 @@ fun SrmListItem(
                     top.linkTo(parent.top)
                     bottom.linkTo(bottomLineRef.top)
                 }
-                .fillMaxWidth(.2f)
+                .fillMaxWidth(iconWitdh)
                 .fillMaxHeight(),
                 painter = icon,
                 contentDescription = "")
@@ -48,25 +58,41 @@ fun SrmListItem(
         SrmText(text = startText,
             modifier = Modifier
                 .constrainAs(textStartRef) {
-                    if (icon != null)
-                        start.linkTo(iconRef.end)
-                    else
-                        start.linkTo(parent.start)
+                    start.linkTo(if (icon != null) iconRef.end else parent.start)
                     end.linkTo(textEndRef.start)
                     top.linkTo(parent.top)
                     bottom.linkTo(bottomLineRef.top)
                 }
-                .fillMaxWidth(if (icon != null) .5f else 0.7f)
+                .fillMaxWidth(startStartWitdh)
         )
+
+        val endContentRef = createRef()
+
         SrmText(text = endText,
             modifier = Modifier
                 .constrainAs(textEndRef) {
                     start.linkTo(textStartRef.end)
+                    end.linkTo(if (endContent != null) endContentRef.start else parent.end)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(bottomLineRef.top)
+                }
+                .fillMaxWidth(endTextWitdh),
+            textAlign = TextAlign.End,
+            color = Color.LightGray)
+
+        endContent?.let {
+            Row(modifier = Modifier
+                .constrainAs(endContentRef) {
+                    start.linkTo(textEndRef.end)
                     end.linkTo(parent.end)
                     top.linkTo(parent.top)
                     bottom.linkTo(bottomLineRef.top)
                 }
-                .fillMaxWidth(.3f), textAlign = TextAlign.End, color = Color.LightGray)
+                .fillMaxWidth(endContentWitdh)) {
+                it.invoke(this)
+            }
+        }
+
         Spacer(modifier = Modifier
             .height(1.dp)
             .fillMaxWidth()
