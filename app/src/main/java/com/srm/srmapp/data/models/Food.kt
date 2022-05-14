@@ -11,6 +11,7 @@ data class Food(
     var foodId: Int = -1,
     val name: String,
     val units: String,
+    val stockCount:Int = 0,
     val stockList: MutableList<Stock> = mutableListOf(),
 ) :
     Parcelable {
