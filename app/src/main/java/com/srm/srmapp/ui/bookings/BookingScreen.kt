@@ -44,10 +44,6 @@ fun BookingScreen(
     // add book item
     var popupAddState by remember { mutableStateOf(false) }
 
-    //Refresh booking List
-    val refreshState = rememberSwipeRefreshState(bookingListState.isLoading())
-
-
     // Search booking
     val bookingList = remember(bookingListState.data) { bookingListState.data ?: emptyList() }
     var dialogSearchBook by remember { mutableStateOf(false) }
@@ -68,8 +64,7 @@ fun BookingScreen(
         )
         Spacer(modifier = Modifier.width(20.dp))
         SwipeRefresh(
-            state = refreshState,
-            modifier = Modifier.padding(0.dp, 30.dp),
+            state = rememberSwipeRefreshState(bookingListState.isLoading()),
             onRefresh = { viewmodel.refreshBookingsList() }) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(bookingList, key = { it.id }) {
@@ -163,12 +158,12 @@ fun BookingDialog(
     onClick: () -> Unit,
 ) {
     SrmDialog(onDismissRequest = onDismissRequest) {
-        SrmTextFieldHint(value = booking.name, placeholder = stringResource(R.string.food_name), onValueChange = onNameChange)
-        SrmTextFieldHint(value = booking.people, placeholder = stringResource(R.string.amount_of_people), onValueChange = onPeopleChange)
-        SrmTextFieldHint(value = booking.date, placeholder = stringResource(R.string.date), readOnly = true, onValueChange = onDateChange)
-        SrmTextFieldHint(value = booking.phone, placeholder = stringResource(R.string.tel), onValueChange = onPhoneChange)
-        SrmTextFieldHint(value = booking.email, placeholder = stringResource(R.string.mail), onValueChange = onEmailChange)
-        SrmTextFieldHint(value = booking.table, placeholder = stringResource(R.string.table), onValueChange = onTableChange)
+        SrmTextField(value = booking.name, label = stringResource(R.string.food_name), onValueChange = onNameChange)
+        SrmTextField(value = booking.people, label = stringResource(R.string.amount_of_people), onValueChange = onPeopleChange)
+        SrmTextField(value = booking.date, label = stringResource(R.string.date), readOnly = true, onValueChange = onDateChange)
+        SrmTextField(value = booking.phone, label = stringResource(R.string.tel), onValueChange = onPhoneChange)
+        SrmTextField(value = booking.email, label = stringResource(R.string.mail), onValueChange = onEmailChange)
+        SrmTextField(value = booking.table, label = stringResource(R.string.table), onValueChange = onTableChange)
         SrmTextButton(text = stringResource(resId), onClick = {
             onClick.invoke()
             onDismissRequest.invoke()

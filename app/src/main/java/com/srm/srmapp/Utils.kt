@@ -68,4 +68,9 @@ object Utils {
         }
     }
 
+    fun Float.format(digits: Int): String {
+        val decimal = this - this.toInt()
+        if (decimal == 0f) return "%.${0}f".format(this)
+        return "%.${digits}f".format(this)
+    }
 }

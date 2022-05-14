@@ -23,7 +23,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
-import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.stock.StockViewmodel
@@ -49,9 +48,6 @@ fun RecipeScreen(
     var dialogAddState by remember { mutableStateOf(false) }
     var addRecipe: Boolean = false
 
-    // Swipe to refresh satte
-    val refreshState = rememberSwipeRefreshState(recipeListState.isLoading())
-
     // Search dialog state
     var dialogSearchRecipe by remember { mutableStateOf(false) }
     val recipeList = remember(recipeListState.data) { recipeListState.data ?: emptyList() }
@@ -66,8 +62,7 @@ fun RecipeScreen(
             onClickAdd = { dialogAddState = true },
             onClickBack = { navigator.navigateUp() })
         SwipeRefresh(
-            state = refreshState,
-            modifier = Modifier.padding(0.dp, 30.dp),
+            state = rememberSwipeRefreshState(recipeListState.isLoading()),
             onRefresh = { viewmodel.refreshRecipeList() }) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(recipeList.filter { it.type == recipeType }, key = { it.id }) {
@@ -141,9 +136,8 @@ fun RecipeScreen(
 fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, stockViewmodel: StockViewmodel, recipeType: Recipe.RecipeType) {
     var name by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }
-    val selectedFood = remember { arrayListOf<Pair<Int, Float>>() }
+    var selectedFood = remember { listOf<Pair<Int, Float>>() }
     val foodList by stockViewmodel.foodList.observeAsState(Resource.Empty())
-    var (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     if (foodList.isEmpty()) stockViewmodel.refreshFoodList()
 
     if (foodList.isSuccess()) {
@@ -152,19 +146,12 @@ fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, st
             SrmTextFieldHint(value = precio, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 placeholder = stringResource(R.string.price), onValueChange = { precio = it })
 
-            foodList.data?.let { foodList ->
-                FoodSelector(foodList, onCheckedChange = { food, check, quantity ->
-                    if (quantity <= 0) return@FoodSelector
-                    if (check) {
-                        selectedFood.removeIf { it.first == food.foodId }
-                        selectedFood.add(Pair(food.foodId, quantity))
-                    } else {
-                        selectedFood.removeIf { it.first == food.foodId }
-                    }
-                    Timber.d(selectedFood.toString())
-                })
-            }
 
+            foodList.data?.let { foodList ->
+                SrmQuantitySelector(optionsList = foodList.map { it.name }) {
+                    selectedFood = it.toList().filter { it.second.compareTo(0f) > 0 }
+                }
+            }
             SrmTextButton(onClick = {
                 val recipe = Recipe(type = recipeType, name = name, price = precio.toFloatOrNull() ?: 0f, food = selectedFood)
                 Timber.d(recipe.toString())
@@ -258,36 +245,5 @@ fun RecipeItemPopUp(
 
     if (popupEditReceipt) {
 
-    }
-}
-
-
-@Composable
-fun FoodSelector(foodList: List<Food>, onCheckedChange: (Food, Boolean, Float) -> Unit) {
-    LazyColumn(Modifier.height(200.dp)) {
-        items(foodList) { food ->
-            var checked by remember { mutableStateOf(false) }
-            var quantity by remember { mutableStateOf("") }
-            SrmSelectableRow(horizontalArrangement = Arrangement.SpaceEvenly,
-                onClick = {
-                    checked = !checked
-                    onCheckedChange.invoke(food, checked, quantity.toFloatOrNull() ?: 0.0f)
-                }) {
-                if (checked) {
-                    SrmTextFieldHint(modifier = Modifier.width(100.dp),
-                        singleLine = true,
-                        maxLines = 1,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        value = quantity,
-                        placeholder = stringResource(id = R.string.quantity),
-                        onValueChange = {
-                            quantity = it
-                            onCheckedChange.invoke(food, true, quantity.toFloatOrNull() ?: 0f)
-                        }
-                    )
-                }
-                SrmText(text = food.name)
-            }
-        }
     }
 }
