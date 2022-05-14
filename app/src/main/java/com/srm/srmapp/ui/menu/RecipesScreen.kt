@@ -104,7 +104,7 @@ fun RecipeDialog(
     SrmTextField(value = name, label = stringResource(R.string.food_name), onValueChange = { name = it })
     SrmTextField(value = precio, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         label = stringResource(R.string.price), onValueChange = { precio = it })
-    SrmCheckBox(text = stringResource(R.string.available), checkState = available) { available = it }
+    SrmCheckBox(text = stringResource(if (available) R.string.available else R.string.unavailable), checkState = available) { available = it }
 
     SrmQuantitySelector(optionsList = foodList.map { it.name }, // TODO Fix food, quantity not working
         selectorState = selectedFood.toTypedArray()) {
