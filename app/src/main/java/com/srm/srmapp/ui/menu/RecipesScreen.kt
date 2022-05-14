@@ -81,7 +81,7 @@ fun RecipeScreen(
         itemKey = { it.id },
         icon = painterResource(id = R.drawable.ic_baseline_image_not_supported_24),
         listItemStartText = { "${it.name}\n${it.price}€" },
-        listItemEndText = { "${it.id}\n" + if (it.available == true) "Disponible" else "No disponible" },
+        listItemEndText = { "${it.id}\n" + if (it.available == true) "Disponible" else "No disp." },
         searchProperties = searchProperties,
         crudDialogContent = crudDialogContent,
         baseViewModel = viewmodel)
@@ -103,21 +103,25 @@ fun RecipeDialog(
             Pair(foodList.indexOfFirst { it.foodId == foodid }, quantity)
         } ?: listOf()
     }
+    var available by remember { mutableStateOf(recipeState?.available ?: false) }
+    SrmTextField(value = name, label = stringResource(R.string.food_name), onValueChange = { name = it })
+    SrmTextField(value = precio, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        label = stringResource(R.string.price), onValueChange = { precio = it })
+    SrmCheckBox(text = stringResource(R.string.available), checkState = available) { available = it }
 
-    SrmTextFieldHint(value = name, placeholder = stringResource(R.string.food_name), onValueChange = { name = it })
-    SrmTextFieldHint(value = precio, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        placeholder = stringResource(R.string.price), onValueChange = { precio = it })
     SrmQuantitySelector(optionsList = foodList.map { it.name }, // TODO Fix food, quantity not working
         selectorState = selectedFood.toTypedArray()) {
         selectedFood = it.toList().filter { it.second.compareTo(0f) > 0 }
     }
+
     SrmTextButton(onClick = {
         val recipe = Recipe(type = recipeType,
             name = name,
             price = precio.toFloatOrNull() ?: 0f,
             food = selectedFood.map { (idx, quantity) ->
                 Pair(foodList[idx].foodId, quantity)
-            })
+            },
+            available = available)
         onClick.invoke(recipe)
     }, text = buttonText)
 }
