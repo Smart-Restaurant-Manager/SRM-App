@@ -116,8 +116,7 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         }
     }
 
-    fun addFood(type: String, name: String, units: String) {
-        val food = Food(type = type, name = name, units = units)
+    fun addFood(food: Food) {
         fetchResource(_status, onSuccess = {
             refreshFoodList()
         }) {
@@ -143,9 +142,15 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         }
     }
 
-    fun putStock(id: Int, stock: StockDataHodle) {
+    fun putStock(stock: Stock) {
         fetchResource(_status) {
-            stockRepository.putStock(id, stock.toStock())
+            stockRepository.putStock(stock.stockId, stock)
+        }
+    }
+
+    fun putFood(food: Food) {
+        fetchResource(_status) {
+            stockRepository.putFood(food)
         }
     }
 

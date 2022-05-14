@@ -110,4 +110,6 @@
     <string name="all">All</string>
     <string name="EditarStock">Editar Stock</string>
     <string name="mod_stock">Modificar Stock</string>
+    <string name="unidades">Unidades</string>
+    <string name="edit_food">Editar aliment</string>
 </resources>
