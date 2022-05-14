@@ -26,16 +26,16 @@ import kotlinx.coroutines.launch
 data class SrmCrudDialogContent<T>(
     // Dialog content, set to null to disable
     val editLabel: String = "Modificar",
-    val editDialogContent: (@Composable (T) -> Unit)? = null,
+    val editDialogContent: (@Composable ColumnScope.(item: T) -> Unit)? = null,
 
     val deleteLabel: String = "Eliminar",
     val onDelete: ((T) -> Unit)? = null,
 
     val moreLabel: String = "Mes",
-    val moreDialogContent: (@Composable (T) -> Unit)? = null,
+    val moreDialogContent: (@Composable ColumnScope.(item: T) -> Unit)? = null,
 
     val addLabel: String = "Afegir",
-    val addDialogContent: (@Composable (T) -> Unit)? = null,
+    val addDialogContent: (@Composable ColumnScope.(item: T) -> Unit)? = null,
 )
 
 data class SrmSearchProperties<T>(
@@ -45,8 +45,8 @@ data class SrmSearchProperties<T>(
 
     // Search Item view
     val searchLabel: String = "",
-    val startSearchText: (T) -> String = { "" },
-    val endSearchText: (T) -> String = { "" },
+    val startSearchText: @Composable (T) -> String = { "" },
+    val endSearchText: @Composable (T) -> String = { "" },
 
     // Search Item Click
     val onSearchItemClick: (T) -> Unit = { },
@@ -72,8 +72,8 @@ fun <T> SrmListWithCrudActions(
     // list item parameters
     itemKey: ((item: T) -> Any)? = null,
     icon: Painter? = null,
-    listItemStartText: (T) -> String = { "item" },
-    listItemEndText: (T) -> String = { "" },
+    listItemStartText: @Composable (T) -> String = { "item" },
+    listItemEndText: @Composable (T) -> String = { "" },
 
     // Dialog content
     crudDialogContent: SrmCrudDialogContent<T>,
@@ -155,17 +155,17 @@ fun <T> SrmListWithCrudActions(
                     crudDialogContent.apply {
                         this.addDialogContent?.let {
                             if (addDialog) {
-                                SrmDialog(onDismissRequest = { addDialog = false }) { it.invoke(i) }
+                                SrmDialog(onDismissRequest = { addDialog = false }) { it.invoke(this, i) }
                             }
                         }
                         editDialogContent?.let {
                             if (editDialog) {
-                                SrmDialog(onDismissRequest = { editDialog = false }) { it.invoke(i) }
+                                SrmDialog(onDismissRequest = { editDialog = false }) { it.invoke(this, i) }
                             }
                         }
                         moreDialogContent?.let {
                             if (moreDialog) {
-                                SrmDialog(onDismissRequest = { moreDialog = false }) { it.invoke(i) }
+                                SrmDialog(onDismissRequest = { moreDialog = false }) { it.invoke(this, i) }
                             }
                         }
                         onDelete?.let {
