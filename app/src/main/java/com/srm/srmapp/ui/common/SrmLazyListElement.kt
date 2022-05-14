@@ -30,7 +30,7 @@ data class SrmCrudDialogContent<T>(
     val moreLabel: String = "Mes",
     val moreDialogContent: (@Composable (T) -> Unit)? = null,
 
-    val addLabel: String = "Mes",
+    val addLabel: String = "Afegir",
     val addDialogContent: (@Composable (T) -> Unit)? = null,
 )
 
