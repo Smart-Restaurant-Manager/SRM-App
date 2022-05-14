@@ -54,11 +54,6 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         _foodList.value = Resource.Empty()
     }
 
-    fun clearStatus() {
-        Timber.d("Clear Status ${_status.value}")
-        _status.value = Resource.Empty()
-    }
-
     fun refreshStockList() {
         fetchResource(_stockList) {
             stockRepository.getStock()

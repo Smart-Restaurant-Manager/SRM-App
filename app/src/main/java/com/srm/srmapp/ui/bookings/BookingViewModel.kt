@@ -28,10 +28,6 @@ class BookingViewModel @Inject constructor(
     val book: LiveData<Resource<Booking>>
         get() = _book
 
-    fun clearStatus() {
-        Timber.d("Clear Status ${_status.value}")
-        _status.value = Resource.Empty()
-    }
 
     fun addBooking(booking: Booking) {
         fetchResource(_status, onSuccess = {

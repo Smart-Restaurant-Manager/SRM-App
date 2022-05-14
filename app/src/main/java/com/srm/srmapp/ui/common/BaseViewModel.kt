@@ -9,12 +9,11 @@ import com.srm.srmapp.Utils.launchException
 
 abstract class BaseViewModel : ViewModel() {
     protected val _status: MutableLiveData<Resource<String>> = MutableLiveData()
-    val status: LiveData<Resource<String>>
-        get() {
-            val t = _status
-            _status.postValue(Resource.Empty())
-            return t
-        }
+    val status: LiveData<Resource<String>> = _status
+
+    fun clearStatus() {
+        _status.postValue(Resource.Empty())
+    }
 
     fun <T> fetchResource(
         livedataResource: MutableLiveData<Resource<T>>,
@@ -29,4 +28,6 @@ abstract class BaseViewModel : ViewModel() {
             livedataResource.postValue(r)
         }
     }
+
+
 }
