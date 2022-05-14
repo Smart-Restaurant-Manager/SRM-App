@@ -54,7 +54,7 @@ fun OrderScreen(
     )
 
     SrmListWithCrudActions(
-        title = stringResource(id = R.string.reservas),
+        title = stringResource(id = R.string.pedidos),
         itemList = orderListState.data ?: emptyList(),
         onAddDialog = {
             // TODO

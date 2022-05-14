@@ -38,7 +38,7 @@ fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
         Pair(R.string.reservas) { navigator.navigate(BookingScreenDestination()) },
         Pair(R.string.food) { navigator.navigate(FoodListScreenDestination()) },
         Pair(R.string.menu) { navigator.navigate(MenuScreenDestination()) },
-        Pair(R.string.Pedidos) { navigator.navigate(OrderScreenDestination()) },
+        Pair(R.string.pedidos) { navigator.navigate(OrderScreenDestination()) },
         Pair(R.string.predictions) {})
     var popupState by remember { mutableStateOf(false) }
     val loggedIn by userSession.loggedIn.observeAsState(true)
