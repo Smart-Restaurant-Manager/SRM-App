@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 
 @Keep
 data class StockListResponse(
-    val data: List<StockData>,
-) {
-    fun toStockList() = data.map { it.toStock() }
-}
+    val data: List<StockResponse.Data>,
+)
+
+fun StockListResponse.toStockList() = data.map { it.toStock() }

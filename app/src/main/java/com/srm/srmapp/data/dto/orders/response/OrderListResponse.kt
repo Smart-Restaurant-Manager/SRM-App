@@ -9,4 +9,4 @@ data class OrderListResponse(
     val data: List<OrderResponse.Data>,
 )
 
-fun OrderListResponse.toOrderList() = data.map { it.toOrder()}
+fun OrderListResponse.toOrderList() = data.map { it.toOrder() }

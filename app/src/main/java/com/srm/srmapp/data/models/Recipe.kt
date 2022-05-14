@@ -49,6 +49,17 @@ data class Recipe(
             RecipeType.COMPLEMENTS -> R.string.complementos
             RecipeType.NONE -> R.string.error_type
         }
+
+        fun getResource(id: Int) = when (id) {
+            0 -> R.string.entrantes
+            1 -> R.string.first_plate
+            2 -> R.string.second_plate
+            3 -> R.string.deserts
+            4 -> R.string.drinks
+            5 -> R.string.complementos
+            else -> R.string.error_type
+        }
+        val RECIPE_ERROR = Recipe(Recipe.RecipeType.NONE, -1, "Error", 0f)
     }
 }
 

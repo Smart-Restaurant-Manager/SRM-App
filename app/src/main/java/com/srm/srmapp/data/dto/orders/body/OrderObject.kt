@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName
 
 @Keep
 data class OrderObject(
+    @SerializedName("order_status_id")
+    val orderStatus: Int, // 1
     @SerializedName("booking_id")
     val bookingId: Int, // asperiores
     @SerializedName("recipes")

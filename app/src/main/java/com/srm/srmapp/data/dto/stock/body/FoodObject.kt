@@ -6,5 +6,5 @@ import androidx.annotation.Keep
 data class FoodObject(
     val name: String,
     val units: String,
-    val type: String
+    val type: String,
 )

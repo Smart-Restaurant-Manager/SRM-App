@@ -1,32 +1,18 @@
 package com.srm.srmapp.ui.bookings
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Icon
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.srm.srmapp.AppModule
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Booking
 import com.srm.srmapp.ui.common.*
-import com.srm.srmapp.ui.theme.paddingEnd
-import com.srm.srmapp.ui.theme.paddingStart
-import com.srm.srmapp.ui.theme.spacerWitdh
-import timber.log.Timber
+import java.time.LocalDateTime
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -34,231 +20,80 @@ import timber.log.Timber
 @Destination
 fun BookingScreen(
     navigator: DestinationsNavigator,
-    viewmodel: BookingViewModel = hiltViewModel(),
+    viewmodel: BookingViewModel,
 ) {
     // booking list state
     val bookingListState by viewmodel.bookingList.observeAsState(Resource.Empty())
     if (bookingListState.isEmpty()) viewmodel.refreshBookingsList()
 
-    // add book item
-    var popupAddState by remember { mutableStateOf(false) }
+    // search engine properties
+    val searchProperties = SrmSearchProperties<Booking>(
+        searchPredicate = { recipeItem, query -> recipeItem.name.startsWith(query, ignoreCase = true) },
+        indexPredicate = { it, found -> it.id == found.id },
+        searchLabel = "Buscar reservas",
+        startSearchText = { it.name },
+        endSearchText = { "Taula: ${it.table}" })
 
-    //Refresh booking List
-    val refreshState = rememberSwipeRefreshState(bookingListState.isLoading())
+    // dialog content
+    val crudDialogContent = SrmCrudDialogContent<Booking>(
+        editDialogContent = { item ->
+            BookingDialog(buttonText = stringResource(id = R.string.mod_booking),
+                onClick = { viewmodel.addBooking(it) },
+                bookingState = item)
+        },
+        addDialogContent = {
+            // TODO
+            SrmText(text = "Todo")
+        },
+        deleteDialogContent = {
+            // TODO confirmation with yes/no
+            SrmText(text = "Todo")
+        },
+        moreDialogContent = {
+            // TODO
+            SrmText(text = "Todo")
+        },
+    )
 
-
-    // Search booking
-    val bookingList = remember(bookingListState.data) { bookingListState.data ?: emptyList() }
-    var dialogSearchBook by remember { mutableStateOf(false) }
-
-    var itemIdx by remember { mutableStateOf(-1) }
-    val status by viewmodel.status.observeAsState(Resource.Empty())
-    val lazyListState = rememberLazyListState()
-
-    // Allow composabel inside function
-    var popupSeeBooking by remember { mutableStateOf(false) }
-
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(start = paddingStart, end = paddingEnd),
-        horizontalAlignment = Alignment.CenterHorizontally) {
-        SrmAddTitleSearch(title = stringResource(id = R.string.reservas),
-            onClickSearch = { dialogSearchBook = true },
-            onClickAdd = { popupAddState = true },
-            onClickBack = { navigator.navigateUp() }
-        )
-        Spacer(modifier = Modifier.width(20.dp))
-        SwipeRefresh(
-            state = refreshState,
-            modifier = Modifier.padding(0.dp, 30.dp),
-            onRefresh = { viewmodel.refreshBookingsList() }) {
-            LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
-                stickyHeader {
-                    SrmStickyHeader(headers = listOf(stringResource(id = R.string.name),
-                        stringResource(id = R.string.amount_of_people_short),
-                        stringResource(id = R.string.date)))
-                }
-                items(bookingList, key = { it.id }) {
-                    var dialogItemState by remember { mutableStateOf(false) }
-                    BookItem(book = it) { dialogItemState = true }
-                    if (dialogItemState) {
-                        BookItemPopup(
-                            book = it,
-                            viewmodel = viewmodel,
-                            onDismissRequest = { dialogItemState = false }
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    if (status.isSuccess()) {
-        Timber.d("got status $status")
-    }
-
-
-    //Añadir Reserva
-    if (popupAddState) {
-        val booking = remember { BookingDataHolder() }
-        BookingDialog(resId = R.string.add_booking,
-            booking = booking,
-            onDismissRequest = { popupAddState = false },
-            onNameChange = { booking.name = it },
-            onPeopleChange = { booking.people = it },
-            onDateChange = { booking.date = it },
-            onPhoneChange = { booking.phone = it },
-            onEmailChange = { booking.email = it },
-            onTableChange = { booking.table = it }) {
-            viewmodel.addBooking(booking)
-        }
-    }
-
-    //Editar Reserva
-    if (dialogSearchBook) {
-        SrmSearch(items = bookingList, onDismissRequest = { dialogSearchBook = false },
-            predicate = { book, query ->
-                book.name.startsWith(query, ignoreCase = true)
-            }) { book ->
-            SrmSelectableRow(
-                onClick = { popupSeeBooking = true }
-            ) {
-                SrmText(text = book.name, textAlign = TextAlign.Center)
-                SrmText(text = book.people.toString(), textAlign = TextAlign.Center)
-                SrmText(text = book.date.toString(), textAlign = TextAlign.Center)
-            }
-            if (popupSeeBooking) {
-                BookItemPopup(book = book, viewmodel = viewmodel, onDismissRequest = { popupSeeBooking = false })
-            }
-        }
-    }
+    SrmListWithCrudActions(
+        title = stringResource(id = R.string.reservas),
+        itemList = bookingListState.data ?: emptyList(),
+        onAddDialog = {
+            BookingDialog(buttonText = stringResource(id = R.string.add_booking),
+                onClick = { viewmodel.addBooking(it) },
+                bookingState = null)
+        },
+        onBack = { navigator.navigateUp() },
+        onRefresh = { viewmodel.refreshBookingsList() },
+        refresState = rememberSwipeRefreshState(isRefreshing = bookingListState.isLoading()),
+        itemKey = { it.id },
+        listItemStartText = { "${it.name}\n${it.people} personas" },
+        listItemEndText = { "Taula: ${it.table}\n ${it.date.format(AppModule.dateTimeFormatter)}" },
+        searchProperties = searchProperties,
+        crudDialogContent = crudDialogContent,
+        baseViewModel = viewmodel)
 }
 
 @Composable
 fun BookingDialog(
-    resId: Int,
-    booking: BookingDataHolder,
-    onDismissRequest: () -> Unit,
-    onNameChange: (String) -> Unit,
-    onPeopleChange: (String) -> Unit,
-    onDateChange: (String) -> Unit,
-    onPhoneChange: (String) -> Unit,
-    onEmailChange: (String) -> Unit,
-    onTableChange: (String) -> Unit,
-    onClick: () -> Unit,
+    buttonText: String,
+    onClick: (Booking) -> Unit,
+    bookingState: Booking?,
 ) {
-    SrmDialog(onDismissRequest = onDismissRequest) {
-        SrmTextFieldHint(value = booking.name, placeholder = stringResource(R.string.food_name), onValueChange = onNameChange)
-        SrmTextFieldHint(value = booking.people, placeholder = stringResource(R.string.amount_of_people), onValueChange = onPeopleChange)
-        SrmTextFieldHint(value = booking.date, placeholder = stringResource(R.string.date), onValueChange = onDateChange)
-        SrmTextFieldHint(value = booking.phone, placeholder = stringResource(R.string.tel), onValueChange = onPhoneChange)
-        SrmTextFieldHint(value = booking.email, placeholder = stringResource(R.string.mail), onValueChange = onEmailChange)
-        SrmTextFieldHint(value = booking.table, placeholder = stringResource(R.string.table), onValueChange = onTableChange)
-        SrmTextButton(text = stringResource(resId), onClick = {
-            onClick.invoke()
-            onDismissRequest.invoke()
-        })
-    }
-}
+    var name by remember { mutableStateOf(bookingState?.name ?: "") }
+    var email by remember { mutableStateOf(bookingState?.email ?: "") }
+    var phone by remember { mutableStateOf(bookingState?.phone ?: "") }
+    var date by remember { mutableStateOf(bookingState?.date?.format(AppModule.dateTimeFormatter) ?: "") }
+    var people by remember { mutableStateOf(bookingState?.people?.toString() ?: "") }
+    var table by remember { mutableStateOf(bookingState?.table ?: "") }
 
-@Composable
-fun BookItem(book: Booking, onClick: () -> Unit) {
-    SrmSelectableRow(onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
-        SrmText(text = book.name, textAlign = TextAlign.Center)
-        SrmText(text = book.people.toString(), textAlign = TextAlign.Center)
-        SrmText(text = book.date.toString(), textAlign = TextAlign.Center)
-    }
-}
-
-@Composable
-fun BookItemPopup(
-    book: Booking,
-    viewmodel: BookingViewModel,
-    onDismissRequest: () -> Unit = {},
-
-    ) {
-    // see bookings
-    var popupSeeBooking by remember { mutableStateOf(false) }
-    var popupEditBooking by remember { mutableStateOf(false) }
-
-
-    SrmDialog(onDismissRequest = onDismissRequest) {
-        SrmSelectableRow(
-            horizontalArrangement = Arrangement.Start,
-            onClick = {
-                popupSeeBooking = true
-
-            }
-        ) {
-            Spacer(modifier = Modifier.width(spacerWitdh))
-            Icon(painter = painterResource(id = R.drawable.ic_baseline_history_24), contentDescription = stringResource(R.string.mostrar_reserva))
-            Spacer(modifier = Modifier.width(spacerWitdh))
-            SrmText(text = stringResource(R.string.mostrar_reserva))
-
-        }
-        SrmSelectableRow(
-            horizontalArrangement = Arrangement.Start,
-            onClick = {
-                popupEditBooking = true
-            }
-        ) {
-            Spacer(modifier = Modifier.width(spacerWitdh))
-            Icon(painter = painterResource(id = R.drawable.ic_baseline_edit_24),
-                contentDescription = stringResource(R.string.Editar))
-            Spacer(modifier = Modifier.width(spacerWitdh))
-            SrmText(text = stringResource(R.string.Editar))
-        }
-        SrmSelectableRow(
-            horizontalArrangement = Arrangement.Start,
-            onClick = {
-                viewmodel.deleteBooking(book.id)
-                onDismissRequest.invoke()
-            }
-        ) {
-            Spacer(modifier = Modifier.width(spacerWitdh))
-            Icon(painter = painterResource(id = R.drawable.ic_baseline_delete_24), contentDescription = stringResource(R.string.delete))
-            Spacer(modifier = Modifier.width(spacerWitdh))
-            SrmText(text = stringResource(R.string.delete))
-        }
-    }
-
-    // Ver reserva
-    if (popupSeeBooking) {
-        SrmDialog(onDismissRequest = { popupSeeBooking = false }) {
-            Spacer(modifier = Modifier.size(20.dp))
-
-            SrmText(text = "Nombre:  ${book.name}")
-            Spacer(modifier = Modifier.size(20.dp))
-
-            SrmText(text = "Telefono:  ${book.phone}")
-            Spacer(modifier = Modifier.size(20.dp))
-
-            SrmText(text = "Email:  ${book.email}")
-            Spacer(modifier = Modifier.size(20.dp))
-
-            SrmText(text = "Personas:  ${book.people}")
-            Spacer(modifier = Modifier.size(20.dp))
-
-            SrmText(text = "Fecha:  ${book.date}")
-            Spacer(modifier = Modifier.size(20.dp))
-
-            SrmText(text = "Mesa:  ${book.table}")
-            Spacer(modifier = Modifier.size(20.dp))
-        }
-    }
-
-    if (popupEditBooking) {
-        val booking = remember { BookingDataHolder.fromBooking(book) }
-        BookingDialog(resId = R.string.mod_booking,
-            booking = booking,
-            onDismissRequest = { popupEditBooking = false },
-            onNameChange = { booking.name = it },
-            onPeopleChange = { booking.people = it },
-            onDateChange = { booking.date = it },
-            onPhoneChange = { booking.phone = it },
-            onEmailChange = { booking.email = it },
-            onTableChange = { booking.table = it }) {
-            viewmodel.putBooking(book.id, booking)
-        }
-    }
+    SrmTextField(value = name, label = stringResource(R.string.food_name), onValueChange = { name = it })
+    SrmTextField(value = people, label = stringResource(R.string.amount_of_people), onValueChange = { people = it })
+    SrmTextField(value = date, label = stringResource(R.string.date), readOnly = true, onValueChange = { date = it })
+    SrmTextField(value = phone, label = stringResource(R.string.tel), onValueChange = { phone = it })
+    SrmTextField(value = email, label = stringResource(R.string.mail), onValueChange = { email = it })
+    SrmTextField(value = table, label = stringResource(R.string.table), onValueChange = { table = it })
+    SrmTextButton(text = buttonText, onClick = {
+        onClick.invoke(Booking(-1, name, email, phone, LocalDateTime.parse(date, AppModule.dateTimeFormatter), people.toInt(), table))
+    })
 }

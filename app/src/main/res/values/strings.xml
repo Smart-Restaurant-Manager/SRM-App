@@ -27,6 +27,7 @@
     <string name="predictions">Predicciones</string>
     <string name="food">Alimentos</string>
     <string name="reservas">Reservas</string>
+    <string name="rder">Pedidos</string>
     <string name="menu">Carta</string>
     <string name="nombre">Nombre</string>
     <string name="cantidad">Cantidad</string>
@@ -83,11 +84,12 @@
     <string name="quantity">Cantidad</string>
     <string name="price">Precio</string>
     <string name="add_recipe">Añadir plato</string>
+    <string name="mod_recipe">Modificar plato</string>
     <string name="preu_euros">Precio €</string>
     <string name="recipe_name">Nombre</string>
     <string name="no_items_to_search">No hay elementos para buscar</string>
     <string name="show_ingredients">Mostrar ingredients</string>
-    <string name="Pedidos">Pedidos</string>
+    <string name="pedidos">Pedidos</string>
     <string name="add_booking">Añadir reserva</string>
     <string name="mod_booking">Modificar reserva</string>
     <string name="amount_of_people">Número de personas</string>
@@ -98,4 +100,14 @@
     <string name="table">Mesa</string>
     <string name="mostrar_reserva">Mostrar Reserva</string>
     <string name="Editar">Editar Reserva</string>
+    <string name="mod_menu">Editar Recepta</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="delievered">Delievered</string>
+    <string name="inprocess">In process</string>
+    <string name="paid">Paid</string>
+    <string name="waiting">Waiting</string>
+    <string name="all">All</string>
+    <string name="EditarStock">Editar Stock</string>
+    <string name="mod_stock">Modificar Stock</string>
 </resources>

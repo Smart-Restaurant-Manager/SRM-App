@@ -1,8 +1,14 @@
 package com.srm.srmapp.ui.login
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.IconButton
 import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -12,6 +18,9 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -34,6 +43,13 @@ fun LoginScreen(
     userSession: UserSession,
 ) {
 
+    val poppinsFontFamily = FontFamily(
+        Font(R.font.poppins_light, FontWeight.Light),
+        Font(R.font.poppins_regular, FontWeight.Normal),
+        Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic),
+        Font(R.font.poppins_medium, FontWeight.Medium),
+        Font(R.font.poppins_bold, FontWeight.Bold)
+    )
     val userState by userSession.userObject.observeAsState(Resource.Empty())
     if (userSession.isLoggedIn()) {
         when {
@@ -87,12 +103,25 @@ fun LoginForm(
             isError = loginState is Resource.Error,
             onValueChange = { user = it },
         )
-
+        var passwordVisibility: Boolean by remember { mutableStateOf(false) }
         SrmTextField(
             value = password,
             label = stringResource(id = R.string.password),
             enabled = loginState !is Resource.Loading,
             isError = loginState is Resource.Error,
+            visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            trailingIcon = {
+                val image = if (passwordVisibility)
+                    Icons.Filled.Visibility
+                else Icons.Filled.VisibilityOff
+
+                val description = if (passwordVisibility) "Hide password" else "Show password"
+
+                IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                    Image(image, contentDescription = description)
+                }
+            },
             onValueChange = { password = it },
             modifier = Modifier
                 .padding(0.dp, 20.dp),

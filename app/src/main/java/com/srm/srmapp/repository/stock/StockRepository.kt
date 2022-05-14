@@ -1,6 +1,10 @@
 package com.srm.srmapp.repository.stock
 
 import com.srm.srmapp.Resource
+import com.srm.srmapp.data.dto.stock.response.toFood
+import com.srm.srmapp.data.dto.stock.response.toFoodList
+import com.srm.srmapp.data.dto.stock.response.toStock
+import com.srm.srmapp.data.dto.stock.response.toStockList
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.BaseRepository
@@ -41,20 +45,20 @@ class StockRepository @Inject constructor(private val api: StockInterface) : Bas
     suspend fun postFood(food: Food) = safeApiCall({
         api.postFood(food.toJsonObject())
     }) {
-        "New food added"
+        "Nuevo alimento añadido"
     }
 
     suspend fun putFood(food: Food) = safeApiCall({
         api.putFood(food.foodId, food.toJsonObject())
     }) {
-        "Food modified"
+        "Alimento modificado"
     }
 
     suspend fun deleteFood(food: Food): Resource<String> {
         val res = safeApiCall({
             api.deleteFood(food.foodId)
         }) {
-            "Food deleted"
+            "Alimento eliminado"
         }
         Timber.d(res.toString())
         return res
@@ -63,18 +67,18 @@ class StockRepository @Inject constructor(private val api: StockInterface) : Bas
     suspend fun postStock(stock: Stock) = safeApiCall({
         api.postStock(stock.toJsonObject())
     }) {
-        "Stock added"
+        "Stock añadido"
     }
 
-    suspend fun putStock(stock: Stock) = safeApiCall({
-        api.putStock(stock.stockId, stock.toJsonObject())
+    suspend fun putStock(id: Int, stock: Stock) = safeApiCall({
+        api.putStock(id, stock.toJsonObject())
     }) {
-        "Stock modified"
+        "Stock modificado"
     }
 
     suspend fun deleteStock(stock: Stock) = safeApiCall({
         api.deleteStock(stock.stockId)
     }) {
-        "Stock deleted"
+        "Stock eliminado"
     }
 }

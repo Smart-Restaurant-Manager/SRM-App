@@ -3,8 +3,10 @@ package com.srm.srmapp.data.dto.orders.response
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
+import com.srm.srmapp.data.models.Booking
 import com.srm.srmapp.data.models.Order
 import com.srm.srmapp.data.models.Recipe
+import timber.log.Timber
 import java.time.LocalDateTime
 
 @Keep
@@ -34,7 +36,7 @@ data class OrderResponse(
             @SerializedName("created_at")
             val createdAt: LocalDateTime, // 2012/03/06 17:33:07
             @SerializedName("updated_at")
-            val updatedAt: String, // 2012/03/06 17:33:07
+            val updatedAt: LocalDateTime, // 2012/03/06 17:33:07
         ) {
             data class Status(
                 @SerializedName("type")
@@ -50,7 +52,7 @@ data class OrderResponse(
                     @SerializedName("created_at")
                     val createdAt: LocalDateTime, // 2012/03/06 17:33:07
                     @SerializedName("updated_at")
-                    val updatedAt: String, // 2012/03/06 17:33:07
+                    val updatedAt: LocalDateTime, // 2012/03/06 17:33:07
                 )
             }
 
@@ -70,7 +72,7 @@ data class OrderResponse(
                     @SerializedName("phone")
                     val phone: String, // +34 111 111 111
                     @SerializedName("date")
-                    val date: String, // 2022/04/13 21:30:00
+                    val date: LocalDateTime, // 2022/04/13 21:30:00
                     @SerializedName("people")
                     val people: Int, // 6
                     @SerializedName("table")
@@ -92,7 +94,7 @@ data class OrderResponse(
                 @SerializedName("created_at")
                 val createdAt: LocalDateTime, // 2012/03/06 17:33:07
                 @SerializedName("updated_at")
-                val updatedAt: String, // 2012/03/06 17:33:07
+                val updatedAt: LocalDateTime, // 2012/03/06 17:33:07
             )
         }
     }
@@ -100,9 +102,34 @@ data class OrderResponse(
 
 fun OrderResponse.toOrder() = data.toOrder()
 
+fun parseStatus(s: String): Order.Status = when (s) {
+    "En espera" -> Order.Status.Waiting()
+    "Confirmada" -> Order.Status.Confirmed()
+    "En procés" -> Order.Status.InProcess()
+    "Cancel·lada" -> Order.Status.Cancelled()
+    "Pagada" -> Order.Status.Paid()
+    "Servida" -> Order.Status.Delievered()
+    else -> {
+        Timber.e("Order status not found!")
+        Order.Status.None()
+    }
+}
+
+fun OrderResponse.Data.getBooking(): Booking {
+    val attributes = attributes.booking.attributes
+    return Booking(name = attributes.name,
+        id = id,
+        email = attributes.email,
+        phone = attributes.phone,
+        date = attributes.date,
+        people = attributes.people,
+        table = attributes.table)
+}
+
 fun OrderResponse.Data.toOrder() =
     Order(
         orderId = id,
         bookingId = attributes.bookingId,
-        status = Order.parseStatus(attributes.status.attributes.status),
+        status = parseStatus(attributes.status.attributes.status),
+        booking = getBooking(),
         recipeList = attributes.recipes.map { Order.OrderRecipe(it.recipeId, it.quantity, it.price, it.type) })

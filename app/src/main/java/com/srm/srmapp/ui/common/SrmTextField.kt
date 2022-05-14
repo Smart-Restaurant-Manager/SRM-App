@@ -1,12 +1,14 @@
 package com.srm.srmapp.ui.common
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
@@ -33,13 +35,13 @@ fun SrmTextField(
     maxLines: Int = 2,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = MaterialTheme.shapes.small,
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
+    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(backgroundColor = Color.Transparent),
 ) {
     OutlinedTextField(enabled = enabled,
         readOnly = readOnly,
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier,
+        modifier = modifier.wrapContentSize(),
         singleLine = singleLine,
         textStyle = textStyle,
         label = { SrmText(text = label) },
@@ -75,12 +77,12 @@ fun SrmTextFieldHint(
     singleLine: Boolean = false,
     maxLines: Int = Int.MAX_VALUE,
     shape: Shape = TextFieldDefaults.TextFieldShape,
-    colors: TextFieldColors = TextFieldDefaults.textFieldColors(),
+    colors: TextFieldColors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
 ) {
     TextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = modifier,
+        modifier = modifier.wrapContentSize(),
         enabled = enabled,
         readOnly = readOnly,
         textStyle = textStyle,
@@ -100,5 +102,5 @@ fun SrmTextFieldHint(
 @Composable
 @Preview(showBackground = true)
 fun PreviewTextField() {
-    SrmTextField(value = "Value", label = "Label")
+    SrmTextFieldHint(value = "", placeholder = "Label", onValueChange = {})
 }

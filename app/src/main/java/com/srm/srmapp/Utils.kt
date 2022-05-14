@@ -6,9 +6,6 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -40,28 +37,22 @@ object Utils {
     }
 
 
-    fun CoroutineScope.launchException(coroutineContext: CoroutineContext = Dispatchers.IO, call: suspend CoroutineScope.() -> Unit): Job {
-        val exceptionHandler = CoroutineExceptionHandler { context, ex ->
-            Timber.e("${ex.message} \n${Log.getStackTraceString(ex)}")
-        }
+    val exceptionHandler = CoroutineExceptionHandler { context, ex ->
+        Timber.e("${ex.message} \n${Log.getStackTraceString(ex)}")
+    }
 
+    val Dispatchers.CUSTOM_DISPATCHER: CoroutineContext
+        get() = exceptionHandler + IO
+
+    fun CoroutineScope.launchException(coroutineContext: CoroutineContext = Dispatchers.IO, call: suspend CoroutineScope.() -> Unit): Job {
         return this.launch(exceptionHandler + coroutineContext) {
             call()
         }
     }
 
-    fun <T> ViewModel.fetchResource(
-        livedataResource: MutableLiveData<Resource<T>>,
-        onSuccess: suspend (Resource<T>) -> Unit = {},
-        repositoryCall: suspend () -> Resource<T>,
-    ) {
-        livedataResource.postValue(Resource.Loading())
-        this.viewModelScope.launchException {
-            val r = repositoryCall.invoke()
-            if (r.isSuccess())
-                onSuccess.invoke(r)
-            livedataResource.postValue(r)
-        }
+    fun Float.format(digits: Int): String {
+        val decimal = this - this.toInt()
+        if (decimal == 0f) return "%.${0}f".format(this)
+        return "%.${digits}f".format(this)
     }
-
 }

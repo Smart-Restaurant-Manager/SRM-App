@@ -3,29 +3,13 @@ package com.srm.srmapp.ui.bookings
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.srm.srmapp.Resource
-import com.srm.srmapp.Utils.fetchResource
 import com.srm.srmapp.data.models.Booking
 import com.srm.srmapp.repository.bookings.BookingRepository
 import com.srm.srmapp.repository.orders.OrdersRepository
 import com.srm.srmapp.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.time.LocalDateTime
+import timber.log.Timber
 import javax.inject.Inject
-
-data class BookingDataHolder(
-    var name: String = "",
-    var email: String = "",
-    var phone: String = "",
-    var date: String = "",
-    var people: String = "",
-    var table: String = "",
-) {
-    fun toBooking() = Booking(-1, name, email, phone, LocalDateTime.now(), people.toInt(), table)
-
-    companion object {
-        fun fromBooking(b: Booking): BookingDataHolder = BookingDataHolder(b.name, b.email, b.phone, b.email, b.people.toString(), b.table)
-    }
-}
 
 @HiltViewModel
 class BookingViewModel @Inject constructor(
@@ -44,10 +28,16 @@ class BookingViewModel @Inject constructor(
     val book: LiveData<Resource<Booking>>
         get() = _book
 
+    fun clearStatus() {
+        Timber.d("Clear Status ${_status.value}")
+        _status.value = Resource.Empty()
+    }
 
-    fun addBooking(bookingDataHolder: BookingDataHolder) {
-        fetchResource(this._status) {
-            bookingRepository.postBooking(bookingDataHolder.toBooking())
+    fun addBooking(booking: Booking) {
+        fetchResource(_status, onSuccess = {
+            refreshBookingsList()
+        }) {
+            bookingRepository.postBooking(booking)
         }
     }
 
@@ -74,9 +64,9 @@ class BookingViewModel @Inject constructor(
         }
     }
 
-    fun putBooking(id: Int, bookingUIState: BookingDataHolder) {
+    fun putBooking(booking: Booking) {
         fetchResource(_status) {
-            bookingRepository.putBooking(id, bookingUIState.toBooking())
+            bookingRepository.putBooking(booking.id, booking)
         }
     }
 

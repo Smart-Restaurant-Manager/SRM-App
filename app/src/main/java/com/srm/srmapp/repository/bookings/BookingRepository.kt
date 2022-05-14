@@ -24,18 +24,18 @@ class BookingRepository @Inject constructor(private val bookingInterface: Bookin
     suspend fun postBooking(booking: Booking) = safeApiCall({
         bookingInterface.postBookings(booking.toJsonObject())
     }) {
-        "Booking Added"
+        "Reserva Añadida"
     }
 
     suspend fun putBooking(id: Int, booking: Booking) = safeApiCall({
         bookingInterface.putBooking(id, booking.toJsonObject())
     }) {
-        "Booking modified"
+        "Reserva modificada"
     }
 
     suspend fun deleteBooking(id: Int) = safeApiCall({
         bookingInterface.deleteBooking(id)
     }) {
-        "Booking deleted"
+        "Reserva eliminada"
     }
 }

@@ -1,39 +1,21 @@
 package com.srm.srmapp.ui.menu
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
+import com.srm.srmapp.Utils.format
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.stock.StockViewmodel
-import com.srm.srmapp.ui.theme.ButtonColor2
-import com.srm.srmapp.ui.theme.paddingEnd
-import com.srm.srmapp.ui.theme.paddingStart
-import com.srm.srmapp.ui.theme.spacerWitdh
-import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
 @Destination
@@ -48,217 +30,95 @@ fun RecipeScreen(
     val recipeListState by viewmodel.recipeList.observeAsState(Resource.Empty())
     if (recipeListState.isEmpty()) viewmodel.refreshRecipeList()
 
-    // add item dialog state
-    var dialogAddState by remember { mutableStateOf(false) }
+    // Food list
+    val a by stockViewmodel.foodList.observeAsState(Resource.Empty())
+    if (a.isEmpty()) stockViewmodel.refreshFoodList()
 
-    // Swipe to refresh satte
-    val refreshState = rememberSwipeRefreshState(recipeListState.isLoading())
+    val recipelist = remember(recipeListState.data) { (recipeListState.data ?: emptyList()).filter { it.type == recipeType } }
 
-    // Search dialog state
-    var dialogSearchRecipe by remember { mutableStateOf(false) }
-    var itemIdx by remember { mutableStateOf(-1) }
-    val recipeList = remember(recipeListState.data) { recipeListState.data ?: emptyList() }
-
-    // Lazy list state
-    val lazyListState = rememberLazyListState()
-
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(start = paddingStart, end = paddingEnd),
-        horizontalAlignment = Alignment.CenterHorizontally)
-    {
-        SrmAddTitleSearch(stringResource(id = Recipe.getResource(recipeType)),
-            onClickSearch = { dialogSearchRecipe = true },
-            onClickAdd = { dialogAddState = true },
-            onClickBack = { navigator.navigateUp() })
-        SwipeRefresh(
-            state = refreshState,
-            modifier = Modifier.padding(0.dp, 30.dp),
-            onRefresh = { viewmodel.refreshRecipeList() }) {
-            LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
-                stickyHeader {
-                    Row(modifier = Modifier
-                        .height(50.dp)
-                        .background(Color.White)
-                        .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .background(color = ButtonColor2, RoundedCornerShape(20))
-                                .size(120.dp)
-                                .fillMaxHeight()
-                        ) {
-                            SrmText(text = stringResource(R.string.recipe_name), color = Color.White, modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
-                        Box(
-                            modifier = Modifier
-                                .background(color = ButtonColor2, RoundedCornerShape(20))
-                                .size(120.dp)
-                                .fillMaxHeight()
-                        ) {
-                            SrmText(text = stringResource(R.string.preu_euros), color = Color.White, modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
-
-                    }
-                }
-                items(recipeList.filter { it.type == recipeType }, key = { it.id }) {
-                    var dialogItemState by remember { mutableStateOf(false) }
-                    RecipeItem(recipe = it) { dialogItemState = true }
-                    if (dialogItemState) {
-                        RecipeItemPopUp(
-                            recipe = it,
-                            viewmodel = viewmodel,
-                            onDismissRequest = { dialogItemState = false }
-                        )
-                    }
-                }
-            }
-        }
-    }
+    // search engine properties
+    val searchProperties = SrmSearchProperties<Recipe>(
+        searchPredicate = { recipeItem, query -> recipeItem.name.startsWith(query, ignoreCase = true) },
+        indexPredicate = { it, found -> it.id == found.id },
+        searchLabel = "Buscar recetas",
+        startSearchText = { it.name },
+        endSearchText = { "${it.price}€" })
 
 
+    // dialog content
+    val crudDialogContent = SrmCrudDialogContent<Recipe>(
+        editDialogContent = { item ->
+            // TODO Fix quantity selector
+            RecipeDialog(buttonText = stringResource(id = R.string.mod_menu),
+                onClick = { viewmodel.putRecipe(it) },
+                foodList = a.data ?: emptyList(),
+                recipeType = recipeType,
+                recipeState = item)
+        },
+        addDialogContent = {
+            // TODO set to null to disable
+        },
+        deleteDialogContent = {
+            // TODO confirmation with yes/no
+            SrmText(text = "Todo")
+        },
+        moreDialogContent = {
+            // TODO
+            SrmText(text = "Todo")
+        },
+    )
 
-    if (dialogAddState) {
-        AddRecipeDialog(onDismissRequest = {
-            dialogAddState = false
-        }, viewmodel, stockViewmodel, recipeType)
-    }
-
-    if (dialogSearchRecipe) {
-        SrmSearch(items = recipeList,
-            onDismissRequest = { dialogSearchRecipe = false },
-            predicate = { recipeItem, query ->
-                recipeItem.name.startsWith(query, ignoreCase = true)
-            }) { recipeItem ->
-            SrmSelectableRow(
-                onClick = {
-                    recipeList.indexOf(recipeItem).let { idx -> itemIdx = idx }
-                    dialogSearchRecipe = false
-                }) {
-                SrmText(text = recipeItem.name, textAlign = TextAlign.Center)
-                SrmText(text = recipeItem.price.toString(), textAlign = TextAlign.Center)
-            }
-        }
-        if (itemIdx >= 0) {
-            Timber.d("Scroll to $itemIdx")
-            LaunchedEffect(key1 = itemIdx, block = {
-                lazyListState.scrollToItem(itemIdx, 0)
-            })
-        }
-    }
-
+    SrmListWithCrudActions(
+        title = stringResource(id = Recipe.getResource(recipeType)),
+        itemList = recipelist,
+        onAddDialog = {
+            RecipeDialog(buttonText = stringResource(id = R.string.add_recipe),
+                onClick = { viewmodel.addRecipe(it) },
+                foodList = a.data ?: emptyList(),
+                recipeType = recipeType)
+        },
+        onBack = { navigator.navigateUp() },
+        onRefresh = { viewmodel.refreshRecipeList() },
+        refresState = rememberSwipeRefreshState(isRefreshing = recipeListState.isLoading()),
+        itemKey = { it.id },
+        listItemStartText = { "${it.name}\n${it.price}€" },
+        listItemEndText = { "${it.id}\n" + if (it.available == true) "Disponible" else "No disponible" },
+        searchProperties = searchProperties,
+        crudDialogContent = crudDialogContent,
+        baseViewModel = viewmodel)
 }
 
 
 @Composable
-fun AddRecipeDialog(onDismissRequest: () -> Unit, viewmodel: RecipeViewmodel, stockViewmodel: StockViewmodel, recipeType: Recipe.RecipeType) {
-    var name by remember { mutableStateOf("") }
-    var precio by remember { mutableStateOf("") }
-    val selectedFood = remember { arrayListOf<Pair<Int, Float>>() }
-    val foodList by stockViewmodel.foodList.observeAsState(Resource.Empty())
-    if (foodList.isEmpty()) stockViewmodel.refreshFoodList()
-
-    if (foodList.isSuccess()) {
-        SrmDialog(onDismissRequest = onDismissRequest) {
-            SrmTextFieldHint(value = name, placeholder = stringResource(R.string.food_name), onValueChange = { name = it })
-            SrmTextFieldHint(value = precio, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                placeholder = stringResource(R.string.price), onValueChange = { precio = it })
-
-            foodList.data?.let { foodList ->
-                FoodSelector(foodList, onCheckedChange = { food, check, quantity ->
-                    if (quantity <= 0) return@FoodSelector
-                    if (check) {
-                        selectedFood.removeIf { it.first == food.foodId }
-                        selectedFood.add(Pair(food.foodId, quantity))
-                    } else {
-                        selectedFood.removeIf { it.first == food.foodId }
-                    }
-                    Timber.d(selectedFood.toString())
-                })
-            }
-
-            SrmTextButton(onClick = {
-                val recipe = Recipe(type = recipeType, name = name, price = precio.toFloatOrNull() ?: 0f, food = selectedFood)
-                Timber.d(recipe.toString())
-                viewmodel.addRecipe(recipe)
-                onDismissRequest.invoke()
-            }, text = stringResource(id = R.string.add_recipe))
-        }
-    }
-}
-
-@Composable
-fun RecipeItem(recipe: Recipe, onClick: () -> Unit) {
-
-    SrmSelectableRow(onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
-        SrmText(text = recipe.name, textAlign = TextAlign.Center)
-        SrmText(text = recipe.price.toString(), textAlign = TextAlign.Center)
-    }
-}
-
-@Composable
-fun RecipeItemPopUp(
-    recipe: Recipe,
-    viewmodel: RecipeViewmodel,
-    onDismissRequest: () -> Unit = {},
+fun RecipeDialog(
+    buttonText: String,
+    onClick: (Recipe) -> Unit,
+    foodList: List<Food>,
+    recipeType: Recipe.RecipeType,
+    recipeState: Recipe? = null,
 ) {
-    SrmDialog(onDismissRequest = onDismissRequest) {
-        SrmSelectableRow(
-            horizontalArrangement = Arrangement.Start,
-            onClick = {
-                viewmodel.deleteRecipe(recipe.id)
-                onDismissRequest.invoke()
-            }) {
-            Spacer(modifier = Modifier.width(spacerWitdh))
-            Icon(painter = painterResource(id = R.drawable.ic_baseline_delete_24), contentDescription = stringResource(id = R.string.delete))
-            Spacer(modifier = Modifier.width(spacerWitdh))
-            SrmText(text = stringResource(R.string.delete))
-        }
-        SrmSelectableRow(
-            horizontalArrangement = Arrangement.Start,
-            onClick = {
-                Timber.d("Get Ingredients ${recipe.name}")
-                viewmodel.getRecipeBy(recipe.id)
-                onDismissRequest.invoke()
-            }) {
-            Spacer(modifier = Modifier.width(spacerWitdh))
-            Icon(painter = painterResource(id = R.drawable.ic_baseline_add_24), contentDescription = "Mostrar ingredients")
-            Spacer(modifier = Modifier.width(spacerWitdh))
-            SrmText(text = stringResource(R.string.show_ingredients))
-        }
+    var name by remember { mutableStateOf(recipeState?.name ?: "") }
+    var precio by remember { mutableStateOf(recipeState?.price?.format(2) ?: "") }
+    var selectedFood = remember {
+        recipeState?.food?.map { (foodid, quantity) ->
+            Pair(foodList.indexOfFirst { it.foodId == foodid }, quantity)
+        } ?: listOf()
     }
-}
 
-
-@Composable
-fun FoodSelector(foodList: List<Food>, onCheckedChange: (Food, Boolean, Float) -> Unit) {
-    LazyColumn(Modifier.height(200.dp)) {
-        items(foodList) { food ->
-            var checked by remember { mutableStateOf(false) }
-            var quantity by remember { mutableStateOf("") }
-            SrmSelectableRow(horizontalArrangement = Arrangement.SpaceEvenly,
-                onClick = {
-                    checked = !checked
-                    onCheckedChange.invoke(food, checked, quantity.toFloatOrNull() ?: 0.0f)
-                }) {
-                if (checked) {
-                    SrmTextFieldHint(modifier = Modifier.width(100.dp),
-                        singleLine = true,
-                        maxLines = 1,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        value = quantity,
-                        placeholder = stringResource(id = R.string.quantity),
-                        onValueChange = {
-                            quantity = it
-                            onCheckedChange.invoke(food, true, quantity.toFloatOrNull() ?: 0f)
-                        }
-                    )
-                }
-                SrmText(text = food.name)
-            }
-        }
+    SrmTextFieldHint(value = name, placeholder = stringResource(R.string.food_name), onValueChange = { name = it })
+    SrmTextFieldHint(value = precio, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        placeholder = stringResource(R.string.price), onValueChange = { precio = it })
+    SrmQuantitySelector(optionsList = foodList.map { it.name }, // TODO Fix food, quantity not working
+        selectorState = selectedFood.toTypedArray()) {
+        selectedFood = it.toList().filter { it.second.compareTo(0f) > 0 }
     }
+    SrmTextButton(onClick = {
+        val recipe = Recipe(type = recipeType,
+            name = name,
+            price = precio.toFloatOrNull() ?: 0f,
+            food = selectedFood.map { (idx, quantity) ->
+                Pair(foodList[idx].foodId, quantity)
+            })
+        onClick.invoke(recipe)
+    }, text = buttonText)
 }

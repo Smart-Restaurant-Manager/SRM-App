@@ -21,24 +21,23 @@ class RecipeRepository @Inject constructor(private val api: RecipeInterface) : B
             it.toRecipe()
         }
 
-    suspend fun postRecipe(recipe: Recipe) =
-        safeApiCall({
-            api.postRecipe(recipe.toJsonObject())
-        }) {
-            "Recipe added"
-        }
+    suspend fun postRecipe(recipe: Recipe) = safeApiCall({
+        api.postRecipe(recipe.toJsonObject())
+    }) {
+        "Nueva receta añadida"
+    }
 
     suspend fun putRecipe(recipe: Recipe) =
         safeApiCall({
             api.putRecipe(recipe.id, recipe.toJsonObject())
         }) {
-            "Recipe Modified"
+            "Receta modificada"
         }
 
     suspend fun deleteRecipe(id: Int) =
         safeApiCall({
             api.deleteRecipe(id)
         }) {
-            "Recipe deleted"
+            "Receta eliminada"
         }
 }

@@ -8,7 +8,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -23,12 +26,11 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.srm.srmapp.AppModule
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.ui.common.*
-import com.srm.srmapp.ui.theme.paddingEnd
-import com.srm.srmapp.ui.theme.paddingStart
 import com.srm.srmapp.ui.theme.spacerWitdh
 import timber.log.Timber
 import java.time.LocalDate
@@ -45,37 +47,26 @@ fun FoodListScreen(
     val foodListState by viewmodel.foodList.observeAsState(Resource.Empty())
     if (foodListState.isEmpty()) viewmodel.refreshFoodList()
 
-    // Swipe to refresh state
-    val refreshState = rememberSwipeRefreshState(foodListState.isLoading())
-
     // item add dialog state
     var dialogAddFoodState by remember { mutableStateOf(false) }
+
     // Search state dialog
     var dialogSearchFood by remember { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
-    var itemIdx by remember { mutableStateOf(-1) }
     val foodList = remember(foodListState.data) { foodListState.data ?: emptyList() }
 
-    //Categories
-    val categories = listOf("Entrantes", "1r Plato", "2o Plato", "Postres", "Bebidas", "Complementos")
-
     Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(start = paddingStart, end = paddingEnd),
+        .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally) {
         SrmAddTitleSearch(stringResource(R.string.food),
             onClickSearch = { dialogSearchFood = true },
             onClickAdd = { dialogAddFoodState = true },
             onClickBack = { navigator.navigateUp() })
         SwipeRefresh(
-            state = refreshState,
+            state = rememberSwipeRefreshState(foodListState.isLoading()),
             modifier = Modifier.padding(0.dp, 30.dp),
             onRefresh = { viewmodel.refreshFoodList() }) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
-                stickyHeader {
-                    SrmStickyHeader(headers =
-                    listOf(stringResource(R.string.food_name), stringResource(R.string.quantity)))
-                }
                 items(foodList, key = { it.foodId }) {
                     var dialogItemState by remember { mutableStateOf(false) }
                     FoodItem(food = it) { dialogItemState = true }
@@ -92,19 +83,9 @@ fun FoodListScreen(
     }
 
 
-    val statusMessage by viewmodel.status.observeAsState(Resource.Empty())
-    if (statusMessage.isSuccess() || statusMessage.isError()) {
-        val msg = statusMessage.data ?: statusMessage.message
-        msg?.let {
-            SrmDialog(onDismissRequest = {
-                viewmodel.clearStatus()
-            }) {
-                SrmText(text = it, textAlign = TextAlign.Center)
-            }
-        }
-    }
+    // stock for one food
+    var popupEditStock by remember { mutableStateOf(false) }
 
-// stock for one food
     val stockList by viewmodel.stockList.observeAsState(Resource.Empty())
     if (stockList.isSuccess()) {
         stockList.data?.let {
@@ -112,12 +93,15 @@ fun FoodListScreen(
                 viewmodel.clearStcokList()
             }) {
                 if (it.isEmpty())
-                    SrmText(text = "No stocks found")
+                    SrmText(text = "No hay stock ")
                 else {
                     LazyColumn(modifier = Modifier.wrapContentSize()) {
                         items(it, key = { it.stockId }) { stock ->
-                            SrmSelectableRow() {
-                                SrmText(text = "${stock.quantity} ${stock.expirationDate}", textAlign = TextAlign.Center)
+                            SrmSelectableRow(onClick = {
+                                popupEditStock = true
+                            }) {
+                                SrmText(text = " Cantidad: ${stock.quantity}    Fecha: ${stock.expirationDate.format(AppModule.dateFormatter)}",
+                                    textAlign = TextAlign.Center)
                                 IconButton(onClick = {
                                     viewmodel.deleteStock(stock)
                                 }) {
@@ -125,12 +109,27 @@ fun FoodListScreen(
                                         contentDescription = stringResource(id = R.string.delete))
                                 }
                             }
+
+                            if (popupEditStock) {
+                                val stocka = remember { StockDataHodle.fromStock(stock) }
+                                StockDialog(resId = R.string.mod_stock,
+                                    stock = stocka,
+                                    onDismissRequest = { popupEditStock = false },
+                                    onQuantityChange = { stocka.quantity = it },
+                                    onDateChange = { stocka.date = it }) {
+                                    viewmodel.putStock(stock.stockId, stocka)
+                                }
+                            }
                         }
                     }
                 }
             }
+
         }
+
     }
+
+
 
     if (dialogAddFoodState) {
         var name by remember { mutableStateOf("") }
@@ -143,43 +142,8 @@ fun FoodListScreen(
         }) {
             SrmTextFieldHint(value = name, placeholder = stringResource(R.string.food_name), onValueChange = { name = it })
             SrmTextFieldHint(value = units, placeholder = stringResource(R.string.unit), onValueChange = { units = it })
-
-
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = {
-                    expanded = !expanded
-                }
-            ) {
-                TextField(
-                    readOnly = true,
-                    value = type,
-                    onValueChange = { },
-                    label = { Text("Categoria") },
-                    trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(
-                            expanded = expanded
-                        )
-                    },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors()
-                )
-                ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = {
-                        expanded = false
-                    }
-                ) {
-                    options.forEach { selectionOption ->
-                        DropdownMenuItem(
-                            onClick = {
-                                type = selectionOption
-                                expanded = false
-                            }
-                        ) {
-                            Text(text = selectionOption)
-                        }
-                    }
-                }
+            SrmDropDownMenu(text = "Categoria", options = options, onClick = { type = it }) {
+                SrmText(text = it)
             }
             TextButton(onClick = {
                 viewmodel.addFood(type, name, units)
@@ -192,34 +156,62 @@ fun FoodListScreen(
 
     if (dialogSearchFood) {
         SrmSearch(items = foodList,
+            label = "Buscar alimentos",
             onDismissRequest = { dialogSearchFood = false },
             predicate = { food, query ->
                 food.name.startsWith(query, ignoreCase = true)
             }) { food ->
+            var dialogItemState by remember { mutableStateOf(false) }
             SrmSelectableRow(
-                onClick = {
-                    foodList.indexOf(food).let { idx -> itemIdx = idx }
-                    dialogSearchFood = false
-                }) {
+                onClick = { dialogItemState = true }) {
                 SrmText(text = food.name, textAlign = TextAlign.Center)
                 SrmText(text = food.units, textAlign = TextAlign.Center)
             }
+            if (dialogItemState) {
+                FoodItemPopup(
+                    food = food,
+                    viewmodel = viewmodel,
+                    onDismissRequest = { dialogItemState = false },
+                )
+            }
         }
-        if (itemIdx >= 0) {
-            Timber.d("Scroll to $itemIdx")
-            LaunchedEffect(key1 = itemIdx, block = {
-                lazyListState.scrollToItem(itemIdx, 0)
-            })
-        }
+
+    }
+}
+
+
+@Composable
+fun StockDialog(
+    resId: Int,
+    stock: StockDataHodle,
+    onDismissRequest: () -> Unit,
+    onQuantityChange: (String) -> Unit,
+    onDateChange: (String) -> Unit,
+    onClick: () -> Unit,
+) {
+    SrmDialog(onDismissRequest = onDismissRequest) {
+        SrmTextFieldHint(value = stock.date.toString(), placeholder = stringResource(R.string.date), readOnly = true, onValueChange = onDateChange)
+        SrmTextFieldHint(value = stock.quantity.toString(), placeholder = stringResource(R.string.table), onValueChange = onQuantityChange)
+        SrmTextButton(text = stringResource(resId), onClick = {
+            onClick.invoke()
+            onDismissRequest.invoke()
+        })
     }
 }
 
 @Composable
 fun FoodItem(food: Food, onClick: () -> Unit) {
-    SrmSelectableRow(onClick = onClick, horizontalArrangement = Arrangement.SpaceEvenly) {
-        SrmText(text = food.name, textAlign = TextAlign.Center)
-        SrmText(text = food.units, textAlign = TextAlign.Center)
+    SrmListItem(startText = "${food.name}\n${20}${food.units}", endText = "${food.type}", onClick = onClick)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun It() {
+    FoodItem(food = Food("Type", 12, "name", "unit")) {
+
     }
+
+
 }
 
 @Composable
@@ -242,6 +234,7 @@ fun FoodItemPopup(
             Spacer(modifier = Modifier.width(spacerWitdh))
             SrmText(text = stringResource(R.string.show_stock))
         }
+
         SrmSelectableRow(
             horizontalArrangement = Arrangement.Start,
             onClick = {
@@ -299,6 +292,7 @@ fun FoodItemPopup(
             }
         }
     }
+
 
 }
 
