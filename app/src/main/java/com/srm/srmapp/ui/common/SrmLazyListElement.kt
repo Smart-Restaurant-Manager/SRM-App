@@ -8,14 +8,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.AlertDialog
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.srm.srmapp.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -25,7 +28,7 @@ data class SrmCrudDialogContent<T>(
     val editDialogContent: (@Composable (T) -> Unit)? = null,
 
     val deleteLabel: String = "Eliminar",
-    val deleteDialogContent: (@Composable (T) -> Unit)? = null,
+    val onDelete: ((T) -> Unit)? = null,
 
     val moreLabel: String = "Mes",
     val moreDialogContent: (@Composable (T) -> Unit)? = null,
@@ -141,7 +144,7 @@ fun <T> SrmListWithCrudActions(
                                 enableAdd = addDialogContent != null,
                                 enableEdit = editDialogContent != null,
                                 enableMore = moreDialogContent != null,
-                                enableDelete = deleteDialogContent != null,
+                                enableDelete = onDelete != null,
                             )
                         }
                     }
@@ -162,9 +165,23 @@ fun <T> SrmListWithCrudActions(
                                 SrmDialog(onDismissRequest = { moreDialog = false }) { it.invoke(i) }
                             }
                         }
-                        deleteDialogContent?.let {
+                        onDelete?.let {
                             if (deleteDialog) {
-                                SrmDialog(onDismissRequest = { deleteDialog = false }) { it.invoke(i) }
+                                AlertDialog(onDismissRequest = { deleteDialog = false },
+                                    confirmButton = {
+                                        SrmTextButton(
+                                            text = stringResource(R.string.affirmativeButton),
+                                            onClick = {
+                                                it.invoke(i)
+                                                deleteDialog = false
+                                            },
+                                        )
+                                    },
+                                    dismissButton = {
+                                        SrmTextButton(onClick = { deleteDialog = false },
+                                            text = stringResource(R.string.negativeButton))
+                                    },
+                                    text = { SrmText(text = "Estas seguro?") })
                             }
                         }
                     }

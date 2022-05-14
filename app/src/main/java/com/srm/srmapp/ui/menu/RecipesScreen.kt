@@ -58,10 +58,7 @@ fun RecipeScreen(
         addDialogContent = {
             // TODO set to null to disable
         },
-        deleteDialogContent = {
-            // TODO confirmation with yes/no
-            SrmText(text = "Todo")
-        },
+        onDelete = { viewmodel.deleteRecipe(it.id) },
         moreDialogContent = {
             // TODO
             SrmText(text = "Todo")

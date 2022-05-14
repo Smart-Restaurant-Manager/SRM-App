@@ -112,4 +112,6 @@
     <string name="mod_stock">Modificar Stock</string>
     <string name="unidades">Unidades</string>
     <string name="edit_food">Editar aliment</string>
+    <string name="negativeButton">No</string>
+    <string name="affirmativeButton">Si</string>
 </resources>

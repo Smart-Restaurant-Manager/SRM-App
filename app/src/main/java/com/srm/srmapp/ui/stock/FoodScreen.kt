@@ -44,9 +44,7 @@ fun FoodListScreen(
         addDialogContent = {
             SrmText(text = "TODO add stock")
         },
-        deleteDialogContent = {
-            SrmText(text = "TODO delete food")
-        },
+        onDelete = { viewmodel.deleteFood(it) },
         moreDialogContent = {
             SrmText(text = "TODO show stock")
         }

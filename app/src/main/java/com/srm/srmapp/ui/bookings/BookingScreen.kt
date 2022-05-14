@@ -45,10 +45,7 @@ fun BookingScreen(
             // TODO
             SrmText(text = "Todo")
         },
-        deleteDialogContent = {
-            // TODO confirmation with yes/no
-            SrmText(text = "Todo")
-        },
+        onDelete = { viewmodel.deleteBooking(it.id) },
         moreDialogContent = {
             // TODO
             SrmText(text = "Todo")
