@@ -115,4 +115,5 @@
     <string name="negativeButton">No</string>
     <string name="affirmativeButton">Si</string>
     <string name="available">Disponible</string>
+    <string name="unavailable">No disponible</string>
 </resources>

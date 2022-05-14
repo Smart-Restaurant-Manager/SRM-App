@@ -2,6 +2,7 @@ package com.srm.srmapp.ui.stock
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
@@ -53,7 +54,19 @@ fun FoodListScreen(
             SrmLazyRow(itemListResource = l) { item ->
                 val expired: String = if (item.expirationDate > LocalDate.now()) "Expired"
                 else item.expirationDate.format(AppModule.dateFormatter)
-                SrmListItem(startText = "${item.quantity} ${it.units}", endText = expired, enableSelect = false)
+                SrmListItem(startText = "${item.quantity} ${it.units}",
+                    endText = expired,
+                    enableSelect = false,
+                    endContent = {
+                        var deleteDialog by remember { mutableStateOf(false) }
+                        SrmIconButton(painter = painterResource(id = R.drawable.ic_baseline_delete_24)) {
+                            deleteDialog = true
+                        }
+                        if (deleteDialog)
+                            SrmDeleteDialog(onDismissRequest = { deleteDialog = false }) {
+                                viewmodel.deleteStock(item)
+                            }
+                    })
             }
         }
     )
