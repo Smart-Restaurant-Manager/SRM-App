@@ -38,7 +38,7 @@ fun BookingScreen(
     val crudDialogContent = SrmCrudDialogContent<Booking>(
         editDialogContent = { item ->
             BookingDialog(buttonText = stringResource(id = R.string.mod_booking),
-                onClick = { viewmodel.addBooking(it) },
+                onClick = { viewmodel.putBooking(it) },
                 bookingState = item)
         },
         addDialogContent = {
@@ -94,6 +94,12 @@ fun BookingDialog(
     SrmTextField(value = email, label = stringResource(R.string.mail), onValueChange = { email = it })
     SrmTextField(value = table, label = stringResource(R.string.table), onValueChange = { table = it })
     SrmTextButton(text = buttonText, onClick = {
-        onClick.invoke(Booking(-1, name, email, phone, LocalDateTime.parse(date, AppModule.dateTimeFormatter), people.toInt(), table))
+        onClick.invoke(Booking(bookingState?.id ?: -1,
+            name,
+            email,
+            phone,
+            LocalDateTime.parse(date, AppModule.dateTimeFormatter),
+            people.toInt(),
+            table))
     })
 }
