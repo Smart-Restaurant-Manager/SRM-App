@@ -43,10 +43,7 @@ fun OrderScreen(
             // TODO set to null to disable
             SrmText(text = "Todo")
         },
-        deleteDialogContent = {
-            // TODO confirmation with yes/no
-            SrmText(text = "Todo")
-        },
+        onDelete = { viewmodel.deleteOrder(it) },
         moreDialogContent = {
             // TODO
             SrmText(text = "Todo")

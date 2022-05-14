@@ -7,9 +7,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.srm.srmapp.R
 
-val padding = 20.dp
-val paddingStart = 20.dp
-val paddingEnd = 20.dp
+val padding = 8.dp
+val paddingStart = 8.dp
+val paddingEnd = 8.dp
 val spacerWitdh = 20.dp
 
 val poppinsFontFamily = FontFamily(

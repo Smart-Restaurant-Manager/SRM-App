@@ -5,15 +5,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.AlertDialog
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
+import com.srm.srmapp.Resource
 import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.ui.bookings.BookingViewModel
-import com.srm.srmapp.ui.common.BaseViewModel
 import com.srm.srmapp.ui.common.SrmText
 import com.srm.srmapp.ui.common.SrmTextButton
 import com.srm.srmapp.ui.login.LoginViewModel
@@ -32,35 +33,38 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SMRappTheme(false) {
-
-
-                // TODO Queue messages from viewmodels
-
-                for (viewmodel in arrayListOf<BaseViewModel>(hiltViewModel<StockViewmodel>(this@MainActivity),
+                val viewmodels = arrayListOf(
+                    hiltViewModel<StockViewmodel>(this@MainActivity),
                     hiltViewModel<LoginViewModel>(this@MainActivity),
                     hiltViewModel<OrderViewModel>(this@MainActivity),
                     hiltViewModel<RecipeViewmodel>(this@MainActivity),
-                    hiltViewModel<BookingViewModel>(this@MainActivity))) {
-                    val s = viewmodel.status
+                    hiltViewModel<BookingViewModel>(this@MainActivity))
 
+                val status = viewmodels.map { Pair(it.status.observeAsState(Resource.Empty())) { it.clearStatus() } }
+
+                status.forEach { (it, clear) ->
+                    val value = it.value
+                    if (value.isSuccess() || value.isError()) {
+                        var openDialog by remember { mutableStateOf(true) }
+                        if (openDialog) {
+                            val msg = value.data ?: value.message
+                            AlertDialog(
+                                onDismissRequest = {
+                                    clear()
+                                    openDialog = false
+                                },
+                                confirmButton = {
+                                    SrmTextButton(onClick = {
+                                        clear()
+                                        openDialog = false
+                                    }, text = "Confirmar")
+                                },
+                                text = { SrmText(text = "$msg") }
+                            )
+                        }
+                    }
                 }
 
-                var openDialog by remember { mutableStateOf(true /* if queue is not empty*/) }
-                if (openDialog) {
-                    AlertDialog(
-                        onDismissRequest = {
-                            // TODO Clear last
-                            openDialog = false
-                        },
-                        confirmButton = {
-                            SrmTextButton(onClick = {
-                                // TODO Clear last
-                                openDialog = false
-                            }, text = "Confirmar")
-                        },
-                        text = { SrmText(text = "TODO GET ALERT") }
-                    )
-                }
                 DestinationsNavHost(navGraph = NavGraphs.root, dependenciesContainerBuilder = {
                     dependency(userSession)
                     dependency(hiltViewModel<StockViewmodel>(this@MainActivity))

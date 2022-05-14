@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 
@@ -19,16 +20,20 @@ fun <T> SrmDropDownMenu(
     itemView: @Composable (T) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var focused by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = {
-        expanded = !expanded
-    }) {
-        SrmTextField(modifier = Modifier.focusRequester(focusRequester),
-            value = text, label = "", readOnly = true,
+    ExposedDropdownMenuBox(expanded = expanded,
+        onExpandedChange = { expanded = !expanded }, modifier = Modifier
+            .focusRequester(focusRequester)
+            .onFocusChanged {
+                focused = it.isFocused
+            }) {
+        SrmTextField(value = text, label = "",
+            readOnly = true,
             trailingIcon = {
                 Icon(Icons.Filled.ArrowDropDown, "Drop down icon", Modifier.rotate(if (expanded) 180f else 360f))
-                if (!expanded)
+                if (!expanded && focused)
                     focusManager.clearFocus()
             },
             colors = ExposedDropdownMenuDefaults.textFieldColors(backgroundColor = Color.Transparent)

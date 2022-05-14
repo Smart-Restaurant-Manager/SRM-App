@@ -29,6 +29,6 @@ fun SrmDialog(
             .fillMaxWidth()
             .padding(start = paddingStart, end = paddingEnd)
             .background(color = DialogBackground,
-                RoundedCornerShape(5)), content = content)
+                RoundedCornerShape(2)), content = content)
     }
 }

@@ -24,6 +24,8 @@ data class FoodResponse(
             val units: String, // Kg
             @SerializedName("type")
             val type: String, // Vegetales
+            @SerializedName("stock")
+            val stockCount: Int, // 1
             @SerializedName("created_at")
             val createdAt: String, // 2022-05-04T09:51:05.000000Z
             @SerializedName("updated_at")
@@ -33,4 +35,5 @@ data class FoodResponse(
 }
 
 fun FoodResponse.toFood() = data.toFood()
-fun FoodResponse.Data.toFood() = Food(type = attributes.type, foodId = id, name = attributes.name, units = attributes.units)
+fun FoodResponse.Data.toFood() =
+    Food(type = attributes.type, foodId = id, name = attributes.name, stockCount = attributes.stockCount, units = attributes.units)

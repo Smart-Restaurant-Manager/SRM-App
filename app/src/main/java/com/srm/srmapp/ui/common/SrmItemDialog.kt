@@ -35,7 +35,7 @@ fun SrmItemDialog(
                 Spacer(modifier = Modifier.width(spacerWitdh))
                 Icon(painter = painterResource(id = R.drawable.ic_baseline_add_24), moreText)
                 Spacer(modifier = Modifier.width(spacerWitdh))
-                SrmText(text = moreText)
+                SrmText(text = addText)
             }
 
         if (enableEdit)
