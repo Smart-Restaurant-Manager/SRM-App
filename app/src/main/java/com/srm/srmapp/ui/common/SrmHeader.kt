@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.srm.srmapp.R
+import com.srm.srmapp.ui.theme.poppinsFontFamily
 
 @Composable
 fun SrmHeader(title: String, onClickLeft: () -> Unit = {}) {
@@ -39,13 +40,6 @@ fun SrmHeader(title: String, onClickLeft: () -> Unit = {}) {
                 modifier = Modifier.size(25.dp, 25.dp)
             )
         }
-        val poppinsFontFamily = FontFamily(
-            Font(R.font.poppins_light, FontWeight.Light),
-            Font(R.font.poppins_regular, FontWeight.Normal),
-            Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic),
-            Font(R.font.poppins_medium, FontWeight.Medium),
-            Font(R.font.poppins_bold, FontWeight.Bold)
-        )
         SrmText(
             text = title,
             textAlign = TextAlign.Center,

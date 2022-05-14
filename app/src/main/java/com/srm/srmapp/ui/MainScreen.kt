@@ -11,10 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
@@ -39,14 +35,6 @@ fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
         Pair(R.string.predictions) {})
     var popupState by remember { mutableStateOf(false) }
     val loggedIn by userSession.loggedIn.observeAsState(true)
-
-    val poppinsFontFamily = FontFamily(
-        Font(R.font.poppins_light, FontWeight.Light),
-        Font(R.font.poppins_regular, FontWeight.Normal),
-        Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic),
-        Font(R.font.poppins_medium, FontWeight.Medium),
-        Font(R.font.poppins_bold, FontWeight.Bold)
-    )
 
     if (!loggedIn) {
         navigator.navigateUp()

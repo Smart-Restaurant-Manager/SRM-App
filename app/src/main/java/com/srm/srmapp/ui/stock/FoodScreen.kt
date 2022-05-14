@@ -45,9 +45,6 @@ fun FoodListScreen(
     val foodListState by viewmodel.foodList.observeAsState(Resource.Empty())
     if (foodListState.isEmpty()) viewmodel.refreshFoodList()
 
-    // Swipe to refresh state
-    val refreshState = rememberSwipeRefreshState(foodListState.isLoading())
-
     // item add dialog state
     var dialogAddFoodState by remember { mutableStateOf(false) }
 
@@ -64,7 +61,7 @@ fun FoodListScreen(
             onClickAdd = { dialogAddFoodState = true },
             onClickBack = { navigator.navigateUp() })
         SwipeRefresh(
-            state = refreshState,
+            state = rememberSwipeRefreshState(foodListState.isLoading()),
             modifier = Modifier.padding(0.dp, 30.dp),
             onRefresh = { viewmodel.refreshFoodList() }) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
