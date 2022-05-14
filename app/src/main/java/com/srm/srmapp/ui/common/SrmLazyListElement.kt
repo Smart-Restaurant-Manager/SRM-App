@@ -170,21 +170,9 @@ fun <T> SrmListWithCrudActions(
                         }
                         onDelete?.let {
                             if (deleteDialog) {
-                                AlertDialog(onDismissRequest = { deleteDialog = false },
-                                    confirmButton = {
-                                        SrmTextButton(
-                                            text = stringResource(R.string.affirmativeButton),
-                                            onClick = {
-                                                it.invoke(i)
-                                                deleteDialog = false
-                                            },
-                                        )
-                                    },
-                                    dismissButton = {
-                                        SrmTextButton(onClick = { deleteDialog = false },
-                                            text = stringResource(R.string.negativeButton))
-                                    },
-                                    text = { SrmText(text = "Estas seguro?") })
+                               SrmDeleteDialog(onDismissRequest = {deleteDialog = false}) {
+                                   it.invoke(i)
+                               }
                             }
                         }
                     }
