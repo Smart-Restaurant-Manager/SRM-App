@@ -9,23 +9,7 @@ import com.srm.srmapp.repository.orders.OrdersRepository
 import com.srm.srmapp.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
-import java.time.LocalDateTime
 import javax.inject.Inject
-
-data class BookingDataHolder(
-    var name: String = "",
-    var email: String = "",
-    var phone: String = "",
-    var date: String = "",
-    var people: String = "",
-    var table: String = "",
-) {
-    fun toBooking() = Booking(-1, name, email, phone, LocalDateTime.now(), people.toInt(), table)
-
-    companion object {
-        fun fromBooking(b: Booking): BookingDataHolder = BookingDataHolder(b.name, b.email, b.phone, b.email, b.people.toString(), b.table)
-    }
-}
 
 @HiltViewModel
 class BookingViewModel @Inject constructor(
@@ -49,11 +33,11 @@ class BookingViewModel @Inject constructor(
         _status.value = Resource.Empty()
     }
 
-    fun addBooking(bookingDataHolder: BookingDataHolder) {
+    fun addBooking(booking: Booking) {
         fetchResource(_status, onSuccess = {
             refreshBookingsList()
         }) {
-            bookingRepository.postBooking(bookingDataHolder.toBooking())
+            bookingRepository.postBooking(booking)
         }
     }
 
@@ -80,9 +64,9 @@ class BookingViewModel @Inject constructor(
         }
     }
 
-    fun putBooking(id: Int, bookingUIState: BookingDataHolder) {
+    fun putBooking(booking: Booking) {
         fetchResource(_status) {
-            bookingRepository.putBooking(id, bookingUIState.toBooking())
+            bookingRepository.putBooking(booking.id, booking)
         }
     }
 
