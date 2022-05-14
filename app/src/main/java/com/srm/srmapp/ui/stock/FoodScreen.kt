@@ -82,7 +82,7 @@ fun FoodDialog(
 ) {
     var nombre by remember { mutableStateOf(foodState?.name ?: "") }
     var unidades by remember { mutableStateOf(foodState?.units ?: "") }
-
+    var type by remember { mutableStateOf(foodState?.type ?: "") }
     SrmTextFieldHint(
         value = nombre,
         placeholder = stringResource(R.string.food_name),
@@ -91,9 +91,12 @@ fun FoodDialog(
         value = unidades,
         placeholder = stringResource(R.string.unidades),
         onValueChange = { unidades = it })
+
+    SrmDropDownMenu(text = type, options = Food.TYPES, onClick = { type = it }) {
+    }
     SrmTextButton(
         onClick = {
-            val food = Food(type = foodState?.type ?: "", foodId = foodState?.foodId ?: -1, name = nombre, units = unidades)
+            val food = Food(type = type, foodId = foodState?.foodId ?: -1, name = nombre, units = unidades)
             onClick.invoke(food)
         },
         text = buttonText)
