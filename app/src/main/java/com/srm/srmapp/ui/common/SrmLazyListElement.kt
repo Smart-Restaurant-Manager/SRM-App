@@ -80,7 +80,8 @@ fun <T> SrmListWithCrudActions(
     baseViewModel: BaseViewModel,
 
     // Aditional content
-    content: @Composable ColumnScope.() -> Unit = {},
+    contentBefore: @Composable ColumnScope.() -> Unit = {},
+    contentAfter: @Composable ColumnScope.() -> Unit = {},
 ) {
     val lazyListState = rememberLazyListState()
     var searchIdx by remember { mutableStateOf(-1) }
@@ -97,7 +98,7 @@ fun <T> SrmListWithCrudActions(
             onClickBack = onBack,
             enableAdd = onAddDialog != null,
             enableSearch = searchProperties != null)
-
+        contentBefore.invoke(this)
         SwipeRefresh(
             state = refresState,
             onRefresh = onRefresh) {
@@ -170,7 +171,7 @@ fun <T> SrmListWithCrudActions(
                 }
             }
         }
-        content.invoke(this)
+        contentAfter.invoke(this)
     }
 
     val scope = rememberCoroutineScope()
