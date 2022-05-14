@@ -74,6 +74,7 @@ fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
     }
 
     val context = LocalContext.current
+    val intent_web = remember { Intent(Intent.ACTION_VIEW, Uri.parse("https://smart-restaurant-manager.herokuapp.com/")) }
     val intent_insta = remember { Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/")) }
     val intent_tripadvisor = remember { Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tripadvisor.es/")) }
     SrmHeader(title = stringResource(R.string.start)) { popupState = true }
@@ -101,9 +102,8 @@ fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
         }
         Row(modifier = Modifier.padding(top = 630.dp)) {
             OutlinedButton(
-                onClick = { },
-                // shape = CircleShape, // = 50% percent
-                // or shape = CircleShape
+                onClick = { context.startActivity(intent_web) },
+
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.logo),
@@ -117,8 +117,6 @@ fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
             }
             OutlinedButton(
                 onClick = { context.startActivity(intent_insta) },
-                // shape = CircleShape, // = 50% percent
-                // or shape = CircleShape
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.instagram),
