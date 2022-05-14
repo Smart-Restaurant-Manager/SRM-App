@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -70,6 +71,7 @@ fun <T> SrmListWithCrudActions(
 
     // list item parameters
     itemKey: ((item: T) -> Any)? = null,
+    icon: Painter? = null,
     listItemStartText: (T) -> String = { "item" },
     listItemEndText: (T) -> String = { "" },
 
@@ -120,7 +122,8 @@ fun <T> SrmListWithCrudActions(
                             Modifier,
                         startText = listItemStartText.invoke(i),
                         endText = listItemEndText.invoke(i),
-                    ) { itemOptionsDialog = true }
+                        icon = icon,
+                        onClick = { itemOptionsDialog = true })
 
                     if (idx == searchIdx) {
                         LaunchedEffect(key1 = searchIdx, block = {

@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -78,6 +79,7 @@ fun RecipeScreen(
         onRefresh = { viewmodel.refreshRecipeList() },
         refresState = rememberSwipeRefreshState(isRefreshing = recipeListState.isLoading()),
         itemKey = { it.id },
+        icon = painterResource(id = R.drawable.ic_baseline_image_not_supported_24),
         listItemStartText = { "${it.name}\n${it.price}€" },
         listItemEndText = { "${it.id}\n" + if (it.available == true) "Disponible" else "No disponible" },
         searchProperties = searchProperties,
