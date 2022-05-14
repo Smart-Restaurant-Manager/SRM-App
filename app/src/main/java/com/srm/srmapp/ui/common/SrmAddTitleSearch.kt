@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,8 +24,8 @@ fun SrmAddTitleSearch(
     onClickAdd: () -> Unit = {},
     onClickSearch: () -> Unit = {},
     onClickBack: () -> Unit = {},
-    showAdd: Boolean = true,
-    showSearch: Boolean = true,
+    enableAdd: Boolean = true,
+    enableSearch: Boolean = true,
 ) {
     ConstraintLayout(modifier = Modifier
         .fillMaxWidth()
@@ -43,7 +42,7 @@ fun SrmAddTitleSearch(
                 contentDescription = "Go Back")
         }
 
-        if (showAdd) {
+        if (enableAdd) {
             IconButton(modifier = Modifier
                 .clickable(onClick = onClickAdd)
                 .constrainAs(addRef) {
@@ -70,7 +69,7 @@ fun SrmAddTitleSearch(
             fontWeight = FontWeight.Bold,
         )
 
-        if (showSearch) {
+        if (enableSearch) {
             IconButton(modifier = Modifier
                 .clickable(onClick = onClickSearch)
                 .constrainAs(searchRef) {
@@ -89,5 +88,5 @@ fun SrmAddTitleSearch(
 @Composable
 @Preview(showBackground = true)
 fun PreviewButtonTitleButton() {
-    SrmAddTitleSearch("Preview", showAdd = true, showSearch = true)
+    SrmAddTitleSearch("Preview", enableAdd = true, enableSearch = true)
 }

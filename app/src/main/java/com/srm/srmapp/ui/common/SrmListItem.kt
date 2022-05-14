@@ -18,8 +18,15 @@ import com.srm.srmapp.ui.theme.paddingEnd
 import com.srm.srmapp.ui.theme.paddingStart
 
 @Composable
-fun SrmListItem(startText: String, endText: String = "", icon: Painter? = null, enableSelect: Boolean = true, onClick: () -> Unit = {}) {
-    ConstraintLayout(modifier = Modifier
+fun SrmListItem(
+    modifier: Modifier = Modifier,
+    startText: String,
+    endText: String = "",
+    icon: Painter? = null,
+    enableSelect: Boolean = true,
+    onClick: () -> Unit = {},
+) {
+    ConstraintLayout(modifier = modifier
         .height(60.dp)
         .fillMaxWidth()
         .padding(start = paddingStart, end = paddingEnd)
