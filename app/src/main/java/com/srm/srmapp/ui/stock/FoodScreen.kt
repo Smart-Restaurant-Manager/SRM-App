@@ -6,10 +6,12 @@ import androidx.compose.ui.res.stringResource
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.srm.srmapp.AppModule
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.ui.common.*
+import java.time.LocalDate
 
 
 @Composable
@@ -46,7 +48,13 @@ fun FoodListScreen(
         },
         onDelete = { viewmodel.deleteFood(it) },
         moreDialogContent = {
-            SrmText(text = "TODO show stock")
+            val l by viewmodel.stockList.observeAsState(Resource.Empty())
+            if (l.isEmpty()) viewmodel.getFoodStock(it)
+            SrmLazyRow(itemListResource = l) { item ->
+                val expired: String = if (item.expirationDate > LocalDate.now()) "Expired"
+                else item.expirationDate.format(AppModule.dateFormatter)
+                SrmListItem(startText = "${item.quantity} ${it.units}", endText = expired, enableSelect = false)
+            }
         }
     )
 
