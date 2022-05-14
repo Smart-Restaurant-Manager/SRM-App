@@ -49,16 +49,13 @@ fun RecipeScreen(
     // dialog content
     val crudDialogContent = SrmCrudDialogContent<Recipe>(
         editDialogContent = { item ->
-            // TODO Fix quantity selector
             RecipeDialog(buttonText = stringResource(id = R.string.mod_menu),
                 onClick = { viewmodel.putRecipe(it) },
                 foodList = a.data ?: emptyList(),
                 recipeType = recipeType,
                 recipeState = item)
         },
-        addDialogContent = {
-            // TODO set to null to disable
-        },
+        addDialogContent = null,
         onDelete = { viewmodel.deleteRecipe(it.id) },
         moreDialogContent = {
             // TODO
