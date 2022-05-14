@@ -2,17 +2,16 @@ package com.srm.srmapp.ui.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.srm.srmapp.Resource
-import com.srm.srmapp.Utils.fetchResource
 import com.srm.srmapp.repository.authentication.AuthRepository
+import com.srm.srmapp.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
 import javax.inject.Inject
 
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val repository: AuthRepository) : ViewModel() {
+class LoginViewModel @Inject constructor(private val repository: AuthRepository) : BaseViewModel() {
 
     private val _loginState: MutableLiveData<Resource<String>> = MutableLiveData()
     val loginState: LiveData<Resource<String>>

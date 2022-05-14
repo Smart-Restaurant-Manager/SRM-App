@@ -2,32 +2,30 @@ package com.srm.srmapp.ui.stock
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.srm.srmapp.Resource
-import com.srm.srmapp.Utils.fetchResource
 import com.srm.srmapp.data.models.Food
 import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.repository.stock.StockRepository
+import com.srm.srmapp.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
 import java.lang.Float.parseFloat
 import java.time.LocalDate
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 data class StockDataHodle(
     var quantity: String = "",
-    var date : String  = ""
-){
-    fun toStock() = Stock(-1,1, parseFloat(quantity), LocalDate.now())
+    var date: String = "",
+) {
+    fun toStock() = Stock(-1, 1, parseFloat(quantity), LocalDate.now())
 
-    companion object{
-        fun fromStock(b:Stock): StockDataHodle = StockDataHodle(b.quantity.toString(),b.expirationDate.toString())
+    companion object {
+        fun fromStock(b: Stock): StockDataHodle = StockDataHodle(b.quantity.toString(), b.expirationDate.toString())
     }
 }
 
 @HiltViewModel
-class StockViewmodel @Inject constructor(private val stockRepository: StockRepository) : ViewModel() {
+class StockViewmodel @Inject constructor(private val stockRepository: StockRepository) : BaseViewModel() {
     private val _foodList: MutableLiveData<Resource<List<Food>>> = MutableLiveData()
     val foodList: LiveData<Resource<List<Food>>>
         get() = _foodList
@@ -43,10 +41,6 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
     private val _stock: MutableLiveData<Resource<Stock>> = MutableLiveData()
     val stock: LiveData<Resource<Stock>>
         get() = _stock
-
-    private val _status: MutableLiveData<Resource<String>> = MutableLiveData()
-    val status: LiveData<Resource<String>>
-        get() = _status
 
     init {
         Timber.d("INIT")
@@ -149,9 +143,9 @@ class StockViewmodel @Inject constructor(private val stockRepository: StockRepos
         }
     }
 
-    fun putStock(id:Int, stock:StockDataHodle){
-        fetchResource(_status){
-            stockRepository.putStock(id,stock.toStock())
+    fun putStock(id: Int, stock: StockDataHodle) {
+        fetchResource(_status) {
+            stockRepository.putStock(id, stock.toStock())
         }
     }
 

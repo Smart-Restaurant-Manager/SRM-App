@@ -46,7 +46,6 @@ fun BookingScreen(
     val bookingList = remember(bookingListState.data) { bookingListState.data ?: emptyList() }
     var dialogSearchBook by remember { mutableStateOf(false) }
 
-    val status by viewmodel.status.observeAsState(Resource.Empty())
 
     // Allow composabel inside function
     var popupSeeBooking by remember { mutableStateOf(false) }
@@ -78,11 +77,6 @@ fun BookingScreen(
         }
     }
 
-    if (status.isSuccess()) {
-        Timber.d("got status $status")
-    }
-
-
     //Añadir Reserva
     if (popupAddState) {
         val booking = remember { BookingDataHolder() }
@@ -101,30 +95,6 @@ fun BookingScreen(
         }
     }
 
-    val statusMessage by viewmodel.status.observeAsState(Resource.Empty())
-
-    if (statusMessage.isSuccess() || statusMessage.isError()) {
-        val msg = statusMessage.data ?: statusMessage.message
-        msg?.let {
-            val openDialog = remember { mutableStateOf(true) }
-            if (openDialog.value) {
-                AlertDialog(
-                    onDismissRequest = {
-                        viewmodel.clearStatus()
-                    },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            openDialog.value = false
-                            viewmodel.clearStatus()
-                        })
-                        { Text(text = "Confirmar") }
-                    },
-                    text = { Text(text = it) }
-                )
-            }
-
-        }
-    }
     //Editar Reserva
     if (dialogSearchBook) {
         SrmSearch(items = bookingList, label = "Buscar reservas", onDismissRequest = { dialogSearchBook = false },

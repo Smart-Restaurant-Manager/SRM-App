@@ -83,6 +83,7 @@
     <string name="quantity">Cantidad</string>
     <string name="price">Precio</string>
     <string name="add_recipe">Añadir plato</string>
+    <string name="mod_recipe">Modificar plato</string>
     <string name="preu_euros">Precio €</string>
     <string name="recipe_name">Nombre</string>
     <string name="no_items_to_search">No hay elementos para buscar</string>

@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.srm.srmapp.AppModule
 import com.srm.srmapp.Resource
-import com.srm.srmapp.Utils.fetchResource
 import com.srm.srmapp.data.models.Order
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.repository.orders.OrdersRepository

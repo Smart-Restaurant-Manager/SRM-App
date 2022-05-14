@@ -3,7 +3,6 @@ package com.srm.srmapp.ui.bookings
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.srm.srmapp.Resource
-import com.srm.srmapp.Utils.fetchResource
 import com.srm.srmapp.data.models.Booking
 import com.srm.srmapp.repository.bookings.BookingRepository
 import com.srm.srmapp.repository.orders.OrdersRepository

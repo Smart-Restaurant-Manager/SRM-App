@@ -6,9 +6,6 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.*
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
@@ -48,23 +45,8 @@ object Utils {
         get() = exceptionHandler + IO
 
     fun CoroutineScope.launchException(coroutineContext: CoroutineContext = Dispatchers.IO, call: suspend CoroutineScope.() -> Unit): Job {
-
         return this.launch(exceptionHandler + coroutineContext) {
             call()
-        }
-    }
-
-    fun <T> ViewModel.fetchResource(
-        livedataResource: MutableLiveData<Resource<T>>,
-        onSuccess: suspend (Resource<T>) -> Unit = {},
-        repositoryCall: suspend () -> Resource<T>,
-    ) {
-        livedataResource.postValue(Resource.Loading())
-        this.viewModelScope.launchException {
-            val r = repositoryCall.invoke()
-            if (r.isSuccess())
-                onSuccess.invoke(r)
-            livedataResource.postValue(r)
         }
     }
 

@@ -20,9 +20,10 @@ import com.srm.srmapp.Utils.format
 @Composable
 fun SrmQuantitySelector(
     optionsList: List<String>,
+    selectorState: Array<Pair<Int, Float>> = arrayOf(),
     onUpdate: (Map<Int, Float>) -> Unit,
 ) {
-    val quantityMap = remember { mutableStateMapOf<Int, Float>() }
+    val quantityMap = remember { mutableStateMapOf(*selectorState) }
     LazyColumn(modifier = Modifier
         .heightIn(0.dp, 300.dp)
         .fillMaxWidth()) {
@@ -92,6 +93,6 @@ fun SrmQuantitySelector(
 @Preview(showBackground = true)
 @Composable
 fun PreviewQuantity() {
-    SrmQuantitySelector(optionsList = (1..20).toList().map { it.toString() }, onUpdate = {})
+    SrmQuantitySelector(optionsList = (1..20).toList().map { it.toString() }, selectorState = arrayOf(Pair(0, 2f)), onUpdate = {})
 
 }

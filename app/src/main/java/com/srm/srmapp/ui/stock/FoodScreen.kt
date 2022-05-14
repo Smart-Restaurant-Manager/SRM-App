@@ -8,7 +8,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -80,32 +83,7 @@ fun FoodListScreen(
     }
 
 
-    val statusMessage by viewmodel.status.observeAsState(Resource.Empty())
-    if (statusMessage.isSuccess() || statusMessage.isError()) {
-        val msg = statusMessage.data ?: statusMessage.message
-        msg?.let {
-            val openDialog = remember { mutableStateOf(true) }
-            if (openDialog.value) {
-                AlertDialog(
-                    onDismissRequest = {
-                        viewmodel.clearStatus()
-                    },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            openDialog.value = false
-                            viewmodel.clearStatus()
-                        })
-                        { Text(text = "Confirmar") }
-                    },
-                    text = { Text(text = it) }
-                )
-            }
-
-        }
-    }
-
-
-// stock for one food
+    // stock for one food
     var popupEditStock by remember { mutableStateOf(false) }
 
     val stockList by viewmodel.stockList.observeAsState(Resource.Empty())
