@@ -50,7 +50,7 @@ fun FoodListScreen(
             StockDialog(
                 buttonText = stringResource(R.string.add_stock),
                 onClick = { viewmodel.addStock(item, it.quantity, it.expirationDate) },
-                foodState = item,
+                foodState = item.foodId,
                 stockState = null
             )
         },
@@ -61,19 +61,33 @@ fun FoodListScreen(
             SrmLazyRow(itemListResource = l) { item ->
                 val expired: String = if (item.expirationDate > LocalDate.now()) "Expired"
                 else item.expirationDate.format(AppModule.dateFormatter)
+                var editDialog by remember { mutableStateOf(false)}
+
                 SrmListItem(startText = "${item.quantity} ${it.units}",
                     endText = expired,
-                    enableSelect = false,
+                    onClick = {
+                            editDialog = true
+                    },
+                    enableSelect = true,
                     endContent = {
+
                         var deleteDialog by remember { mutableStateOf(false) }
                         SrmIconButton(painter = painterResource(id = R.drawable.ic_baseline_delete_24)) {
                             deleteDialog = true
                         }
+
                         if (deleteDialog)
                             SrmDeleteDialog(onDismissRequest = { deleteDialog = false }) {
                                 viewmodel.deleteStock(item)
                             }
                     })
+                if(editDialog){
+                    StockDialog(buttonText = stringResource(R.string.EditarStock),
+                        onClick = {viewmodel.putStock(it)},
+                        stockState = item,
+                        foodState = item.foodId
+                    )
+                }
             }
         }
     )
@@ -105,7 +119,7 @@ fun StockDialog(
     buttonText: String,
     onClick: (Stock) -> Unit,
     stockState: Stock? = null,
-    foodState: Food? = null,
+    foodState: Int? = null,
 ) {
     var unidades by remember { mutableStateOf(stockState?.quantity ?: "") }
     var caducidad by remember { mutableStateOf(stockState?.expirationDate ?: LocalDate.now()) }
@@ -126,7 +140,7 @@ fun StockDialog(
     SrmTextButton(
         onClick = {
             val stock = Stock(stockId = stockState?.stockId ?: -1,
-                foodId = foodState?.foodId ?: -1,
+                foodId = foodState ?: -1,
                 quantity = parseFloat(unidades.toString()),
                 expirationDate = caducidad
             )
