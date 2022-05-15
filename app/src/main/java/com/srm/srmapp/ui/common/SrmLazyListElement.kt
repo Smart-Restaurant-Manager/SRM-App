@@ -8,18 +8,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.AlertDialog
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.srm.srmapp.R
+import com.srm.srmapp.ui.theme.delayDuration
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -127,7 +125,7 @@ fun <T> SrmListWithCrudActions(
 
                     if (idx == searchIdx) {
                         LaunchedEffect(key1 = searchIdx, block = {
-                            delay(750)
+                            delay(delayDuration)
                             searchIdx = -1
                         })
                     }
@@ -170,9 +168,9 @@ fun <T> SrmListWithCrudActions(
                         }
                         onDelete?.let {
                             if (deleteDialog) {
-                               SrmDeleteDialog(onDismissRequest = {deleteDialog = false}) {
-                                   it.invoke(i)
-                               }
+                                SrmDeleteDialog(onDismissRequest = { deleteDialog = false }) {
+                                    it.invoke(i)
+                                }
                             }
                         }
                     }
