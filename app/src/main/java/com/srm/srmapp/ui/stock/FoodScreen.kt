@@ -11,7 +11,9 @@ import com.srm.srmapp.AppModule
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Food
+import com.srm.srmapp.data.models.Stock
 import com.srm.srmapp.ui.common.*
+import java.lang.Float.parseFloat
 import java.time.LocalDate
 
 
@@ -44,8 +46,16 @@ fun FoodListScreen(
                 foodState = item
             )
         },
-        addDialogContent = {
-            SrmText(text = "TODO add stock")
+        addDialogContent = {item ->
+                StockDialog(
+                    buttonText = stringResource(R.string.add_stock),
+                    onClick ={ viewmodel.addStock(item,it.quantity,it.expirationDate)},
+                    foodState = item,
+                     stockState = null
+
+                )
+
+
         },
         onDelete = { viewmodel.deleteFood(it) },
         moreDialogContent = {
@@ -94,6 +104,40 @@ fun FoodListScreen(
 }
 
 @Composable
+fun StockDialog(
+    buttonText: String,
+    onClick: (Stock) -> Unit,
+    stockState: Stock? = null,
+    foodState: Food? = null,
+){
+    var unidades by remember { mutableStateOf(stockState?.quantity ?: "")  }
+    var caducidad by remember { mutableStateOf(stockState?.expirationDate ?: "")  }
+    var stockId by remember { mutableStateOf(stockState?.stockId ?: "")   }
+    SrmTextField(
+        value = unidades.toString(),
+        label = stringResource(R.string.Unidades),
+        onValueChange = { unidades = it })
+    SrmTextField(
+        value = caducidad.toString(),
+        label = stringResource(R.string.Fecha),
+        onValueChange = { caducidad = it })
+    SrmTextButton(
+        onClick = {
+            val stock = Stock(stockId =stockState?.stockId ?: -1 ,
+                foodId = foodState?.foodId ?: -1,
+            quantity = parseFloat(unidades.toString()),
+                expirationDate = LocalDate.parse(caducidad.toString(),AppModule.dateFormatter)
+                
+                )
+            onClick.invoke(stock)
+        },
+        text = buttonText)
+}
+
+
+
+
+@Composable
 fun FoodDialog(
     buttonText: String,
     onClick: (Food) -> Unit,
@@ -121,3 +165,4 @@ fun FoodDialog(
         },
         text = buttonText)
 }
+
