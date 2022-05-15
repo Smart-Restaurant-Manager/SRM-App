@@ -27,7 +27,6 @@
     <string name="predictions">Predicciones</string>
     <string name="food">Alimentos</string>
     <string name="reservas">Reservas</string>
-    <string name="rder">Pedidos</string>
     <string name="menu">Carta</string>
     <string name="nombre">Nombre</string>
     <string name="cantidad">Cantidad</string>
@@ -89,7 +88,7 @@
     <string name="recipe_name">Nombre</string>
     <string name="no_items_to_search">No hay elementos para buscar</string>
     <string name="show_ingredients">Mostrar ingredients</string>
-    <string name="pedidos">Pedidos</string>
+    <string name="Pedidos">Pedidos</string>
     <string name="add_booking">Añadir reserva</string>
     <string name="mod_booking">Modificar reserva</string>
     <string name="amount_of_people">Número de personas</string>
@@ -110,12 +109,7 @@
     <string name="all">All</string>
     <string name="EditarStock">Editar Stock</string>
     <string name="mod_stock">Modificar Stock</string>
-    <string name="unidades">Unidades</string>
-    <string name="edit_food">Editar aliment</string>
-    <string name="negativeButton">No</string>
-    <string name="affirmativeButton">Si</string>
-    <string name="available">Disponible</string>
-    <string name="unavailable">No disponible</string>
-    <string name="Unidades">Unidades</string>
-    <string name="Fecha">Caducidad</string>
+    <string name="festivo_o_no">Día festivo</string>
+    <string name="send">Enviar</string>
+    <string name="retraining">Reentrenar</string>
 </resources>
