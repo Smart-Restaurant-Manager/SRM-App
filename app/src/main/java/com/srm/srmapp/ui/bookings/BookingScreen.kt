@@ -28,7 +28,10 @@ fun BookingScreen(
 
     // search engine properties
     val searchProperties = SrmSearchProperties<Booking>(
-        searchPredicate = { recipeItem, query -> recipeItem.name.startsWith(query, ignoreCase = true) },
+        searchPredicate = { recipeItem,query -> recipeItem.name.startsWith(query, ignoreCase = true) ||
+            recipeItem.email.startsWith(query, ignoreCase = true) ||
+            recipeItem.phone.startsWith(query, ignoreCase = true);
+        },
         indexPredicate = { it, found -> it.id == found.id },
         searchLabel = "Buscar reservas",
         startSearchText = { it.name },
@@ -91,7 +94,8 @@ fun BookingDialog(
     SrmTextField(value = email, label = stringResource(R.string.mail), onValueChange = { email = it })
     SrmTextField(value = table, label = stringResource(R.string.table), onValueChange = { table = it })
     SrmTextButton(text = buttonText, onClick = {
-        onClick.invoke(Booking(bookingState?.id ?: -1,
+        onClick.invoke(Booking(
+            bookingState?.id?: -1,
             name,
             email,
             phone,
