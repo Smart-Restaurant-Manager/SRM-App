@@ -1,9 +1,14 @@
 package com.srm.srmapp.ui.bookings
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -44,14 +49,27 @@ fun BookingScreen(
                 onClick = { viewmodel.putBooking(it) },
                 bookingState = item)
         },
-        addDialogContent = {
-            // TODO
-            SrmText(text = "Todo")
-        },
+        addDialogContent = null,
         onDelete = { viewmodel.deleteBooking(it.id) },
         moreDialogContent = {
-            // TODO
-            SrmText(text = "Todo")
+            Spacer(Modifier.size(20.dp))
+            SrmText(text = "Nombre:    ${ it.name}", textAlign = TextAlign.Left )
+            Spacer(Modifier.size(20.dp))
+            SrmText(text = "ID:        " + "   ${ it.id}", textAlign = TextAlign.Left)
+            Spacer(Modifier.size(20.dp))
+
+            SrmText(text = "Personas: "  + "     ${ it.people}", textAlign = TextAlign.Left)
+            Spacer(Modifier.size(20.dp))
+            SrmText(text = "Email:       ${ it.email}", textAlign = TextAlign.Left)
+            Spacer(Modifier.size(20.dp))
+            SrmText(text = "Telefono:        ${ it.phone}", textAlign = TextAlign.Left)
+            Spacer(Modifier.size(20.dp))
+            SrmText(text = "Fecha:${ it.date}", textAlign = TextAlign.Left)
+            Spacer(Modifier.size(20.dp))
+            SrmText(text = "Mesa:     ${ it.table}", textAlign = TextAlign.Left)
+            Spacer(Modifier.size(20.dp))
+
+
         },
     )
 
