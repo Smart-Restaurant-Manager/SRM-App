@@ -37,7 +37,7 @@ fun PredictionScreen(navigator: DestinationsNavigator){
     var festivo_o_no by remember { mutableStateOf(false) }
     Column(modifier = Modifier
         .fillMaxWidth()
-        .padding(60.dp)
+        .padding(50.dp)
         .fillMaxHeight(),
         verticalArrangement = Arrangement.Center,
         //horizontalAlignment = Alignment.CenterHorizontally
@@ -45,12 +45,11 @@ fun PredictionScreen(navigator: DestinationsNavigator){
         SrmTextField(value = date,
             label = stringResource(id = R.string.date),
             onValueChange = { date = it },
-            modifier = Modifier.padding(0.dp, 20.dp),
-
+            modifier = Modifier.padding(0.dp, 0.dp),
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(0.dp, 10.dp)
+            modifier = Modifier.padding(10.dp, 10.dp)
         ) {
             SrmText(text = stringResource(id = R.string.festivo_o_no), fontFamily = poppinsFontFamily, fontWeight = FontWeight.Normal)
             Checkbox(
@@ -62,7 +61,7 @@ fun PredictionScreen(navigator: DestinationsNavigator){
         }
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(0.dp, 10.dp)
+            modifier = Modifier.padding(10.dp, 10.dp)
         ) {
             SrmButton(
                 onClick = {
