@@ -46,16 +46,13 @@ fun FoodListScreen(
                 foodState = item
             )
         },
-        addDialogContent = {item ->
-                StockDialog(
-                    buttonText = stringResource(R.string.add_stock),
-                    onClick ={ viewmodel.addStock(item,it.quantity,it.expirationDate)},
-                    foodState = item,
-                     stockState = null
-
-                )
-
-
+        addDialogContent = { item ->
+            StockDialog(
+                buttonText = stringResource(R.string.add_stock),
+                onClick = { viewmodel.addStock(item, it.quantity, it.expirationDate) },
+                foodState = item,
+                stockState = null
+            )
         },
         onDelete = { viewmodel.deleteFood(it) },
         moreDialogContent = {
@@ -109,32 +106,35 @@ fun StockDialog(
     onClick: (Stock) -> Unit,
     stockState: Stock? = null,
     foodState: Food? = null,
-){
-    var unidades by remember { mutableStateOf(stockState?.quantity ?: "")  }
-    var caducidad by remember { mutableStateOf(stockState?.expirationDate ?: "")  }
-    var stockId by remember { mutableStateOf(stockState?.stockId ?: "")   }
+) {
+    var unidades by remember { mutableStateOf(stockState?.quantity ?: "") }
+    var caducidad by remember { mutableStateOf(stockState?.expirationDate ?: LocalDate.now()) }
+    var error by remember { mutableStateOf(false) }
     SrmTextField(
         value = unidades.toString(),
         label = stringResource(R.string.Unidades),
         onValueChange = { unidades = it })
-    SrmTextField(
-        value = caducidad.toString(),
-        label = stringResource(R.string.Fecha),
-        onValueChange = { caducidad = it })
+    SrmDateEditor(value = caducidad,
+        label = stringResource(id = R.string.caducidad),
+        onErrorAction = {
+            error = true
+        },
+        onValueChange = {
+            caducidad = it
+            error = false
+        })
     SrmTextButton(
         onClick = {
-            val stock = Stock(stockId =stockState?.stockId ?: -1 ,
+            val stock = Stock(stockId = stockState?.stockId ?: -1,
                 foodId = foodState?.foodId ?: -1,
-            quantity = parseFloat(unidades.toString()),
-                expirationDate = LocalDate.parse(caducidad.toString(),AppModule.dateFormatter)
-                
-                )
+                quantity = parseFloat(unidades.toString()),
+                expirationDate = caducidad
+            )
             onClick.invoke(stock)
         },
+        enabled = !error,
         text = buttonText)
 }
-
-
 
 
 @Composable

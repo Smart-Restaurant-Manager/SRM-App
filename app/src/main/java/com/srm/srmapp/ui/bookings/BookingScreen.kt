@@ -33,9 +33,10 @@ fun BookingScreen(
 
     // search engine properties
     val searchProperties = SrmSearchProperties<Booking>(
-        searchPredicate = { recipeItem,query -> recipeItem.name.startsWith(query, ignoreCase = true) ||
-            recipeItem.email.startsWith(query, ignoreCase = true) ||
-            recipeItem.phone.startsWith(query, ignoreCase = true);
+        searchPredicate = { recipeItem, query ->
+            recipeItem.name.startsWith(query, ignoreCase = true) ||
+                    recipeItem.email.startsWith(query, ignoreCase = true) ||
+                    recipeItem.phone.startsWith(query, ignoreCase = true);
         },
         indexPredicate = { it, found -> it.id == found.id },
         searchLabel = "Buscar reservas",
@@ -53,20 +54,20 @@ fun BookingScreen(
         onDelete = { viewmodel.deleteBooking(it.id) },
         moreDialogContent = {
             Spacer(Modifier.size(20.dp))
-            SrmText(text = "Nombre:    ${ it.name}", textAlign = TextAlign.Left )
+            SrmText(text = "Nombre:    ${it.name}", textAlign = TextAlign.Left)
             Spacer(Modifier.size(20.dp))
-            SrmText(text = "ID:        " + "   ${ it.id}", textAlign = TextAlign.Left)
+            SrmText(text = "ID:        " + "   ${it.id}", textAlign = TextAlign.Left)
             Spacer(Modifier.size(20.dp))
 
-            SrmText(text = "Personas: "  + "     ${ it.people}", textAlign = TextAlign.Left)
+            SrmText(text = "Personas: " + "     ${it.people}", textAlign = TextAlign.Left)
             Spacer(Modifier.size(20.dp))
-            SrmText(text = "Email:       ${ it.email}", textAlign = TextAlign.Left)
+            SrmText(text = "Email:       ${it.email}", textAlign = TextAlign.Left)
             Spacer(Modifier.size(20.dp))
-            SrmText(text = "Telefono:        ${ it.phone}", textAlign = TextAlign.Left)
+            SrmText(text = "Telefono:        ${it.phone}", textAlign = TextAlign.Left)
             Spacer(Modifier.size(20.dp))
-            SrmText(text = "Fecha:${ it.date}", textAlign = TextAlign.Left)
+            SrmText(text = "Fecha:${it.date}", textAlign = TextAlign.Left)
             Spacer(Modifier.size(20.dp))
-            SrmText(text = "Mesa:     ${ it.table}", textAlign = TextAlign.Left)
+            SrmText(text = "Mesa:     ${it.table}", textAlign = TextAlign.Left)
             Spacer(Modifier.size(20.dp))
 
 
@@ -101,24 +102,32 @@ fun BookingDialog(
     var name by remember { mutableStateOf(bookingState?.name ?: "") }
     var email by remember { mutableStateOf(bookingState?.email ?: "") }
     var phone by remember { mutableStateOf(bookingState?.phone ?: "") }
-    var date by remember { mutableStateOf(bookingState?.date?.format(AppModule.dateTimeFormatter) ?: "") }
+    var date by remember { mutableStateOf(bookingState?.date ?: LocalDateTime.now()) }
     var people by remember { mutableStateOf(bookingState?.people?.toString() ?: "") }
     var table by remember { mutableStateOf(bookingState?.table ?: "") }
-
+    var error by remember { mutableStateOf(false) }
     SrmTextField(value = name, label = stringResource(R.string.food_name), onValueChange = { name = it })
     SrmTextField(value = people, label = stringResource(R.string.amount_of_people), onValueChange = { people = it })
-    SrmTextField(value = date, label = stringResource(R.string.date), readOnly = true, onValueChange = { date = it })
+    SrmDateTimeEditor(value = date,
+        label = stringResource(id = R.string.Fecha),
+        onErrorAction = { error = true },
+        onValueChange = {
+            date = it
+            error = false
+        })
     SrmTextField(value = phone, label = stringResource(R.string.tel), onValueChange = { phone = it })
     SrmTextField(value = email, label = stringResource(R.string.mail), onValueChange = { email = it })
     SrmTextField(value = table, label = stringResource(R.string.table), onValueChange = { table = it })
-    SrmTextButton(text = buttonText, onClick = {
-        onClick.invoke(Booking(
-            bookingState?.id?: -1,
-            name,
-            email,
-            phone,
-            LocalDateTime.parse(date, AppModule.dateTimeFormatter),
-            people.toInt(),
-            table))
-    })
+    SrmTextButton(text = buttonText,
+        enabled = !error,
+        onClick = {
+            onClick.invoke(Booking(
+                bookingState?.id ?: -1,
+                name,
+                email,
+                phone,
+                date,
+                people.toInt(),
+                table))
+        })
 }
