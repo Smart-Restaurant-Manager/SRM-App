@@ -58,8 +58,12 @@ fun RecipeScreen(
         addDialogContent = null,
         onDelete = { viewmodel.deleteRecipe(it.id) },
         moreDialogContent = {
-            // TODO
-            SrmText(text = "Todo")
+            val rec by viewmodel.recipeList.observeAsState(Resource.Empty())
+            if (rec.isEmpty()) viewmodel.getRecipeBy(it.id)
+            SrmLazyRow(itemListResource = rec) { item ->
+                SrmListItem(startText = "${it.food?.get(0)} ${it.food?.get(1)}  ", enableSelect = false)
+
+            }
         },
     )
 

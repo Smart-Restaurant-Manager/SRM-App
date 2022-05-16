@@ -25,6 +25,9 @@ abstract class BaseViewModel : ViewModel() {
             val r = repositoryCall.invoke()
             if (r.isSuccess())
                 onSuccess.invoke(r)
+            else if (r.isError()) {
+                _status.postValue(Resource.Error<String>(r.message ?: "Empty error"))
+            }
             livedataResource.postValue(r)
         }
     }

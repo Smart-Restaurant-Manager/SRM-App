@@ -40,9 +40,10 @@ fun SrmButton(
 fun SrmTextButton(
     onClick: () -> Unit,
     text: String,
+    enabled: Boolean = true,
     textColor: Color = Color.Unspecified,
 ) {
-    TextButton(onClick = onClick, content = {
+    TextButton(onClick = onClick, enabled = enabled, content = {
         SrmText(text = text, color = textColor)
     })
 }

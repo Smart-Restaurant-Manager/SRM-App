@@ -62,9 +62,7 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
             label = stringResource(id = R.string.email),
             enabled = signUpState !is Resource.Loading,
             isError = signUpState is Resource.Error,
-            onValueChange = { email = it },
-            modifier = Modifier.padding(0.dp, 20.dp)
-
+            onValueChange = { email = it }
         )
 
         SrmTextField(
@@ -92,8 +90,7 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
                     Image(image, contentDescription = description)
                 }
             },
-            onValueChange = { password = it },
-            modifier = Modifier.padding(0.dp, 20.dp)
+            onValueChange = { password = it }
         )
 
         SrmTextField(
@@ -119,7 +116,6 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(20.dp, 30.dp)
         ) {
             Checkbox(
                 checked = checkBox, onCheckedChange = { checkBox = it },
@@ -134,7 +130,6 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
             },
             text = stringResource(id = R.string.register),
             enabled = signUpState !is Resource.Loading && checkBox,
-            //modifier = Modifier.padding(0.dp, 10.dp)
         )
 
         Row(verticalAlignment = Alignment.CenterVertically) {

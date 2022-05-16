@@ -30,10 +30,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
     const val BASE_URL = "https://smart-restaurant-manager.herokuapp.com" // Test url
-
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-    val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-    val dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm dd-MM-yyyy")
+    val datePattern = "dd-MM-yyyy"
+    val timePattern = "HH:mm"
+    val dateTimePattern = "$timePattern $datePattern"
+    val timeFormatter = DateTimeFormatter.ofPattern(timePattern)
+    val dateFormatter = DateTimeFormatter.ofPattern(datePattern)
+    val dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern)
 
     val httpInterceptor: (String) -> Interceptor = { token ->
         Interceptor {
