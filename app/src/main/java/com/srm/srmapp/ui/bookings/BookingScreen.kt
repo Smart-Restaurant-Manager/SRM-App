@@ -38,7 +38,7 @@ fun BookingScreen(
                     recipeItem.email.startsWith(query, ignoreCase = true) ||
                     recipeItem.phone.startsWith(query, ignoreCase = true);
         },
-        indexPredicate = { it, found -> it.id == found.id },
+        indexPredicate = { it, found -> it.bookingId == found.bookingId },
         searchLabel = "Buscar reservas",
         startSearchText = { it.name },
         endSearchText = { "Taula: ${it.table}" })
@@ -51,12 +51,12 @@ fun BookingScreen(
                 bookingState = item)
         },
         addDialogContent = null,
-        onDelete = { viewmodel.deleteBooking(it.id) },
+        onDelete = { viewmodel.deleteBooking(it.bookingId) },
         moreDialogContent = {
             Spacer(Modifier.size(20.dp))
             SrmText(text = "Nombre:    ${it.name}", textAlign = TextAlign.Left)
             Spacer(Modifier.size(20.dp))
-            SrmText(text = "ID:        " + "   ${it.id}", textAlign = TextAlign.Left)
+            SrmText(text = "ID:        " + "   ${it.bookingId}", textAlign = TextAlign.Left)
             Spacer(Modifier.size(20.dp))
 
             SrmText(text = "Personas: " + "     ${it.people}", textAlign = TextAlign.Left)
@@ -85,7 +85,6 @@ fun BookingScreen(
         onBack = { navigator.navigateUp() },
         onRefresh = { viewmodel.refreshBookingsList() },
         refresState = rememberSwipeRefreshState(isRefreshing = bookingListState.isLoading()),
-        itemKey = { it.id },
         listItemStartText = { "${it.name}\n${it.people} personas" },
         listItemEndText = { "Taula: ${it.table}\n ${it.date.format(AppModule.dateTimeFormatter)}" },
         searchProperties = searchProperties,
@@ -122,7 +121,7 @@ fun BookingDialog(
         enabled = !error,
         onClick = {
             onClick.invoke(Booking(
-                bookingState?.id ?: -1,
+                bookingState?.bookingId ?: -1,
                 name,
                 email,
                 phone,

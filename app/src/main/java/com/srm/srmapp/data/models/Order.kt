@@ -10,7 +10,7 @@ data class Order(
     var status: Status = Status.None(),
     val booking: Booking? = null,
     val recipeList: List<OrderRecipe>,
-) {
+) : GetId {
     data class OrderRecipe(val recipeId: Int, val quantity: Int, val price: Double, val type: Int)
 
     sealed class Status(val data: String) {
@@ -57,4 +57,8 @@ data class Order(
         OrderObject(orderStatus = status.getId(),
             bookingId = bookingId,
             recipes = recipeList.map { OrderObject.Recipe(it.recipeId, it.quantity, it.price, it.type) })
+
+    override fun getId(): Int {
+        return orderId
+    }
 }

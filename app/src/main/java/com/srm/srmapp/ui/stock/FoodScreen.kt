@@ -105,7 +105,6 @@ fun FoodListScreen(
         onBack = { navigator.navigateUp() },
         onRefresh = { viewmodel.refreshFoodList() },
         refresState = rememberSwipeRefreshState(isRefreshing = foodListState.isLoading()),
-        itemKey = { it.foodId },
         listItemStartText = { "${it.name}\n ${it.stockCount} ${it.units}" },
         listItemEndText = { "${it.type}\n${it.foodId}" },
         crudDialogContent = crudDialogContent,

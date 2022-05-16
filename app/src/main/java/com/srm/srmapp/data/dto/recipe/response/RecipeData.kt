@@ -12,7 +12,7 @@ data class RecipeData(
 
 fun RecipeData.toRecipe() = Recipe(
     type = parseRecipeType(type = attributes.type),
-    id = id,
+    recipeId = id,
     name = attributes.name,
     price = attributes.price,
     available = attributes.available)

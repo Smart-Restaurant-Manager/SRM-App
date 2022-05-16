@@ -29,7 +29,7 @@ class RecipeRepository @Inject constructor(private val api: RecipeInterface) : B
 
     suspend fun putRecipe(recipe: Recipe) =
         safeApiCall({
-            api.putRecipe(recipe.id, recipe.toJsonObject())
+            api.putRecipe(recipe.recipeId, recipe.toJsonObject())
         }) {
             "Receta modificada"
         }

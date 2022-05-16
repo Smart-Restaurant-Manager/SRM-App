@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.srm.srmapp.data.models.GetId
 import com.srm.srmapp.ui.theme.delayDuration
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -51,7 +52,7 @@ data class SrmSearchProperties<T>(
 )
 
 @Composable
-fun <T> SrmListWithCrudActions(
+fun <T : GetId> SrmListWithCrudActions(
     title: String,
 
     // list to display
@@ -68,7 +69,6 @@ fun <T> SrmListWithCrudActions(
     refresState: SwipeRefreshState = rememberSwipeRefreshState(isRefreshing = false),
 
     // list item parameters
-    itemKey: ((item: T) -> Any)? = null,
     icon: Painter? = null,
     listItemStartText: @Composable (T) -> String = { "item" },
     listItemEndText: @Composable (T) -> String = { "" },
@@ -106,7 +106,7 @@ fun <T> SrmListWithCrudActions(
             state = refresState,
             onRefresh = onRefresh) {
             LazyColumn(state = lazyListState, modifier = Modifier.fillMaxSize()) {
-                itemsIndexed(itemList, key = { _, i -> itemKey?.invoke(i) ?: Unit }) { idx, i ->
+                itemsIndexed(itemList, key = { _, i -> i.getId() }) { idx, i ->
                     var itemOptionsDialog by remember { mutableStateOf(false) }
                     var editDialog by remember { mutableStateOf(false) }
                     var addDialog by remember { mutableStateOf(false) }

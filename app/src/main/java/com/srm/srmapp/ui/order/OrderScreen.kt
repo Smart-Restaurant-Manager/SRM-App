@@ -60,7 +60,6 @@ fun OrderScreen(
         onBack = { navigator.navigateUp() },
         onRefresh = { viewmodel.refreshOrder() },
         refresState = rememberSwipeRefreshState(isRefreshing = orderListState.isLoading()),
-        itemKey = { it.orderId },
         listItemStartText = { "${it.orderId}\nTaula: ${it.booking?.table}" },
         listItemEndText = {
             val status: String = if (orderStatus is Order.Status.None) it.status.toString() else ""

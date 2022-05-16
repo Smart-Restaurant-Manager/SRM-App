@@ -8,13 +8,16 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Food(
     val type: String,
-    var foodId: Int = -1,
+    val foodId: Int = -1,
     val name: String,
     val units: String,
-    val stockCount:Int = 0,
+    val stockCount: Int = 0,
     val stockList: MutableList<Stock> = mutableListOf(),
-) :
-    Parcelable {
+) : Parcelable, GetId {
+    override fun getId(): Int {
+        return foodId
+    }
+
     override fun toString(): String {
         return "$name $units $foodId"
     }

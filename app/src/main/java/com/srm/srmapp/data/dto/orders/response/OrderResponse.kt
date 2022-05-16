@@ -5,7 +5,6 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.srm.srmapp.data.models.Booking
 import com.srm.srmapp.data.models.Order
-import com.srm.srmapp.data.models.Recipe
 import timber.log.Timber
 import java.time.LocalDateTime
 
@@ -118,7 +117,7 @@ fun parseStatus(s: String): Order.Status = when (s) {
 fun OrderResponse.Data.getBooking(): Booking {
     val attributes = attributes.booking.attributes
     return Booking(name = attributes.name,
-        id = id,
+        bookingId = id,
         email = attributes.email,
         phone = attributes.phone,
         date = attributes.date,

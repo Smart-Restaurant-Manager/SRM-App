@@ -40,7 +40,7 @@ fun RecipeScreen(
     // search engine properties
     val searchProperties = SrmSearchProperties<Recipe>(
         searchPredicate = { recipeItem, query -> recipeItem.name.startsWith(query, ignoreCase = true) },
-        indexPredicate = { it, found -> it.id == found.id },
+        indexPredicate = { it, found -> it.recipeId == found.recipeId },
         searchLabel = "Buscar recetas",
         startSearchText = { it.name },
         endSearchText = { "${it.price}€" })
@@ -56,10 +56,10 @@ fun RecipeScreen(
                 recipeState = item)
         },
         addDialogContent = null,
-        onDelete = { viewmodel.deleteRecipe(it.id) },
+        onDelete = { viewmodel.deleteRecipe(it.recipeId) },
         moreDialogContent = {
             val rec by viewmodel.recipeList.observeAsState(Resource.Empty())
-            if (rec.isEmpty()) viewmodel.getRecipeBy(it.id)
+            if (rec.isEmpty()) viewmodel.getRecipeBy(it.recipeId)
             SrmLazyRow(itemListResource = rec) { item ->
                 SrmListItem(startText = "${it.food?.get(0)} ${it.food?.get(1)}  ", enableSelect = false)
 
@@ -79,10 +79,9 @@ fun RecipeScreen(
         onBack = { navigator.navigateUp() },
         onRefresh = { viewmodel.refreshRecipeList() },
         refresState = rememberSwipeRefreshState(isRefreshing = recipeListState.isLoading()),
-        itemKey = { it.id },
         icon = painterResource(id = R.drawable.ic_baseline_image_not_supported_24),
         listItemStartText = { "${it.name}\n${it.price}€" },
-        listItemEndText = { "${it.id}\n" + if (it.available == true) "Disponible" else "No disp." },
+        listItemEndText = { "${it.recipeId}\n" + if (it.available == true) "Disponible" else "No disp." },
         searchProperties = searchProperties,
         crudDialogContent = crudDialogContent,
         baseViewModel = viewmodel)

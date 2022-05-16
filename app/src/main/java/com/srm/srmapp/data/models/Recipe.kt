@@ -9,13 +9,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class Recipe(
     val type: RecipeType,
-    val id: Int = -1,
+    val recipeId: Int = -1,
     val name: String,
     val price: Float,
     val available: Boolean? = null,
     val food: List<Pair<Int, Float>>? = null, // Food_id and quantity
-) :
-    Parcelable {
+) : Parcelable, GetId {
     enum class RecipeType {
         NONE, ENTRANTE, FIRST_PLATE,
         SECOND_PLATE, DESERT, DRINK,
@@ -35,8 +34,12 @@ data class Recipe(
     fun toJsonObject() =
         RecipeObject(name = name, price = price, available = available, type = this.toInt(), food = food?.map { it.toRecipeFoodObject() })
 
+    override fun getId(): Int {
+        return recipeId
+    }
+
     override fun toString(): String {
-        return "$name  $id  $price $food"
+        return "$name  $recipeId  $price $food"
     }
 
     companion object {
@@ -59,6 +62,7 @@ data class Recipe(
             5 -> R.string.complementos
             else -> R.string.error_type
         }
+
         val RECIPE_ERROR = Recipe(Recipe.RecipeType.NONE, -1, "Error", 0f)
     }
 }

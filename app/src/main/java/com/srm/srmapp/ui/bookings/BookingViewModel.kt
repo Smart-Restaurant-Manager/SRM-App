@@ -8,7 +8,6 @@ import com.srm.srmapp.repository.bookings.BookingRepository
 import com.srm.srmapp.repository.orders.OrdersRepository
 import com.srm.srmapp.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -52,7 +51,7 @@ class BookingViewModel @Inject constructor(
     fun deleteBooking(id: Int) {
         fetchResource(_status, onSuccess = {
             _bookingList.value?.data?.toMutableList()?.let { list ->
-                list.removeIf { it.id == id }
+                list.removeIf { it.bookingId == id }
                 _bookingList.postValue(Resource.Success(list.toList()))
             }
         }) {
@@ -62,7 +61,7 @@ class BookingViewModel @Inject constructor(
 
     fun putBooking(booking: Booking) {
         fetchResource(_status) {
-            bookingRepository.putBooking(booking.id, booking)
+            bookingRepository.putBooking(booking.bookingId, booking)
         }
     }
 

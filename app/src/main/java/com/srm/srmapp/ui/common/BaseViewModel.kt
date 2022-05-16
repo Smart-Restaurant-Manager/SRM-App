@@ -31,6 +31,4 @@ abstract class BaseViewModel : ViewModel() {
             livedataResource.postValue(r)
         }
     }
-
-
 }
