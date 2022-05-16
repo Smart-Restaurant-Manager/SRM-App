@@ -35,7 +35,7 @@ abstract class BaseRepository {
                 401 -> Resource.Error("Unauthorized", e.code())
                 422 -> Resource.Error("Error in data\n${e.response()?.errorBody()?.string()}", e.code())
                 500 -> Resource.Error("Server Error, try later", e.code())
-                409 -> Resource.Error("No se puede eliminar ya que tiene stocks o recetas relacionadas\n${(e.response()?.errorBody()?.string()}")
+                409 -> Resource.Error("No se puede eliminar ya que tiene stocks o recetas relacionadas\n${e.response()?.errorBody()?.string()}")
                 else -> Resource.Error("Http error ${e.code()} ${e.response()?.errorBody()?.string()}", e.code())
             }
         } catch (e: MalformedJsonException) {
