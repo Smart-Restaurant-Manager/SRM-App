@@ -32,7 +32,6 @@ fun FoodListScreen(
     //Search engine properties
     val searchProperties = SrmSearchProperties<Food>(
         searchPredicate = { foodItem, query -> foodItem.name.startsWith(query, ignoreCase = true) },
-        indexPredicate = { it, found -> it.foodId == found.foodId },
         searchLabel = "Buscar Alimento",
         startSearchText = { it.name },
         endSearchText = { it.units })

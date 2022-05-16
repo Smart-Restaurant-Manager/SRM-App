@@ -37,10 +37,9 @@ data class SrmCrudDialogContent<T>(
     val addDialogContent: (@Composable ColumnScope.(item: T) -> Unit)? = null,
 )
 
-data class SrmSearchProperties<T>(
+data class SrmSearchProperties<T : GetId>(
     // Search parameters
     val searchPredicate: (T, String) -> Boolean,
-    val indexPredicate: (T, T) -> Boolean,
 
     // Search Item view
     val searchLabel: String = "",
@@ -194,7 +193,7 @@ fun <T : GetId> SrmListWithCrudActions(
                         onSearchItemClick.invoke(item)
                         scope.launch {
                             searchIdx = itemList.indexOfFirst {
-                                indexPredicate.invoke(it, item)
+                                it.getId() == item.getId()
                             }
                             lazyListState.scrollToItem(searchIdx)
                         }

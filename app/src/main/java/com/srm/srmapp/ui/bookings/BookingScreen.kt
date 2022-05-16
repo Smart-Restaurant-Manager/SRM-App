@@ -38,7 +38,6 @@ fun BookingScreen(
                     recipeItem.email.startsWith(query, ignoreCase = true) ||
                     recipeItem.phone.startsWith(query, ignoreCase = true);
         },
-        indexPredicate = { it, found -> it.bookingId == found.bookingId },
         searchLabel = "Buscar reservas",
         startSearchText = { it.name },
         endSearchText = { "Taula: ${it.table}" })

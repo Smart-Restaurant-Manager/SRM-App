@@ -28,7 +28,6 @@ fun OrderScreen(
     // search engine properties
     val searchProperties = SrmSearchProperties<Order>(
         searchPredicate = viewmodel.predicate,
-        indexPredicate = { it, found -> it.orderId == found.orderId },
         searchLabel = "Buscar pedidos",
         startSearchText = { "${it.orderId}" },
         endSearchText = { "Taula ${it.booking?.table}" })
