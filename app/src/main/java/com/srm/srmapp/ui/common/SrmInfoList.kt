@@ -23,16 +23,16 @@ fun SrmInfoList(infoList: List<Pair<String, String>>, center: Boolean = false, m
         items(infoList) { (title, value) ->
             Column(modifier = Modifier.fillParentMaxWidth(),
                 horizontalAlignment = if (center) Alignment.CenterHorizontally else Alignment.Start) {
-                if (title.isNotEmpty() && value.isNotEmpty()) {
+                if (title.isNotEmpty())
                     SrmText(text = title, fontWeight = FontWeight.Bold)
-                    SrmText(modifier = Modifier.padding(bottom = 4.dp),
-                        text = value)
-                } else {
+                if (value.isNotEmpty()) {
+                    SrmText(modifier = Modifier.padding(bottom = 4.dp), text = value)
+                }
+                if (value.isEmpty() && title.isEmpty())
                     Spacer(modifier = Modifier
                         .height(1.dp)
                         .fillMaxWidth()
                         .background(Color.Gray))
-                }
             }
         }
     }

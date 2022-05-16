@@ -73,9 +73,10 @@ class OrderViewModel @Inject constructor(
     val order: LiveData<Resource<Order>>
         get() = _order
 
-    private val _recipe = MutableLiveData<Resource<Recipe>>(Resource.Empty())
-    val recipe: LiveData<Resource<Recipe>>
-        get() = _recipe
+    private val _recipeList: MutableLiveData<Resource<List<Recipe>>> = MutableLiveData()
+    val recipeList: LiveData<Resource<List<Recipe>>>
+        get() = _recipeList
+
 
     fun clearOrder() {
         _order.value = Resource.Empty()
@@ -89,6 +90,14 @@ class OrderViewModel @Inject constructor(
         _orderStatus.value = Order.Status.None()
     }
 
+
+    fun refreshRecipeList() {
+        Timber.d("Call refresh")
+        fetchResource(_recipeList) {
+            recipeApi.getRecipes()
+        }
+    }
+
     fun refreshOrder() {
         fetchResource(_orderList) {
             orderStatus.value?.let {
@@ -99,42 +108,33 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun getOrderRecipe(order: Order) {
-        fetchResource(_order) {
-            api.getOrder(order.orderId)
-        }
-    }
-
-    fun getRecipe(recipeId: Int) {
-        fetchResource(_recipe) {
-            recipeApi.getRecipe(recipeId)
-        }
-    }
-
-    fun changeOrderStatus(order: Order, status: Order.Status) {
+    fun putOrder(order: Order) {
         fetchResource(_status,
-            onSuccess = { _ ->
-                _order.postValue(Resource.Success(order))
-                _orderList.value?.data?.let {
-                    it.toMutableList().apply {
-                        remove(first { it.orderId == order.orderId })
-                        add(order)
-                        _orderList.postValue(Resource.Success(this.toList()))
-                    }
-                }
+            onSuccess = {
+                refreshOrder()
             }) {
-            order.status = status
             api.putOrder(order)
         }
     }
 
+
+    fun postOrder(order: Order) {
+        fetchResource(_status,
+            onSuccess = {
+                refreshOrder()
+            }) {
+            api.postOrder(order)
+        }
+    }
+
     fun deleteOrder(order: Order) {
-        fetchResource(_status) {
+        fetchResource(_status,
+            onSuccess = {
+                refreshOrder()
+            }
+        ) {
             api.deleteOrder(order.orderId)
         }
     }
 
-    suspend fun getFoodName(id: Int) {
-        foodApi.getFood(id)
-    }
 }

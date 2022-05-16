@@ -1,5 +1,7 @@
 package com.srm.srmapp.data.models
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import com.srm.srmapp.R
 import com.srm.srmapp.data.dto.orders.body.OrderObject
 import com.srm.srmapp.repository.orders.OrdersInterface
@@ -7,11 +9,11 @@ import com.srm.srmapp.repository.orders.OrdersInterface
 data class Order(
     val orderId: Int = -1,
     val bookingId: Int = -1,
-    var status: Status = Status.None(),
+    val status: Status = Status.None(),
     val booking: Booking? = null,
     val recipeList: List<OrderRecipe>,
 ) : GetId {
-    data class OrderRecipe(val recipeId: Int, val name: String, val quantity: Int, val price: Double, val type: Int) : GetId {
+    data class OrderRecipe(val recipeId: Int, val name: String = "", val quantity: Int, val price: Double = 0.0, val type: Int = 0) : GetId {
         override fun getId(): Int {
             return recipeId
         }
@@ -22,14 +24,15 @@ data class Order(
             return data
         }
 
-        fun getStringId() = when (this) {
-            is Cancelled -> R.string.cancelled
-            is Confirmed -> R.string.confirmed
-            is Delievered -> R.string.delievered
-            is InProcess -> R.string.inprocess
-            is Paid -> R.string.paid
-            is Waiting -> R.string.waiting
-            is None -> R.string.all
+        @Composable
+        fun getString(): String = when (this) {
+            is Cancelled -> stringResource(R.string.cancelled)
+            is Confirmed -> stringResource(R.string.confirmed)
+            is Delievered -> stringResource(R.string.delievered)
+            is InProcess -> stringResource(R.string.inprocess)
+            is Paid -> stringResource(R.string.paid)
+            is Waiting -> stringResource(R.string.waiting)
+            is None -> stringResource(R.string.all)
         }
 
         fun getId() = when (this) {
@@ -60,7 +63,8 @@ data class Order(
     fun toJsonObject() =
         OrderObject(orderStatus = status.getId(),
             bookingId = bookingId,
-            recipes = recipeList.map { OrderObject.Recipe(it.recipeId, it.quantity, it.price, it.type) })
+            recipes = recipeList.map { OrderObject.Recipe(it.recipeId, it.quantity, it.price) })
+
 
     override fun getId(): Int {
         return orderId
