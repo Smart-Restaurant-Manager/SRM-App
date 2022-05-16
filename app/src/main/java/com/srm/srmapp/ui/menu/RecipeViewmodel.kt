@@ -20,6 +20,10 @@ class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRe
     val recipe: LiveData<Resource<Recipe>>
         get() = _recipe
 
+    private val _recipeFood: MutableLiveData<Resource<List<Recipe.RecipeFood>>> = MutableLiveData()
+    val recipeFood: LiveData<Resource<List<Recipe.RecipeFood>>>
+        get() = _recipeFood
+
     init {
         Timber.d("INIT")
     }
@@ -35,6 +39,15 @@ class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRe
     fun getRecipeBy(id: Int) {
         fetchResource(_recipe) {
             recipeRepository.getRecipe(id)
+        }
+    }
+
+    fun getRecipeFoodBy(id: Int) {
+        fetchResource(_recipeFood) {
+            recipeRepository.getRecipe(id).let {
+                Timber.d(it.data?.food.toString())
+                it.wrapThis(it.data?.food ?: emptyList())
+            }
         }
     }
 

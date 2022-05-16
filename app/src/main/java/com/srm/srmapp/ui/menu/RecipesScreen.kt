@@ -57,11 +57,10 @@ fun RecipeScreen(
         addDialogContent = null,
         onDelete = { viewmodel.deleteRecipe(it.recipeId) },
         moreDialogContent = {
-            val rec by viewmodel.recipeList.observeAsState(Resource.Empty())
-            if (rec.isEmpty()) viewmodel.getRecipeBy(it.recipeId)
+            val rec by viewmodel.recipeFood.observeAsState(Resource.Empty())
+            if (rec.isEmpty()) viewmodel.getRecipeFoodBy(it.recipeId)
             SrmLazyRow(itemListResource = rec) { item ->
-                SrmListItem(startText = "${it.food?.get(0)} ${it.food?.get(1)}  ", enableSelect = false)
-
+                SrmListItem(startText = "${item.name} ${item.quantity}${item.unit}", enableSelect = false)
             }
         },
     )
@@ -97,29 +96,27 @@ fun RecipeDialog(
 ) {
     var name by remember { mutableStateOf(recipeState?.name ?: "") }
     var precio by remember { mutableStateOf(recipeState?.price?.format(2) ?: "") }
-    var selectedFood = remember {
-        recipeState?.food?.map { (foodid, quantity) ->
-            Pair(foodList.indexOfFirst { it.foodId == foodid }, quantity)
-        } ?: listOf()
-    }
+    var selectedFood = remember { recipeState?.food?.associate { Pair(it.foodId, it.quantity) } ?: emptyMap() }
     var available by remember { mutableStateOf(recipeState?.available ?: false) }
+
     SrmTextField(value = name, label = stringResource(R.string.food_name), onValueChange = { name = it })
     SrmTextField(value = precio, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         label = stringResource(R.string.price), onValueChange = { precio = it })
     SrmCheckBox(text = stringResource(if (available) R.string.available else R.string.unavailable), checkState = available) { available = it }
 
-    SrmQuantitySelector(optionsList = foodList.map { it.name }, // TODO Fix food, quantity not working
-        selectorState = selectedFood.toTypedArray()) {
-        selectedFood = it.toList().filter { it.second.compareTo(0f) > 0 }
+    SrmQuantitySelector(
+        optionsList = foodList,
+        selectorState = selectedFood,
+        onUpdate = { selectedFood = it },
+    ) {
+        SrmText(text = it.name)
     }
 
     SrmTextButton(onClick = {
         val recipe = Recipe(type = recipeType,
             name = name,
             price = precio.toFloatOrNull() ?: 0f,
-            food = selectedFood.map { (idx, quantity) ->
-                Pair(foodList[idx].foodId, quantity)
-            },
+            food = selectedFood.toList().map { Recipe.RecipeFood(foodId = it.first, quantity = it.second) },
             available = available)
         onClick.invoke(recipe)
     }, text = buttonText)

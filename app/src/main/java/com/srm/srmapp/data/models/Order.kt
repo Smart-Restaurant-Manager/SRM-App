@@ -11,7 +11,11 @@ data class Order(
     val booking: Booking? = null,
     val recipeList: List<OrderRecipe>,
 ) : GetId {
-    data class OrderRecipe(val recipeId: Int, val quantity: Int, val price: Double, val type: Int)
+    data class OrderRecipe(val recipeId: Int, val name: String, val quantity: Int, val price: Double, val type: Int) : GetId {
+        override fun getId(): Int {
+            return recipeId
+        }
+    }
 
     sealed class Status(val data: String) {
         override fun toString(): String {

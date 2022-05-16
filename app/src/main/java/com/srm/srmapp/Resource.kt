@@ -22,4 +22,11 @@ sealed class Resource<T>(
             is Empty -> "Empty"
         }
     }
+
+    fun <T> wrapThis(other: T) = when (this) {
+        is Empty -> Empty()
+        is Error -> Error("Error")
+        is Loading -> Loading()
+        is Success -> Success(data = other)
+    }
 }

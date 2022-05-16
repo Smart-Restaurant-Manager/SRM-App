@@ -1,12 +1,9 @@
 package com.srm.srmapp.data.models
 
-import android.os.Parcelable
 import com.srm.srmapp.data.dto.stock.body.StockObject
-import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
 
-@Parcelize
-data class Stock(val stockId: Int, val foodId: Int, val quantity: Float, val expirationDate: LocalDate) : Parcelable, GetId {
+data class Stock(val stockId: Int, val foodId: Int, val quantity: Float, val expirationDate: LocalDate) : GetId {
     fun toJsonObject() = StockObject(quantity, expirationDate, foodId, null)
     override fun getId(): Int {
         return stockId

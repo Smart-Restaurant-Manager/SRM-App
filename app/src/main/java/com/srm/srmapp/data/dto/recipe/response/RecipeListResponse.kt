@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 
 @Keep
 data class RecipeListResponse(
-    val data: List<RecipeData>,
+    val data: List<RecipeResponse.Data>,
 )
 
 fun RecipeListResponse.toRecipeList() = data.map { it.toRecipe() }

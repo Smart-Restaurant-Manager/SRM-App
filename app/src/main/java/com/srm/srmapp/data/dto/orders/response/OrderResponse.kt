@@ -82,6 +82,8 @@ data class OrderResponse(
             data class Recipe(
                 @SerializedName("order_id")
                 val orderId: Int, // 1
+                @SerializedName("recipe_name")
+                val name: String, // Patata
                 @SerializedName("recipe_id")
                 val recipeId: Int, // 1
                 @SerializedName("quantity")
@@ -131,4 +133,10 @@ fun OrderResponse.Data.toOrder() =
         bookingId = attributes.bookingId,
         status = parseStatus(attributes.status.attributes.status),
         booking = getBooking(),
-        recipeList = attributes.recipes.map { Order.OrderRecipe(it.recipeId, it.quantity, it.price, it.type) })
+        recipeList = attributes.recipes.map {
+            Order.OrderRecipe(recipeId = it.recipeId,
+                quantity = it.quantity,
+                price = it.price,
+                type = it.type,
+                name = it.name)
+        })

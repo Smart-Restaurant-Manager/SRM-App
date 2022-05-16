@@ -265,7 +265,8 @@ class ExampleUnitTest {
         val id = createBooking()
         val recipeId = createRecipe()
         val orderJson =
-            Order(bookingId = id, recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1, price = 1.0, type = 0))).toJsonObject()
+            Order(bookingId = id,
+                recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1, price = 1.0, type = 0, name = "name"))).toJsonObject()
 
         assert(runBlocking { orderApi.postOrder(orderJson).isSuccessful })
 
@@ -291,7 +292,7 @@ class ExampleUnitTest {
         val bookingId = createBooking()
         val recipeId = createRecipe()
         val order = Order(bookingId = bookingId,
-            recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1, price = 1.0, type = 0)))
+            recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1, price = 1.0, type = 0, name = "name")))
 
         assert(runBlocking { orderRepository.postOrder(order).isSuccess() })
 
