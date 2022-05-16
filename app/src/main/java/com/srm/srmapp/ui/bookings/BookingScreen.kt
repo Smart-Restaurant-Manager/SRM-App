@@ -1,14 +1,8 @@
 package com.srm.srmapp.ui.bookings
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -20,7 +14,6 @@ import com.srm.srmapp.ui.common.*
 import java.time.LocalDateTime
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Destination
 fun BookingScreen(
@@ -52,24 +45,17 @@ fun BookingScreen(
         addDialogContent = null,
         onDelete = { viewmodel.deleteBooking(it.bookingId) },
         moreDialogContent = {
-            Spacer(Modifier.size(20.dp))
-            SrmText(text = "Nombre:    ${it.name}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-            SrmText(text = "ID:        " + "   ${it.bookingId}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-
-            SrmText(text = "Personas: " + "     ${it.people}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-            SrmText(text = "Email:       ${it.email}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-            SrmText(text = "Telefono:        ${it.phone}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-            SrmText(text = "Fecha:${it.date}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-            SrmText(text = "Mesa:     ${it.table}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-
-
+            val items = listOf(
+                Pair("Id", it.bookingId.toString()),
+                Pair("Nombre", it.name),
+                Pair("Email", it.email),
+                Pair("Telefono", it.phone),
+                Pair("Fecha", it.date.format(AppModule.dateTimeFormatter)),
+                Pair("", ""),
+                Pair("Personas", it.people.toString()),
+                Pair("Mesa", it.table),
+            )
+            SrmInfoList(infoList = items)
         },
     )
 

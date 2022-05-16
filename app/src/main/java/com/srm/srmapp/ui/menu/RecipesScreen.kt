@@ -1,6 +1,5 @@
 package com.srm.srmapp.ui.menu
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -18,7 +17,6 @@ import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.stock.StockViewmodel
 
-@OptIn(ExperimentalFoundationApi::class)
 @Destination
 @Composable
 fun RecipeScreen(
