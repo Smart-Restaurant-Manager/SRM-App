@@ -58,7 +58,7 @@ fun RecipeScreen(
             val rec by viewmodel.recipeFood.observeAsState(Resource.Empty())
             if (rec.isEmpty()) viewmodel.getRecipeFoodBy(it.recipeId)
             SrmLazyRow(itemListResource = rec) { item ->
-                SrmListItem(startText = "${item.name} ${item.quantity}${item.unit}", enableSelect = false)
+                SrmListItem(startText = "Ingrediente: ${item.name}\n\nCantidad: ${item.quantity}  ${item.unit}", enableSelect = false)
             }
         },
     )
