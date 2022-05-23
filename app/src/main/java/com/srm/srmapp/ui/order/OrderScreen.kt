@@ -14,6 +14,8 @@ import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Order
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.ui.common.*
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 @Destination
@@ -25,7 +27,10 @@ fun OrderScreen(
     if (orderListState.isEmpty()) viewmodel.refreshOrder()
 
     val orderStatus by viewmodel.orderStatus.observeAsState(Order.Status.None())
-
+    LaunchedEffect(key1 = orderStatus, key2 = orderListState, block = {
+        delay(30.seconds)
+        viewmodel.refreshOrder()
+    })
 
     // search engine properties
     val searchProperties = SrmSearchProperties<Order>(
