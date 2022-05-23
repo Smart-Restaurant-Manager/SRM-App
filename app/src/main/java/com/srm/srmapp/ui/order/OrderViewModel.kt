@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.srm.srmapp.AppModule
 import com.srm.srmapp.Resource
+import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.data.models.Order
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.repository.orders.OrdersRepository
@@ -23,7 +24,8 @@ class OrderViewModel @Inject constructor(
     private val api: OrdersRepository,
     private val recipeApi: RecipeRepository,
     private val foodApi: StockRepository,
-) : BaseViewModel() {
+    userSession: UserSession,
+) : BaseViewModel(userSession) {
     val predicate: (Order, String) -> Boolean = { order, query ->
         val time = try {
             val timequery = LocalTime.from(AppModule.timeFormatter.parse(query))
@@ -57,9 +59,10 @@ class OrderViewModel @Inject constructor(
         val id = order.orderId.toString().startsWith(query, ignoreCase = true)
         val table = order.booking?.table?.startsWith(query, ignoreCase = false) ?: false
         val name = order.booking?.name?.startsWith(query, ignoreCase = false) ?: false
+        val bookingId = order.booking?.bookingId?.toString()?.startsWith(query, ignoreCase = false) ?: false
         val isAfter = dateTime || date || time
 
-        isAfter || id || name || email || table
+        isAfter || id || bookingId || name || email || table
     }
     private val _orderList = MutableLiveData<Resource<List<Order>>>(Resource.Empty())
     val orderList: LiveData<Resource<List<Order>>>
@@ -73,9 +76,10 @@ class OrderViewModel @Inject constructor(
     val order: LiveData<Resource<Order>>
         get() = _order
 
-    private val _recipe = MutableLiveData<Resource<Recipe>>(Resource.Empty())
-    val recipe: LiveData<Resource<Recipe>>
-        get() = _recipe
+    private val _recipeList: MutableLiveData<Resource<List<Recipe>>> = MutableLiveData()
+    val recipeList: LiveData<Resource<List<Recipe>>>
+        get() = _recipeList
+
 
     fun clearOrder() {
         _order.value = Resource.Empty()
@@ -89,6 +93,14 @@ class OrderViewModel @Inject constructor(
         _orderStatus.value = Order.Status.None()
     }
 
+
+    fun refreshRecipeList() {
+        Timber.d("Call refresh")
+        fetchResource(_recipeList) {
+            recipeApi.getRecipes()
+        }
+    }
+
     fun refreshOrder() {
         fetchResource(_orderList) {
             orderStatus.value?.let {
@@ -99,42 +111,33 @@ class OrderViewModel @Inject constructor(
         }
     }
 
-    fun getOrderRecipe(order: Order) {
-        fetchResource(_order) {
-            api.getOrder(order.orderId)
-        }
-    }
-
-    fun getRecipe(recipeId: Int) {
-        fetchResource(_recipe) {
-            recipeApi.getRecipe(recipeId)
-        }
-    }
-
-    fun changeOrderStatus(order: Order, status: Order.Status) {
+    fun putOrder(order: Order) {
         fetchResource(_status,
-            onSuccess = { _ ->
-                _order.postValue(Resource.Success(order))
-                _orderList.value?.data?.let {
-                    it.toMutableList().apply {
-                        remove(first { it.orderId == order.orderId })
-                        add(order)
-                        _orderList.postValue(Resource.Success(this.toList()))
-                    }
-                }
+            onSuccess = {
+                refreshOrder()
             }) {
-            order.status = status
             api.putOrder(order)
         }
     }
 
+
+    fun postOrder(order: Order) {
+        fetchResource(_status,
+            onSuccess = {
+                refreshOrder()
+            }) {
+            api.postOrder(order)
+        }
+    }
+
     fun deleteOrder(order: Order) {
-        fetchResource(_status) {
+        fetchResource(_status,
+            onSuccess = {
+                refreshOrder()
+            }
+        ) {
             api.deleteOrder(order.orderId)
         }
     }
 
-    suspend fun getFoodName(id: Int) {
-        foodApi.getFood(id)
-    }
 }

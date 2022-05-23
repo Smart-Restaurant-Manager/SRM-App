@@ -1,8 +1,12 @@
 package com.srm.srmapp.data.models
 
 data class User(
+    val userId: Int,
     val name: String,
     val email: String,
-) {
-    override fun equals(other: Any?): Boolean = other is User && other.name == this.name && other.email == this.email
+    val role: Int,
+) : GetId {
+    override fun getId(): Int {
+        return userId
+    }
 }

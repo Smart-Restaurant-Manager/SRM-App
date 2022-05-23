@@ -3,7 +3,7 @@ package com.srm.srmapp.ui.common
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
@@ -16,27 +16,30 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.srm.srmapp.R
 import com.srm.srmapp.Utils.format
+import com.srm.srmapp.data.models.GetId
 
 @Composable
-fun SrmQuantitySelector(
-    optionsList: List<String>,
-    selectorState: Array<Pair<Int, Float>> = arrayOf(),
+fun <T : GetId> SrmQuantitySelector(
+    optionsList: List<T>,
+    selectorState: Map<Int, Float> = mapOf(),
     onUpdate: (Map<Int, Float>) -> Unit,
+    itemContent: @Composable BoxScope.(item: T) -> Unit,
 ) {
-    val quantityMap = remember { mutableStateMapOf(*selectorState) }
+    val quantityMap = remember { mutableStateMapOf(*(selectorState.toList().toTypedArray())) }
     LazyColumn(modifier = Modifier
         .heightIn(0.dp, 300.dp)
         .fillMaxWidth()) {
-        itemsIndexed(optionsList) { idx, item ->
+        items(optionsList) { item ->
             ConstraintLayout(modifier = Modifier
                 .height(40.dp)
                 .fillMaxWidth()) {
                 val (leftReft, midRef, righRef, righRef2) = createRefs()
                 Icon(modifier = Modifier
                     .clickable {
-                        quantityMap[idx] = quantityMap.getOrDefault(idx, 0f) - 1
-                        if (quantityMap[idx] ?: 0f <= 0f)
-                            quantityMap.remove(idx)
+                        val itemId = item.getId()
+                        quantityMap[itemId] = quantityMap.getOrDefault(itemId, 0f) - 1
+                        if (quantityMap.getOrDefault(itemId, 0f) <= 0f)
+                            quantityMap.remove(itemId)
                         onUpdate.invoke(quantityMap)
                     }
                     .constrainAs(leftReft) {
@@ -56,13 +59,14 @@ fun SrmQuantitySelector(
                     }
                     .fillMaxHeight()
                     .fillMaxWidth(0.15f), contentAlignment = Alignment.Center) {
-                    SrmText(text = "${quantityMap[idx]?.format(2) ?: 0}")
+                    SrmText(text = "${quantityMap[item.getId()]?.format(2) ?: 0}")
                 }
                 Icon(modifier = Modifier
                     .clickable {
-                        quantityMap[idx] = quantityMap.getOrDefault(idx, 0f) + 1
-                        if (quantityMap[idx] == 0f)
-                            quantityMap.remove(idx)
+                        val itemId = item.getId()
+                        quantityMap[itemId] = quantityMap.getOrDefault(itemId, 0f) + 1
+                        if (quantityMap[itemId] == 0f)
+                            quantityMap.remove(itemId)
                         onUpdate.invoke(quantityMap)
                     }
                     .constrainAs(righRef) {
@@ -83,7 +87,7 @@ fun SrmQuantitySelector(
                     .fillMaxHeight()
                     .fillMaxWidth(0.45f),
                     contentAlignment = Alignment.Center) {
-                    SrmText(text = item)
+                    itemContent.invoke(this, item)
                 }
             }
         }
@@ -93,6 +97,5 @@ fun SrmQuantitySelector(
 @Preview(showBackground = true)
 @Composable
 fun PreviewQuantity() {
-    SrmQuantitySelector(optionsList = (1..20).toList().map { it.toString() }, selectorState = arrayOf(Pair(0, 2f)), onUpdate = {})
-
+    SrmQuantitySelector(optionsList = listOf(), onUpdate = {}) {}
 }

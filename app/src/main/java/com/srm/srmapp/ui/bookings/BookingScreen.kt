@@ -1,14 +1,10 @@
 package com.srm.srmapp.ui.bookings
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.input.KeyboardType
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -20,7 +16,6 @@ import com.srm.srmapp.ui.common.*
 import java.time.LocalDateTime
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Destination
 fun BookingScreen(
@@ -33,12 +28,7 @@ fun BookingScreen(
 
     // search engine properties
     val searchProperties = SrmSearchProperties<Booking>(
-        searchPredicate = { recipeItem, query ->
-            recipeItem.name.startsWith(query, ignoreCase = true) ||
-                    recipeItem.email.startsWith(query, ignoreCase = true) ||
-                    recipeItem.phone.startsWith(query, ignoreCase = true);
-        },
-        indexPredicate = { it, found -> it.id == found.id },
+        searchPredicate = viewmodel.predicate,
         searchLabel = "Buscar reservas",
         startSearchText = { it.name },
         endSearchText = { "Taula: ${it.table}" })
@@ -51,26 +41,19 @@ fun BookingScreen(
                 bookingState = item)
         },
         addDialogContent = null,
-        onDelete = { viewmodel.deleteBooking(it.id) },
+        onDelete = { viewmodel.deleteBooking(it.bookingId) },
         moreDialogContent = {
-            Spacer(Modifier.size(20.dp))
-            SrmText(text = "Nombre:    ${it.name}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-            SrmText(text = "ID:        " + "   ${it.id}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-
-            SrmText(text = "Personas: " + "     ${it.people}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-            SrmText(text = "Email:       ${it.email}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-            SrmText(text = "Telefono:        ${it.phone}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-            SrmText(text = "Fecha:${it.date}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-            SrmText(text = "Mesa:     ${it.table}", textAlign = TextAlign.Left)
-            Spacer(Modifier.size(20.dp))
-
-
+            val items = listOf(
+                Pair("Id", it.bookingId.toString()),
+                Pair("Nombre", it.name),
+                Pair("Email", it.email),
+                Pair("Telefono", it.phone),
+                Pair("Fecha", it.date.format(AppModule.dateTimeFormatter)),
+                Pair("", ""),
+                Pair("Personas", it.people.toString()),
+                Pair("Mesa", it.table),
+            )
+            SrmInfoList(infoList = items)
         },
     )
 
@@ -85,7 +68,6 @@ fun BookingScreen(
         onBack = { navigator.navigateUp() },
         onRefresh = { viewmodel.refreshBookingsList() },
         refresState = rememberSwipeRefreshState(isRefreshing = bookingListState.isLoading()),
-        itemKey = { it.id },
         listItemStartText = { "${it.name}\n${it.people} personas" },
         listItemEndText = { "Taula: ${it.table}\n ${it.date.format(AppModule.dateTimeFormatter)}" },
         searchProperties = searchProperties,
@@ -107,22 +89,28 @@ fun BookingDialog(
     var table by remember { mutableStateOf(bookingState?.table ?: "") }
     var error by remember { mutableStateOf(false) }
     SrmTextField(value = name, label = stringResource(R.string.food_name), onValueChange = { name = it })
-    SrmTextField(value = people, label = stringResource(R.string.amount_of_people), onValueChange = { people = it })
+    SrmTextField(value = people,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        label = stringResource(R.string.amount_of_people),
+        onValueChange = { people = it })
     SrmDateTimeEditor(value = date,
-        label = stringResource(id = R.string.Fecha),
+        label = stringResource(id = R.string.fecha),
         onErrorAction = { error = true },
         onValueChange = {
             date = it
             error = false
         })
-    SrmTextField(value = phone, label = stringResource(R.string.tel), onValueChange = { phone = it })
+    SrmTextField(value = phone,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        label = stringResource(R.string.tel),
+        onValueChange = { phone = it })
     SrmTextField(value = email, label = stringResource(R.string.mail), onValueChange = { email = it })
     SrmTextField(value = table, label = stringResource(R.string.table), onValueChange = { table = it })
     SrmTextButton(text = buttonText,
         enabled = !error,
         onClick = {
             onClick.invoke(Booking(
-                bookingState?.id ?: -1,
+                bookingState?.bookingId ?: -1,
                 name,
                 email,
                 phone,

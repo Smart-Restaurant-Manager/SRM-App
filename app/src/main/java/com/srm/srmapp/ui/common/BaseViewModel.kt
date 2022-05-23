@@ -6,14 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.srm.srmapp.Resource
 import com.srm.srmapp.Utils.launchException
+import com.srm.srmapp.data.UserSession
 
-abstract class BaseViewModel : ViewModel() {
+abstract class BaseViewModel constructor(private val userSession: UserSession) : ViewModel() {
     protected val _status: MutableLiveData<Resource<String>> = MutableLiveData()
     val status: LiveData<Resource<String>> = _status
 
     fun clearStatus() {
         _status.postValue(Resource.Empty())
     }
+
+    fun getRole() = userSession.getRole()
 
     fun <T> fetchResource(
         livedataResource: MutableLiveData<Resource<T>>,
@@ -31,6 +34,4 @@ abstract class BaseViewModel : ViewModel() {
             livedataResource.postValue(r)
         }
     }
-
-
 }

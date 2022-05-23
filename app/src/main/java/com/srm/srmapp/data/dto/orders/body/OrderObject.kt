@@ -20,7 +20,5 @@ data class OrderObject(
         val quantity: Int, // 17
         @SerializedName("price")
         val price: Double, // 74.0351
-        @SerializedName("type")
-        val type: Int, // 14
     )
 }

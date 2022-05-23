@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,23 +36,23 @@ fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
         Pair(R.string.menu) { navigator.navigate(MenuScreenDestination()) },
         Pair(R.string.pedidos) { navigator.navigate(OrderScreenDestination()) },
         Pair(R.string.predictions) { navigator.navigate(PredictionScreenDestination()) })
-    var popupState by remember { mutableStateOf(false) }
-    val loggedIn by userSession.loggedIn.observeAsState(true)
 
-    if (!loggedIn) {
-        navigator.navigateUp()
-    }
+    var popupState by remember { mutableStateOf(false) }
+
     if (popupState) {
         SrmDialog(onDismissRequest = { popupState = false }) {
             SrmSpacedRow(horizontalArrangement = Arrangement.SpaceEvenly) {
                 SrmTextButton(textColor = Color.Red, onClick = { exitProcess(0) }, text = "Exit")
                 SrmTextButton(onClick = {
+                    userSession.clearUsernameAndPassowrd()
                     userSession.logout()
+                    navigator.navigateUp()
                     popupState = false
                 }, text = "Logout")
             }
         }
     }
+
     BackHandler { popupState = true }
     Column(modifier = Modifier
         .fillMaxSize()) {

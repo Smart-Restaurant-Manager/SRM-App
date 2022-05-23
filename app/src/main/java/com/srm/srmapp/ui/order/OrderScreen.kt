@@ -1,9 +1,10 @@
 package com.srm.srmapp.ui.order
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -11,7 +12,10 @@ import com.srm.srmapp.AppModule
 import com.srm.srmapp.R
 import com.srm.srmapp.Resource
 import com.srm.srmapp.data.models.Order
+import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.ui.common.*
+import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 @Destination
@@ -23,30 +27,52 @@ fun OrderScreen(
     if (orderListState.isEmpty()) viewmodel.refreshOrder()
 
     val orderStatus by viewmodel.orderStatus.observeAsState(Order.Status.None())
-
+    LaunchedEffect(key1 = orderStatus, key2 = orderListState, block = {
+        delay(30.seconds)
+        viewmodel.refreshOrder()
+    })
 
     // search engine properties
     val searchProperties = SrmSearchProperties<Order>(
         searchPredicate = viewmodel.predicate,
-        indexPredicate = { it, found -> it.orderId == found.orderId },
         searchLabel = "Buscar pedidos",
         startSearchText = { "${it.orderId}" },
         endSearchText = { "Taula ${it.booking?.table}" })
 
     // dialog content
     val crudDialogContent = SrmCrudDialogContent<Order>(
-        editDialogContent = { item ->
-            // TODO
-            SrmText(text = "Todo")
+        editDialogContent = { order ->
+            val recipeList by viewmodel.recipeList.observeAsState(Resource.Empty())
+            if (recipeList.isEmpty()) viewmodel.refreshRecipeList()
+            OrderDialogContent(orderState = order,
+                buttonText = "Modify order",
+                recipeList = recipeList.data ?: emptyList()) {
+                viewmodel.putOrder(it)
+            }
         },
-        addDialogContent = {
-            // TODO set to null to disable
-            SrmText(text = "Todo")
+        addDialogContent = { order ->
+            val recipeList by viewmodel.recipeList.observeAsState(Resource.Empty())
+            if (recipeList.isEmpty()) viewmodel.refreshRecipeList()
+            OrderDialogContent(orderState = order,
+                buttonText = "Add recipes",
+                addRecipeMode = true,
+                recipeList = recipeList.data ?: emptyList()) {
+                viewmodel.putOrder(it)
+            }
         },
         onDelete = { viewmodel.deleteOrder(it) },
-        moreDialogContent = {
-            // TODO
-            SrmText(text = "Todo")
+        moreDialogContent = { order ->
+            val textList: List<Pair<String, String>> = listOf(
+                Pair("Order id", order.orderId.toString()),
+                Pair("Booking id", order.bookingId.toString()),
+                Pair("Table", order.booking?.table ?: "??"),
+                Pair("Status", order.status.getString()),
+                Pair("", ""),
+            )
+            SrmInfoList(infoList = textList)
+            SrmLazyRow(itemListResource = Resource.Success(data = order.recipeList)) {
+                SrmListItem(startText = "${it.name} ${it.quantity} * ${it.price}€", endText = "${it.quantity * it.price}€")
+            }
         },
     )
 
@@ -54,13 +80,17 @@ fun OrderScreen(
         title = stringResource(id = R.string.pedidos),
         itemList = orderListState.data ?: emptyList(),
         onAddDialog = {
-            // TODO
-            SrmText(text = "Todo")
+            val recipeList by viewmodel.recipeList.observeAsState(Resource.Empty())
+            if (recipeList.isEmpty()) viewmodel.refreshRecipeList()
+            OrderDialogContent(orderState = null,
+                buttonText = "Add order",
+                recipeList = recipeList.data ?: emptyList()) {
+                viewmodel.postOrder(it)
+            }
         },
         onBack = { navigator.navigateUp() },
         onRefresh = { viewmodel.refreshOrder() },
         refresState = rememberSwipeRefreshState(isRefreshing = orderListState.isLoading()),
-        itemKey = { it.orderId },
         listItemStartText = { "${it.orderId}\nTaula: ${it.booking?.table}" },
         listItemEndText = {
             val status: String = if (orderStatus is Order.Status.None) it.status.toString() else ""
@@ -71,11 +101,56 @@ fun OrderScreen(
         crudDialogContent = crudDialogContent,
         baseViewModel = viewmodel,
         contentBefore = {
-            DropDownChangeStatus(text = stringResource(id = orderStatus.getStringId()), onStatusChange = {
+            DropDownChangeStatus(text = orderStatus.getString(), onStatusChange = {
                 viewmodel.setOrderStatus(it)
                 viewmodel.refreshOrder()
             })
         })
+}
+
+@Composable
+fun OrderDialogContent(
+    orderState: Order? = null,
+    recipeList: List<Recipe>,
+    addRecipeMode: Boolean = false,
+    buttonText: String,
+    onClick: (Order) -> Unit,
+) {
+    var selectedFood = remember { orderState?.recipeList?.associate { Pair(it.recipeId, it.quantity.toFloat()) } ?: emptyMap() }
+    var status by remember { mutableStateOf(orderState?.status ?: Order.Status.None()) }
+    var bookingId by remember { mutableStateOf(orderState?.bookingId?.toString() ?: "") }
+
+    if (!addRecipeMode) {
+        if (orderState == null) {
+            SrmTextField(value = bookingId,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                label = "Booking id",
+                onValueChange = { bookingId = it })
+        }
+
+        orderState?.let {
+            DropDownChangeStatus(text = status.getString(), onStatusChange = {
+                status = it
+            })
+        }
+    }
+    SrmQuantitySelector(
+        optionsList = recipeList,
+        selectorState = selectedFood,
+        onUpdate = { selectedFood = it },
+    ) {
+        SrmText(text = it.name)
+    }
+
+    SrmTextButton(onClick = {
+        val order = Order(orderId = orderState?.orderId ?: -1,
+            bookingId = orderState?.bookingId ?: bookingId.toInt(),
+            booking = null,
+            status = status,
+            recipeList = selectedFood.toList().map { Order.OrderRecipe(recipeId = it.first, quantity = it.second.toInt()) }
+        )
+        onClick.invoke(order)
+    }, text = buttonText)
 }
 
 
@@ -84,6 +159,6 @@ fun DropDownChangeStatus(text: String, onStatusChange: (Order.Status) -> Unit) {
     SrmDropDownMenu(text = text, options = Order.Status.STAUS_UI,
         onClick = onStatusChange
     ) {
-        SrmText(text = stringResource(id = it.getStringId()))
+        SrmText(text = it.getString())
     }
 }

@@ -14,9 +14,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -32,64 +29,30 @@ import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.ui.common.*
 import com.srm.srmapp.ui.destinations.ManagerScreenDestination
 import com.srm.srmapp.ui.destinations.SignUpScreenDestination
+import com.srm.srmapp.ui.theme.poppinsFontFamily
 
 
 @Destination
 @RootNavGraph(start = true)
 @Composable
-fun LoginScreen(
+fun LoginForm(
     navigator: DestinationsNavigator,
     viewmodel: LoginViewModel = hiltViewModel(),
     userSession: UserSession,
 ) {
+    var username by remember { mutableStateOf(userSession.getUser()) }
+    var password by remember { mutableStateOf(userSession.getPassword()) }
+    var passwordVisibility: Boolean by remember { mutableStateOf(false) }
+    var saveUsernameAndPassword: Boolean by remember { mutableStateOf(false) }
 
-    val poppinsFontFamily = FontFamily(
-        Font(R.font.poppins_light, FontWeight.Light),
-        Font(R.font.poppins_regular, FontWeight.Normal),
-        Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic),
-        Font(R.font.poppins_medium, FontWeight.Medium),
-        Font(R.font.poppins_bold, FontWeight.Bold)
-    )
-    val userState by userSession.userObject.observeAsState(Resource.Empty())
-    if (userSession.isLoggedIn()) {
-        when {
-            userState.isEmpty() -> userSession.refresUser()
-            userState.isLoading() -> {
-                SrmSpacedColumn(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator()
-                    SrmText(text = "Loading ...")
-                }
-            }
-            userState.isSuccess() -> navigator.navigate(ManagerScreenDestination())
-        }
-    } else {
-        userSession.logout()
-        LoginForm(navigator = navigator,
-            viewmodel = viewmodel,
-            userSession = userSession)
+    val user by userSession.user.observeAsState(Resource.Empty())
+    val status by viewmodel.status.observeAsState(Resource.Empty())
+
+    if (userSession.isSaved() && user.isEmpty() && status.isEmpty()) {
+        viewmodel.login(userSession.getUser(), userSession.getPassword())
     }
-}
-
-@Composable
-fun LoginForm(
-    navigator: DestinationsNavigator,
-    viewmodel: LoginViewModel,
-    userSession: UserSession,
-) {
-    var user by remember { mutableStateOf("q@q") }
-    var password by remember { mutableStateOf("q") }
-    val loginState by viewmodel.loginState.observeAsState(Resource.Empty())
-    val loggedIn by userSession.loggedIn.observeAsState(false)
 
     SrmHeader(stringResource(id = R.string.login2)) { navigator.navigateUp() }
-
-    val poppinsFontFamily = FontFamily(
-        Font(R.font.poppins_light, FontWeight.Light),
-        Font(R.font.poppins_regular, FontWeight.Normal),
-        Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic),
-        Font(R.font.poppins_medium, FontWeight.Medium),
-        Font(R.font.poppins_bold, FontWeight.Bold)
-    )
     Column(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight(),
@@ -97,27 +60,21 @@ fun LoginForm(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SrmTextField(
-            value = user,
+            value = username,
+            enabled = !user.isLoading() || !status.isLoading(),
             label = stringResource(id = R.string.user_mail),
-            enabled = loginState !is Resource.Loading,
-            isError = loginState is Resource.Error,
-            onValueChange = { user = it },
+            onValueChange = { username = it },
         )
-        var passwordVisibility: Boolean by remember { mutableStateOf(false) }
+
         SrmTextField(
             value = password,
             label = stringResource(id = R.string.password),
-            enabled = loginState !is Resource.Loading,
-            isError = loginState is Resource.Error,
+            enabled = !user.isLoading() || !status.isLoading(),
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
-                val image = if (passwordVisibility)
-                    Icons.Filled.Visibility
-                else Icons.Filled.VisibilityOff
-
+                val image = if (passwordVisibility) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                 val description = if (passwordVisibility) "Hide password" else "Show password"
-
                 IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
                     Image(image, contentDescription = description)
                 }
@@ -127,12 +84,12 @@ fun LoginForm(
                 .padding(0.dp, 20.dp),
         )
 
+        SrmCheckBox(text = "Guardar usuario") { saveUsernameAndPassword = it }
+
         SrmButton(
-            onClick = {
-                viewmodel.login(user, password)
-            },
+            onClick = { viewmodel.login(username, password) },
             text = stringResource(id = R.string.login),
-            enabled = loginState !is Resource.Loading,
+            enabled = !status.isLoading() && !user.isLoading(),
         )
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -142,12 +99,20 @@ fun LoginForm(
             }
         }
 
-        if (loginState.isLoading()) {
+        if (status.isSuccess()) {
+            status.data?.let {
+                SrmText(text = it)
+            }
+        }
+
+        if (user.isLoading() || status.isLoading()) {
             CircularProgressIndicator()
         }
 
-        if (loggedIn) {
-            viewmodel.clearLoginStatus()
+        if (user.isSuccess()) {
+            if (saveUsernameAndPassword)
+                userSession.setUsernameAndPassword(username, password)
+            viewmodel.clearStatus()
             navigator.navigate(ManagerScreenDestination())
         }
     }

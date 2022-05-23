@@ -5,7 +5,6 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import com.srm.srmapp.data.models.Booking
 import com.srm.srmapp.data.models.Order
-import com.srm.srmapp.data.models.Recipe
 import timber.log.Timber
 import java.time.LocalDateTime
 
@@ -83,6 +82,8 @@ data class OrderResponse(
             data class Recipe(
                 @SerializedName("order_id")
                 val orderId: Int, // 1
+                @SerializedName("recipe_name")
+                val name: String, // Patata
                 @SerializedName("recipe_id")
                 val recipeId: Int, // 1
                 @SerializedName("quantity")
@@ -116,9 +117,10 @@ fun parseStatus(s: String): Order.Status = when (s) {
 }
 
 fun OrderResponse.Data.getBooking(): Booking {
+    val id = attributes.booking.id
     val attributes = attributes.booking.attributes
     return Booking(name = attributes.name,
-        id = id,
+        bookingId = id,
         email = attributes.email,
         phone = attributes.phone,
         date = attributes.date,
@@ -132,4 +134,10 @@ fun OrderResponse.Data.toOrder() =
         bookingId = attributes.bookingId,
         status = parseStatus(attributes.status.attributes.status),
         booking = getBooking(),
-        recipeList = attributes.recipes.map { Order.OrderRecipe(it.recipeId, it.quantity, it.price, it.type) })
+        recipeList = attributes.recipes.map {
+            Order.OrderRecipe(recipeId = it.recipeId,
+                quantity = it.quantity,
+                price = it.price,
+                type = it.type,
+                name = it.name)
+        })

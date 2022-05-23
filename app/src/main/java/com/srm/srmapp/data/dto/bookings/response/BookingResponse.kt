@@ -42,7 +42,7 @@ fun BookingResponse.toBooking() = data.toBooking()
 
 fun BookingResponse.Data.toBooking() =
     Booking(name = attributes.name,
-        id = id,
+        bookingId = id,
         email = attributes.email,
         phone = attributes.phone,
         date = attributes.date,

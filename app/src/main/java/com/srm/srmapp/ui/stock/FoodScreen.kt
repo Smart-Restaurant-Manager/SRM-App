@@ -1,9 +1,11 @@
 package com.srm.srmapp.ui.stock
 
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -31,8 +33,10 @@ fun FoodListScreen(
 
     //Search engine properties
     val searchProperties = SrmSearchProperties<Food>(
-        searchPredicate = { foodItem, query -> foodItem.name.startsWith(query, ignoreCase = true) },
-        indexPredicate = { it, found -> it.foodId == found.foodId },
+        searchPredicate = { foodItem, query ->
+            foodItem.name.startsWith(query, ignoreCase = true) ||
+                    foodItem.foodId.toString().startsWith(query, ignoreCase = true)
+        },
         searchLabel = "Buscar Alimento",
         startSearchText = { it.name },
         endSearchText = { it.units })
@@ -61,12 +65,12 @@ fun FoodListScreen(
             SrmLazyRow(itemListResource = l) { item ->
                 val expired: String = if (item.expirationDate > LocalDate.now()) "Expired"
                 else item.expirationDate.format(AppModule.dateFormatter)
-                var editDialog by remember { mutableStateOf(false)}
+                var editDialog by remember { mutableStateOf(false) }
 
                 SrmListItem(startText = "${item.quantity} ${it.units}",
                     endText = expired,
                     onClick = {
-                            editDialog = true
+                        editDialog = true
                     },
                     enableSelect = true,
                     endContent = {
@@ -81,9 +85,9 @@ fun FoodListScreen(
                                 viewmodel.deleteStock(item)
                             }
                     })
-                if(editDialog){
+                if (editDialog) {
                     StockDialog(buttonText = stringResource(R.string.EditarStock),
-                        onClick = {viewmodel.putStock(it)},
+                        onClick = { viewmodel.putStock(it) },
                         stockState = item,
                         foodState = item.foodId
                     )
@@ -105,7 +109,6 @@ fun FoodListScreen(
         onBack = { navigator.navigateUp() },
         onRefresh = { viewmodel.refreshFoodList() },
         refresState = rememberSwipeRefreshState(isRefreshing = foodListState.isLoading()),
-        itemKey = { it.foodId },
         listItemStartText = { "${it.name}\n ${it.stockCount} ${it.units}" },
         listItemEndText = { "${it.type}\n${it.foodId}" },
         crudDialogContent = crudDialogContent,
@@ -126,7 +129,8 @@ fun StockDialog(
     var error by remember { mutableStateOf(false) }
     SrmTextField(
         value = unidades.toString(),
-        label = stringResource(R.string.Unidades),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        label = stringResource(R.string.quantity),
         onValueChange = { unidades = it })
     SrmDateEditor(value = caducidad,
         label = stringResource(id = R.string.caducidad),

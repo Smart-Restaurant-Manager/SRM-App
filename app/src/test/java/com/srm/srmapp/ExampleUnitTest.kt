@@ -190,7 +190,7 @@ class ExampleUnitTest {
 
     @Test
     fun testRecipe() {
-        val recipeModel = Recipe(name = "Unit Test", type = Recipe.RecipeType.NONE, id = 1, price = 1f)
+        val recipeModel = Recipe(name = "Unit Test", type = Recipe.RecipeType.NONE, recipeId = 1, price = 1f)
         assert(runBlocking {
             recipeApi.postRecipe(recipeModel.toJsonObject())
         }.isSuccessful)
@@ -202,7 +202,7 @@ class ExampleUnitTest {
 
         assert(o != null)
         o!!
-        val lastId = o.last().id
+        val lastId = o.last().recipeId
 
         assert(runBlocking { recipeApi.getRecipe(lastId).isSuccessful })
         assert(runBlocking { recipeApi.putRecipe(lastId, recipeModel.toJsonObject()).isSuccessful })
@@ -213,7 +213,7 @@ class ExampleUnitTest {
 
     @Test
     fun testRecipeRepository() {
-        val recipeModel = Recipe(name = "Unit Test", type = Recipe.RecipeType.NONE, id = 1, price = 1f)
+        val recipeModel = Recipe(name = "Unit Test", type = Recipe.RecipeType.NONE, recipeId = 1, price = 1f)
 
         assert(runBlocking { recipeRepository.postRecipe(recipeModel).isSuccess() })
         val recipeListRes = runBlocking { recipeRepository.getRecipes() }
@@ -223,9 +223,9 @@ class ExampleUnitTest {
         val recipeList = recipeListRes.data!!
         val recipeLast = recipeList.last()
 
-        assert(runBlocking { recipeRepository.getRecipe(recipeLast.id).isSuccess() })
+        assert(runBlocking { recipeRepository.getRecipe(recipeLast.recipeId).isSuccess() })
         assert(runBlocking { recipeRepository.putRecipe(recipeLast).isSuccess() })
-        assert(runBlocking { recipeRepository.deleteRecipe(recipeLast.id).isSuccess() })
+        assert(runBlocking { recipeRepository.deleteRecipe(recipeLast.recipeId).isSuccess() })
 
     }
 
@@ -243,13 +243,13 @@ class ExampleUnitTest {
         }
 
         val bookingList = bookingGetRes.body()?.toBookingList()
-        val lastId = bookingList?.last()?.id
+        val lastId = bookingList?.last()?.bookingId
 
         return lastId!!
     }
 
     private fun createRecipe(): Int {
-        val recipeModel = Recipe(name = "a", type = Recipe.RecipeType.NONE, id = 1, price = 1f)
+        val recipeModel = Recipe(name = "a", type = Recipe.RecipeType.NONE, recipeId = 1, price = 1f)
         val r = runBlocking {
             assert(recipeApi.postRecipe(recipeModel.toJsonObject()).isSuccessful)
             val res = recipeApi.getRecipes()
@@ -257,7 +257,7 @@ class ExampleUnitTest {
             res
         }
         val o = r.body()?.toRecipeList()
-        return o!!.last().id
+        return o!!.last().recipeId
     }
 
     @Test
@@ -265,7 +265,8 @@ class ExampleUnitTest {
         val id = createBooking()
         val recipeId = createRecipe()
         val orderJson =
-            Order(bookingId = id, recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1, price = 1.0, type = 0))).toJsonObject()
+            Order(bookingId = id,
+                recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1, price = 1.0, type = 0, name = "name"))).toJsonObject()
 
         assert(runBlocking { orderApi.postOrder(orderJson).isSuccessful })
 
@@ -291,7 +292,7 @@ class ExampleUnitTest {
         val bookingId = createBooking()
         val recipeId = createRecipe()
         val order = Order(bookingId = bookingId,
-            recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1, price = 1.0, type = 0)))
+            recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1, price = 1.0, type = 0, name = "name")))
 
         assert(runBlocking { orderRepository.postOrder(order).isSuccess() })
 
@@ -333,7 +334,7 @@ class ExampleUnitTest {
 
         assert(bookingList != null)
 
-        val lastId = bookingList?.last()?.id
+        val lastId = bookingList?.last()?.bookingId
 
         assert(lastId != null)
         lastId!!
@@ -358,7 +359,7 @@ class ExampleUnitTest {
         val booklist = bookingGetRes.data
         assert(booklist != null)
 
-        val lastId = booklist?.last()?.id
+        val lastId = booklist?.last()?.bookingId
         assert(lastId != null)
         lastId!!
 
