@@ -23,13 +23,7 @@ jobs:
           java-version: 11
 
       - name: Generate Debug APK
-        run: ./gradlew assembleDebug lintDebug testDebugUnitTest --stacktrace -DskipFormatKtlint
-
-      - name: Upload Lint report
-        uses: actions/upload-artifact@v3
-        with:
-          name: report
-          path: app/build/reports/lint-results-debug.html
+        run: ./gradlew assembleDebug --stacktrace -DskipFormatKtlint
           
       - name: Upload debug APK
         uses: actions/upload-artifact@v3
