@@ -1,7 +1,6 @@
 package com.srm.srmapp.data.models
 
 import com.srm.srmapp.R
-import com.srm.srmapp.data.dto.recipe.body.RecipeFoodObject
 import com.srm.srmapp.data.dto.recipe.body.RecipeObject
 
 data class Recipe(
@@ -9,7 +8,7 @@ data class Recipe(
     val recipeId: Int = -1,
     val name: String,
     val price: Float,
-    val available: Boolean? = null,
+    val available: Boolean = true,
     val food: List<RecipeFood> = emptyList(),
 ) : GetId {
     data class RecipeFood(val foodId: Int, val name: String = "", val quantity: Float, val unit: String = "") : GetId {
@@ -35,7 +34,7 @@ data class Recipe(
     }
 
     fun toJsonObject() =
-        RecipeObject(name = name, price = price, available = available, type = this.toInt(), food = food?.map { it.toRecipeFoodObject() })
+        RecipeObject(name = name, price = price, available = available, type = this.toInt(), food = food.map { it.toRecipeFoodObject() })
 
     override fun getId(): Int {
         return recipeId
@@ -70,4 +69,4 @@ data class Recipe(
     }
 }
 
-fun Recipe.RecipeFood.toRecipeFoodObject() = RecipeFoodObject(food_id = foodId, quantity)
+fun Recipe.RecipeFood.toRecipeFoodObject() = RecipeObject.Food(foodId = foodId, quantity = quantity)
