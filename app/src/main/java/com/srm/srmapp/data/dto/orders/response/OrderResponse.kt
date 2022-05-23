@@ -117,6 +117,7 @@ fun parseStatus(s: String): Order.Status = when (s) {
 }
 
 fun OrderResponse.Data.getBooking(): Booking {
+    val id = attributes.booking.id
     val attributes = attributes.booking.attributes
     return Booking(name = attributes.name,
         bookingId = id,

@@ -61,11 +61,10 @@ fun OrderScreen(
                 Pair("Table", order.booking?.table ?: "??"),
                 Pair("Status", order.status.getString()),
                 Pair("", ""),
-                Pair("Recipes", ""),
             )
             SrmInfoList(infoList = textList)
             SrmLazyRow(itemListResource = Resource.Success(data = order.recipeList)) {
-                SrmListItem(startText = "${it.name} ${it.quantity} ${it.price}")
+                SrmListItem(startText = "${it.name} ${it.quantity} * ${it.price}€", endText = "${it.quantity * it.price}€")
             }
         },
     )
@@ -120,7 +119,7 @@ fun OrderDialogContent(
         }
 
         orderState?.let {
-            DropDownChangeStatus(text = orderState.status.getString(), onStatusChange = {
+            DropDownChangeStatus(text = status.getString(), onStatusChange = {
                 status = it
             })
         }
@@ -135,7 +134,7 @@ fun OrderDialogContent(
 
     SrmTextButton(onClick = {
         val order = Order(orderId = orderState?.orderId ?: -1,
-            bookingId = orderState?.orderId ?: bookingId.toInt(),
+            bookingId = orderState?.bookingId ?: bookingId.toInt(),
             booking = null,
             status = status,
             recipeList = selectedFood.toList().map { Order.OrderRecipe(recipeId = it.first, quantity = it.second.toInt()) }
