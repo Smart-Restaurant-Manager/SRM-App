@@ -25,7 +25,7 @@ data class FoodResponse(
             @SerializedName("type")
             val type: String, // Vegetales
             @SerializedName("stock")
-            val stockCount: Int, // 1
+            val stockCount: Float, // 1
             @SerializedName("created_at")
             val createdAt: String, // 2022-05-04T09:51:05.000000Z
             @SerializedName("updated_at")

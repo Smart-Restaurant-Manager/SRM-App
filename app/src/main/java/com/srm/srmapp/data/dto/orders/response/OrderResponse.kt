@@ -87,9 +87,9 @@ data class OrderResponse(
                 @SerializedName("recipe_id")
                 val recipeId: Int, // 1
                 @SerializedName("quantity")
-                val quantity: Int, // 3
+                val quantity: Float, // 3
                 @SerializedName("price")
-                val price: Double, // 30.55
+                val price: Float, // 30.55
                 @SerializedName("type")
                 val type: Int, // 1
                 @SerializedName("created_at")

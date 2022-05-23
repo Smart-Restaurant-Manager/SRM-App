@@ -20,7 +20,7 @@ data class StockResponse(
     ) {
         data class Attributes(
             @SerializedName("quantity")
-            val quantity: Int, // 1
+            val quantity: Float, // 1
             @SerializedName("expiration_date")
             val expirationDate: LocalDate, // 2022-05-10 00:00:00
             @SerializedName("expired")

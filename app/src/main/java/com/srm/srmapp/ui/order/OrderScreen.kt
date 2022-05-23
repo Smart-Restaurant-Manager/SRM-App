@@ -147,7 +147,7 @@ fun OrderDialogContent(
             bookingId = orderState?.bookingId ?: bookingId.toInt(),
             booking = null,
             status = status,
-            recipeList = selectedFood.toList().map { Order.OrderRecipe(recipeId = it.first, quantity = it.second.toInt()) }
+            recipeList = selectedFood.toList().map { Order.OrderRecipe(recipeId = it.first, quantity = it.second) }
         )
         onClick.invoke(order)
     }, text = buttonText)

@@ -17,8 +17,8 @@ data class OrderObject(
         @SerializedName("recipe_id")
         val recipeId: Int, // eius
         @SerializedName("quantity")
-        val quantity: Int, // 17
+        val quantity: Float, // 17
         @SerializedName("price")
-        val price: Double, // 74.0351
+        val price: Float, // 74.0351
     )
 }
