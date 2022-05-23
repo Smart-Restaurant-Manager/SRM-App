@@ -1,5 +1,6 @@
 package com.srm.srmapp.ui.login
 
+import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.repository.authentication.AuthRepository
 import com.srm.srmapp.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,7 +9,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val repository: AuthRepository) : BaseViewModel() {
+class LoginViewModel @Inject constructor(private val repository: AuthRepository, userSession: UserSession) : BaseViewModel(userSession) {
 
     fun login(username: String, password: String) {
         Timber.d("login $username $password")

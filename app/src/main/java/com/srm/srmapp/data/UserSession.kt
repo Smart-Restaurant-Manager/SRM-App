@@ -24,6 +24,8 @@ class UserSession @Inject constructor(context: Context) {
             "Bearer $token"
     }
 
+    fun getRole() = user.value?.data?.role ?: -1
+
     fun setToken(token: String) {
         Timber.d("set Token $token")
         this.token = token

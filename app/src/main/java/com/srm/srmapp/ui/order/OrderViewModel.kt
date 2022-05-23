@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.srm.srmapp.AppModule
 import com.srm.srmapp.Resource
+import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.data.models.Order
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.repository.orders.OrdersRepository
@@ -23,7 +24,8 @@ class OrderViewModel @Inject constructor(
     private val api: OrdersRepository,
     private val recipeApi: RecipeRepository,
     private val foodApi: StockRepository,
-) : BaseViewModel() {
+    userSession: UserSession,
+) : BaseViewModel(userSession) {
     val predicate: (Order, String) -> Boolean = { order, query ->
         val time = try {
             val timequery = LocalTime.from(AppModule.timeFormatter.parse(query))

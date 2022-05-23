@@ -3,6 +3,7 @@ package com.srm.srmapp.ui.menu
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.srm.srmapp.Resource
+import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.data.models.Recipe
 import com.srm.srmapp.repository.recipes.RecipeRepository
 import com.srm.srmapp.ui.common.BaseViewModel
@@ -11,7 +12,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRepository) : BaseViewModel() {
+class RecipeViewmodel @Inject constructor(private val recipeRepository: RecipeRepository, userSession: UserSession) : BaseViewModel(userSession) {
     private val _recipeList: MutableLiveData<Resource<List<Recipe>>> = MutableLiveData()
     val recipeList: LiveData<Resource<List<Recipe>>>
         get() = _recipeList

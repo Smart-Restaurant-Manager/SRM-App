@@ -18,9 +18,14 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.srm.srmapp.data.models.GetId
+import com.srm.srmapp.ui.bookings.BookingViewModel
+import com.srm.srmapp.ui.menu.RecipeViewmodel
+import com.srm.srmapp.ui.order.OrderViewModel
+import com.srm.srmapp.ui.stock.StockViewmodel
 import com.srm.srmapp.ui.theme.delayDuration
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 data class SrmCrudDialogContent<T>(
     // Dialog content, set to null to disable
@@ -85,6 +90,40 @@ fun <T : GetId> SrmListWithCrudActions(
     contentBefore: @Composable ColumnScope.() -> Unit = {},
     contentAfter: @Composable ColumnScope.() -> Unit = {},
 ) {
+
+    val userPermissions = remember {
+        // TODO UPDATE THESE VALUES
+        if (baseViewModel.getRole() == 0) {
+            Timber.d("User is manager")
+            // add button, add item, edit item, more item, delete item
+            arrayOf(true, true, true, true, true)
+        } else {
+            Timber.d("User is worker")
+            when (baseViewModel) {
+                is OrderViewModel -> {
+                    Timber.d("Order roles")
+                    arrayOf(true, true, true, true, true)
+                }
+                is StockViewmodel -> {
+                    Timber.d("Stock roles")
+                    arrayOf(true, true, true, true, true)
+                }
+                is RecipeViewmodel -> {
+                    Timber.d("Recipe roles")
+                    arrayOf(true, true, true, true, true)
+                }
+                is BookingViewModel -> {
+                    Timber.d("Booking roles")
+                    arrayOf(true, true, true, true, true)
+                }
+                else -> {
+                    Timber.e("Unkown viewmodel!!")
+                    arrayOf(false, false, false, false, false)
+                }
+            }
+        }
+    }
+
     val lazyListState = rememberLazyListState()
     var searchIdx by remember { mutableStateOf(-1) }
     var dialogSearchRecipe by remember { mutableStateOf(false) }
@@ -151,22 +190,22 @@ fun <T : GetId> SrmListWithCrudActions(
 
                     crudDialogContent.apply {
                         this.addDialogContent?.let {
-                            if (addDialog) {
+                            if (addDialog && userPermissions[1]) {
                                 SrmDialog(onDismissRequest = { addDialog = false }) { it.invoke(this, i) }
                             }
                         }
                         editDialogContent?.let {
-                            if (editDialog) {
+                            if (editDialog && userPermissions[2]) {
                                 SrmDialog(onDismissRequest = { editDialog = false }) { it.invoke(this, i) }
                             }
                         }
                         moreDialogContent?.let {
-                            if (moreDialog) {
+                            if (moreDialog && userPermissions[3]) {
                                 SrmDialog(onDismissRequest = { moreDialog = false }) { it.invoke(this, i) }
                             }
                         }
                         onDelete?.let {
-                            if (deleteDialog) {
+                            if (deleteDialog && userPermissions[4]) {
                                 SrmDeleteDialog(onDismissRequest = { deleteDialog = false }) {
                                     it.invoke(i)
                                 }
@@ -204,7 +243,7 @@ fun <T : GetId> SrmListWithCrudActions(
     }
 
     onAddDialog?.let {
-        if (dialogAddState) {
+        if (dialogAddState && userPermissions[0]) {
             SrmDialog(onDismissRequest = { dialogAddState = false }, content = it)
         }
     }

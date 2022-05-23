@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.srm.srmapp.AppModule
 import com.srm.srmapp.Resource
+import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.data.models.Booking
 import com.srm.srmapp.repository.bookings.BookingRepository
 import com.srm.srmapp.repository.orders.OrdersRepository
@@ -20,8 +21,9 @@ import javax.inject.Inject
 class BookingViewModel @Inject constructor(
     private val bookingRepository: BookingRepository,
     private val ordersRepository: OrdersRepository,
+    userSession: UserSession,
 ) :
-    BaseViewModel() {
+    BaseViewModel(userSession) {
 
     val predicate: (Booking, String) -> Boolean = { booking, query ->
         val time = try {
@@ -104,7 +106,9 @@ class BookingViewModel @Inject constructor(
     }
 
     fun putBooking(booking: Booking) {
-        fetchResource(_status) {
+        fetchResource(_status, onSuccess = {
+            refreshBookingsList()
+        }) {
             bookingRepository.putBooking(booking.bookingId, booking)
         }
     }
