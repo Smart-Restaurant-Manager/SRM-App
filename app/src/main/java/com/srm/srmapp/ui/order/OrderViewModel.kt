@@ -57,9 +57,10 @@ class OrderViewModel @Inject constructor(
         val id = order.orderId.toString().startsWith(query, ignoreCase = true)
         val table = order.booking?.table?.startsWith(query, ignoreCase = false) ?: false
         val name = order.booking?.name?.startsWith(query, ignoreCase = false) ?: false
+        val bookingId = order.booking?.bookingId?.toString()?.startsWith(query, ignoreCase = false) ?: false
         val isAfter = dateTime || date || time
 
-        isAfter || id || name || email || table
+        isAfter || id || bookingId || name || email || table
     }
     private val _orderList = MutableLiveData<Resource<List<Order>>>(Resource.Empty())
     val orderList: LiveData<Resource<List<Order>>>

@@ -1,8 +1,10 @@
 package com.srm.srmapp.ui.order
 
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -115,7 +117,10 @@ fun OrderDialogContent(
 
     if (!addRecipeMode) {
         if (orderState == null) {
-            SrmTextField(value = bookingId, label = "Booking id", onValueChange = { bookingId = it })
+            SrmTextField(value = bookingId,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                label = "Booking id",
+                onValueChange = { bookingId = it })
         }
 
         orderState?.let {

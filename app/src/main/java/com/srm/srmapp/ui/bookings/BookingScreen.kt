@@ -1,8 +1,10 @@
 package com.srm.srmapp.ui.bookings
 
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -26,11 +28,7 @@ fun BookingScreen(
 
     // search engine properties
     val searchProperties = SrmSearchProperties<Booking>(
-        searchPredicate = { recipeItem, query ->
-            recipeItem.name.startsWith(query, ignoreCase = true) ||
-                    recipeItem.email.startsWith(query, ignoreCase = true) ||
-                    recipeItem.phone.startsWith(query, ignoreCase = true);
-        },
+        searchPredicate = viewmodel.predicate,
         searchLabel = "Buscar reservas",
         startSearchText = { it.name },
         endSearchText = { "Taula: ${it.table}" })
@@ -91,15 +89,21 @@ fun BookingDialog(
     var table by remember { mutableStateOf(bookingState?.table ?: "") }
     var error by remember { mutableStateOf(false) }
     SrmTextField(value = name, label = stringResource(R.string.food_name), onValueChange = { name = it })
-    SrmTextField(value = people, label = stringResource(R.string.amount_of_people), onValueChange = { people = it })
+    SrmTextField(value = people,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        label = stringResource(R.string.amount_of_people),
+        onValueChange = { people = it })
     SrmDateTimeEditor(value = date,
-        label = stringResource(id = R.string.Fecha),
+        label = stringResource(id = R.string.fecha),
         onErrorAction = { error = true },
         onValueChange = {
             date = it
             error = false
         })
-    SrmTextField(value = phone, label = stringResource(R.string.tel), onValueChange = { phone = it })
+    SrmTextField(value = phone,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        label = stringResource(R.string.tel),
+        onValueChange = { phone = it })
     SrmTextField(value = email, label = stringResource(R.string.mail), onValueChange = { email = it })
     SrmTextField(value = table, label = stringResource(R.string.table), onValueChange = { table = it })
     SrmTextButton(text = buttonText,

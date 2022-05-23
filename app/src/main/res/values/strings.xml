@@ -119,5 +119,5 @@
     <string name="available">Disponible</string>
     <string name="unavailable">No disponible</string>
     <string name="Unidades">Unidades</string>
-    <string name="Fecha">Caducidad</string>
+    <string name="fecha">Fecha</string>
 </resources>

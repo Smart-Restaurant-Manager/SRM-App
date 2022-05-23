@@ -37,7 +37,10 @@ fun RecipeScreen(
 
     // search engine properties
     val searchProperties = SrmSearchProperties<Recipe>(
-        searchPredicate = { recipeItem, query -> recipeItem.name.startsWith(query, ignoreCase = true) },
+        searchPredicate = { recipeItem, query ->
+            recipeItem.recipeId.toString().startsWith(query, ignoreCase = true) ||
+                    recipeItem.name.startsWith(query, ignoreCase = true)
+        },
         searchLabel = "Buscar recetas",
         startSearchText = { it.name },
         endSearchText = { "${it.price}€" })
