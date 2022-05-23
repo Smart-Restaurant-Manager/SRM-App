@@ -3,7 +3,10 @@ package com.srm.srmapp.ui.login
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.Checkbox
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.IconButton
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -30,28 +33,25 @@ import com.srm.srmapp.ui.common.SrmButton
 import com.srm.srmapp.ui.common.SrmHeader
 import com.srm.srmapp.ui.common.SrmText
 import com.srm.srmapp.ui.common.SrmTextField
+import com.srm.srmapp.ui.theme.poppinsFontFamily
 import kotlinx.coroutines.delay
 
 
 @Destination
 @Composable
-fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = hiltViewModel()) {
+fun SignUpScreen(
+    navigator: DestinationsNavigator,
+    viewmodel: LoginViewModel = hiltViewModel(),
+) {
     var email by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var password2 by remember { mutableStateOf("") }
-    val signUpState by viewmodel.signupState.observeAsState()
     var checkBox by remember { mutableStateOf(false) }
+    val state by viewmodel.status.observeAsState(Resource.Empty())
 
     SrmHeader(stringResource(id = R.string.new_account)) { navigator.navigateUp() }
 
-    val poppinsFontFamily = FontFamily(
-        Font(R.font.poppins_light, FontWeight.Light),
-        Font(R.font.poppins_regular, FontWeight.Normal),
-        Font(R.font.poppins_italic, FontWeight.Normal, FontStyle.Italic),
-        Font(R.font.poppins_medium, FontWeight.Medium),
-        Font(R.font.poppins_bold, FontWeight.Bold)
-    )
     Column(modifier = Modifier
         .fillMaxWidth()
         .fillMaxHeight(),
@@ -60,23 +60,23 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
     ) {
         SrmTextField(value = email,
             label = stringResource(id = R.string.email),
-            enabled = signUpState !is Resource.Loading,
-            isError = signUpState is Resource.Error,
+            enabled = state !is Resource.Loading,
+            isError = state is Resource.Error,
             onValueChange = { email = it }
         )
 
         SrmTextField(
             value = name,
             label = stringResource(id = R.string.name),
-            enabled = signUpState !is Resource.Loading,
-            isError = signUpState is Resource.Error,
+            enabled = state !is Resource.Loading,
+            isError = state is Resource.Error,
             onValueChange = { name = it },
         )
         var passwordVisibility: Boolean by remember { mutableStateOf(false) }
         SrmTextField(value = password,
             label = stringResource(id = R.string.password),
-            enabled = signUpState !is Resource.Loading,
-            isError = signUpState is Resource.Error,
+            enabled = state !is Resource.Loading,
+            isError = state is Resource.Error,
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
@@ -96,8 +96,8 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
         SrmTextField(
             value = password2,
             label = stringResource(id = R.string.password_check),
-            enabled = signUpState !is Resource.Loading,
-            isError = signUpState is Resource.Error,
+            enabled = state !is Resource.Loading,
+            isError = state is Resource.Error,
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
@@ -129,7 +129,7 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
                 viewmodel.signup(email, name, password, password2)
             },
             text = stringResource(id = R.string.register),
-            enabled = signUpState !is Resource.Loading && checkBox,
+            enabled = state !is Resource.Loading && checkBox,
         )
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -139,20 +139,20 @@ fun SignUpScreen(navigator: DestinationsNavigator, viewmodel: LoginViewModel = h
             }
         }
 
-        if (signUpState is Resource.Loading)
+        if (state is Resource.Loading)
             CircularProgressIndicator()
 
-        if (signUpState is Resource.Success) {
+        if (state is Resource.Success) {
             SrmText(text = "Cuenta creada correctamente! Espere a ser rederigido.",
                 textAlign = TextAlign.Center,
                 fontFamily = poppinsFontFamily,
                 fontWeight = FontWeight.Normal)
-            LaunchedEffect(key1 = signUpState) {
+            LaunchedEffect(key1 = state) {
                 delay(4000)
                 navigator.popBackStack()
             }
         }
-        if (signUpState is Resource.Error) {
+        if (state is Resource.Error) {
             SrmText(text = "Cuenta no creada. Revise los datos introducidos",
                 textAlign = TextAlign.Center,
                 fontFamily = poppinsFontFamily,

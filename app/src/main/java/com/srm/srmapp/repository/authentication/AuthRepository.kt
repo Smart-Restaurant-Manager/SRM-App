@@ -4,6 +4,7 @@ import com.srm.srmapp.Resource
 import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.data.dto.auth.body.LoginObject
 import com.srm.srmapp.data.dto.auth.body.SignupObject
+import com.srm.srmapp.data.dto.auth.response.toUser
 import com.srm.srmapp.repository.BaseRepository
 import timber.log.Timber
 import javax.inject.Inject
@@ -17,10 +18,27 @@ class AuthRepository @Inject constructor(private val api: AuthInterface, private
             val token = response.data.token
             Timber.d(token, "token ")
             userSession.setToken(token)
-            userSession.refresUser()
             "Logged in"
         }
     }
+
+    suspend fun logout(): Resource<String> {
+        return safeApiCall({
+            api.logout(userSession.getBearerToken())
+        }) { _ ->
+            userSession.logout()
+            "logout"
+        }
+    }
+
+    suspend fun getUser() =
+        safeApiCall({
+            api.getUser(userSession.getBearerToken())
+        }) {
+            val user = it.toUser()
+            userSession.setUser(user)
+            "Walcome ${it.name}"
+        }
 
 
     suspend fun signup(email: String, name: String, password: String, passwordConfirmation: String): Resource<String> {

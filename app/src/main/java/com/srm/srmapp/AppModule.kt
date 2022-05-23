@@ -19,6 +19,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import java.lang.reflect.Type
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -30,22 +31,24 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
     const val BASE_URL = "https://smart-restaurant-manager.herokuapp.com" // Test url
-    val datePattern = "dd-MM-yyyy"
-    val timePattern = "HH:mm"
-    val dateTimePattern = "$timePattern $datePattern"
-    val timeFormatter = DateTimeFormatter.ofPattern(timePattern)
-    val dateFormatter = DateTimeFormatter.ofPattern(datePattern)
-    val dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern)
+    const val datePattern = "dd-MM-yyyy"
+    const val timePattern = "HH:mm"
+    const val dateTimePattern = "$timePattern $datePattern"
+    val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(timePattern)!!
+    val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(datePattern)!!
+    val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern)!!
 
-    val httpInterceptor: (String) -> Interceptor = { token ->
+    val httpInterceptor: (UserSession) -> Interceptor = { session ->
         Interceptor {
             val re = it.request()
                 .newBuilder()
                 .addHeader("Accept", "application/json")
                 .addHeader("Content-Type", "application/json")
 
-            if (token.isNotBlank())
-                re.addHeader("Authorization", token)
+            if (session.getBearerToken().isNotBlank())
+                re.addHeader("Authorization", session.getBearerToken())
+            else
+                Timber.w("No token!")
 
             val req = re.build()
             it.proceed(req)
@@ -54,25 +57,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserSession(@ApplicationContext context: Context, gson: Gson): UserSession {
-        val client = OkHttpClient.Builder()
-            .addInterceptor(httpInterceptor(""))
-            .addInterceptor(HttpLoggingInterceptor()
-                .setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
-                else HttpLoggingInterceptor.Level.NONE))
-            .followRedirects(false)
-            .followSslRedirects(false)
-            .build()
-
-        val retrofit = provideRetrofitClient(client, gson)
-        val api = retrofit.create(AuthInterface::class.java)
-        return UserSession(context, api)
+    fun provideUserSession(@ApplicationContext context: Context): UserSession {
+        return UserSession(context)
     }
 
     @Provides
     @Singleton
     fun provideHttpClient(userSession: UserSession) = OkHttpClient.Builder()
-        .addInterceptor(httpInterceptor(userSession.getBearerToken()))
+        .addInterceptor(httpInterceptor(userSession))
         .addInterceptor(HttpLoggingInterceptor()
             .setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
             else HttpLoggingInterceptor.Level.NONE))
