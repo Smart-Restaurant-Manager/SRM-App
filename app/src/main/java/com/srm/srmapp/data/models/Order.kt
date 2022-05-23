@@ -13,7 +13,7 @@ data class Order(
     val booking: Booking? = null,
     val recipeList: List<OrderRecipe>,
 ) : GetId {
-    data class OrderRecipe(val recipeId: Int, val name: String = "", val quantity: Int, val price: Double = 0.0, val type: Int = 0) : GetId {
+    data class OrderRecipe(val recipeId: Int, val name: String = "", val quantity: Float, val price: Float = 0f, val type: Int = 0) : GetId {
         override fun getId(): Int {
             return recipeId
         }
