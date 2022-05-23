@@ -77,7 +77,7 @@ fun RecipeScreen(
         refresState = rememberSwipeRefreshState(isRefreshing = recipeListState.isLoading()),
         icon = painterResource(id = R.drawable.ic_baseline_image_not_supported_24),
         listItemStartText = { "${it.name}\n${it.price}€" },
-        listItemEndText = { "${it.recipeId}\n" + if (it.available == true) "Disponible" else "No disp." },
+        listItemEndText = { "${it.recipeId}\n" + if (it.available) "Disponible" else "No disp." },
         searchProperties = searchProperties,
         crudDialogContent = crudDialogContent,
         baseViewModel = viewmodel)
@@ -111,7 +111,9 @@ fun RecipeDialog(
     }
 
     SrmTextButton(onClick = {
-        val recipe = Recipe(type = recipeType,
+        val recipe = Recipe(
+            recipeId = recipeState?.recipeId ?: -1,
+            type = recipeType,
             name = name,
             price = precio.toFloatOrNull() ?: 0f,
             food = selectedFood.toList().map { Recipe.RecipeFood(foodId = it.first, quantity = it.second) },
