@@ -23,4 +23,4 @@ data class UserResponse(
     val updatedAt: LocalDate,
 )
 
-fun UserResponse.toUser(): User = User(name, email)
+fun UserResponse.toUser(): User = User(id, name, email, role)
