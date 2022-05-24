@@ -63,7 +63,7 @@ fun FoodListScreen(
             val l by viewmodel.stockList.observeAsState(Resource.Empty())
             if (l.isEmpty()) viewmodel.getFoodStock(it)
             SrmLazyRow(itemListResource = l) { item ->
-                val expired: String = if (item.expirationDate > LocalDate.now()) "Expired"
+                val expired: String = if (item.expirationDate < LocalDate.now()) "Expired"
                 else item.expirationDate.format(AppModule.dateFormatter)
                 var editDialog by remember { mutableStateOf(false) }
 
