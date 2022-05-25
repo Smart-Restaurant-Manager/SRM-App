@@ -28,12 +28,11 @@ import com.srm.srmapp.ui.common.SrmText
 import com.srm.srmapp.ui.common.SrmTextField
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Destination
 fun PredictionScreen(
     navigator: DestinationsNavigator,
-    //viewmodel: PredictionsViewModel,
+    viewmodel: PredictionsViewModel,
 ){
     val poppinsFontFamily = FontFamily(
         Font(R.font.poppins_light, FontWeight.Light),
@@ -78,7 +77,7 @@ fun PredictionScreen(
             SrmButton(
                 onClick = {
                     val prediction = PredictionObject(date = date, festive = festivo_o_no)
-                    //viewmodel.postPrediction(prediction)
+                    viewmodel.postPrediction(prediction)
                 },
                 text = stringResource(id = R.string.send),
             )

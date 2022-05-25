@@ -20,6 +20,7 @@ import com.srm.srmapp.ui.common.SrmTextButton
 import com.srm.srmapp.ui.login.LoginViewModel
 import com.srm.srmapp.ui.menu.RecipeViewmodel
 import com.srm.srmapp.ui.order.OrderViewModel
+import com.srm.srmapp.ui.predictions.PredictionsViewModel
 import com.srm.srmapp.ui.stock.StockViewmodel
 import com.srm.srmapp.ui.theme.SMRappTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
                     hiltViewModel<StockViewmodel>(this@MainActivity),
                     hiltViewModel<LoginViewModel>(this@MainActivity),
                     hiltViewModel<OrderViewModel>(this@MainActivity),
+                    hiltViewModel<PredictionsViewModel>(this@MainActivity),
                     hiltViewModel<RecipeViewmodel>(this@MainActivity),
                     hiltViewModel<BookingViewModel>(this@MainActivity))
 
@@ -70,6 +72,7 @@ class MainActivity : ComponentActivity() {
                     dependency(hiltViewModel<StockViewmodel>(this@MainActivity))
                     dependency(hiltViewModel<LoginViewModel>(this@MainActivity))
                     dependency(hiltViewModel<OrderViewModel>(this@MainActivity))
+                    dependency(hiltViewModel<PredictionsViewModel>(this@MainActivity))
                     dependency(hiltViewModel<BookingViewModel>(this@MainActivity))
                     dependency(hiltViewModel<RecipeViewmodel>(this@MainActivity))
                 })

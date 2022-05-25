@@ -31,10 +31,10 @@ abstract class BaseRepository {
         } catch (e: HttpException) {
             Timber.w("Handle http exception ${e.code()}")
             when (e.code()) {
-                404 -> Resource.Error("Not found", e.code())
-                401 -> Resource.Error("Unauthorized", e.code())
-                422 -> Resource.Error("Error in data\n${e.response()?.errorBody()?.string()}", e.code())
-                500 -> Resource.Error("Server Error, try later", e.code())
+                404 -> Resource.Error("No encontrado", e.code())
+                401 -> Resource.Error("No autorizado", e.code())
+                422 -> Resource.Error("Error en datos: \n${e.response()?.errorBody()?.string()}", e.code())
+                500 -> Resource.Error("Error de servidor, intentar mas tarde.", e.code())
                 409 -> Resource.Error("No se puede eliminar ya que tiene stocks, recetas o comandas relacionadas\n${e.response()?.errorBody()?.string()}")
                 else -> Resource.Error("Http error ${e.code()} ${e.response()?.errorBody()?.string()}", e.code())
             }

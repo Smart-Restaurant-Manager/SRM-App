@@ -63,7 +63,7 @@ fun FoodListScreen(
             val l by viewmodel.stockList.observeAsState(Resource.Empty())
             if (l.isEmpty()) viewmodel.getFoodStock(it)
             SrmLazyRow(itemListResource = l) { item ->
-                val expired: String = if (item.expirationDate > LocalDate.now()) "Expired"
+                val expired: String = if (item.expirationDate < LocalDate.now()) "Expired"
                 else item.expirationDate.format(AppModule.dateFormatter)
                 var editDialog by remember { mutableStateOf(false) }
 
@@ -72,18 +72,19 @@ fun FoodListScreen(
                     onClick = {
                         editDialog = true
                     },
-                    enableSelect = true,
+                    enableSelect = viewmodel.getRole() == 0,
                     endContent = {
-
-                        var deleteDialog by remember { mutableStateOf(false) }
-                        SrmIconButton(painter = painterResource(id = R.drawable.ic_baseline_delete_24)) {
-                            deleteDialog = true
-                        }
-
-                        if (deleteDialog)
-                            SrmDeleteDialog(onDismissRequest = { deleteDialog = false }) {
-                                viewmodel.deleteStock(item)
+                        if (viewmodel.getRole() == 0) { // enable only if manager
+                            var deleteDialog by remember { mutableStateOf(false) }
+                            SrmIconButton(painter = painterResource(id = R.drawable.ic_baseline_delete_24)) {
+                                deleteDialog = true
                             }
+
+                            if (deleteDialog)
+                                SrmDeleteDialog(onDismissRequest = { deleteDialog = false }) {
+                                    viewmodel.deleteStock(item)
+                                }
+                        }
                     })
                 if (editDialog) {
                     StockDialog(buttonText = stringResource(R.string.EditarStock),
@@ -113,6 +114,22 @@ fun FoodListScreen(
         listItemEndText = { "${it.type}\n${it.foodId}" },
         crudDialogContent = crudDialogContent,
         searchProperties = searchProperties,
+        contentBefore = {
+            var dialog by remember { mutableStateOf(false) }
+            SrmButton(onClick = {
+                dialog = true
+            }, text = "Aliments caducats")
+            if (dialog) {
+                SrmDialog(onDismissRequest = { dialog = false }) {
+                    val l by viewmodel.stockList.observeAsState(Resource.Empty())
+                    if (l.isEmpty())
+                        viewmodel.refreshStockList()
+                    SrmLazyRow2(l.data?.filter { it.expirationDate <= LocalDate.now() } ?: emptyList()) {
+                        SrmListItem(startText = "Food id ${it.foodId} Stock id ${it.stockId}", enableSelect = false)
+                    }
+                }
+            }
+        },
         baseViewModel = viewmodel
     )
 }

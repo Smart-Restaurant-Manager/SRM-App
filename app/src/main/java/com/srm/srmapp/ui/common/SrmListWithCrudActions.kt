@@ -92,7 +92,6 @@ fun <T : GetId> SrmListWithCrudActions(
 ) {
 
     val userPermissions = remember {
-        // TODO UPDATE THESE VALUES
         if (baseViewModel.getRole() == 0) {
             Timber.d("User is manager")
             // add button, add item, edit item, more item, delete item
@@ -106,11 +105,11 @@ fun <T : GetId> SrmListWithCrudActions(
                 }
                 is StockViewmodel -> {
                     Timber.d("Stock roles")
-                    arrayOf(true, true, true, true, true)
+                    arrayOf(false, false, false, true, false)
                 }
                 is RecipeViewmodel -> {
                     Timber.d("Recipe roles")
-                    arrayOf(true, true, true, true, true)
+                    arrayOf(false, false, false, true, false)
                 }
                 is BookingViewModel -> {
                     Timber.d("Booking roles")
@@ -137,7 +136,7 @@ fun <T : GetId> SrmListWithCrudActions(
             onClickSearch = { dialogSearchRecipe = true },
             onClickAdd = { dialogAddState = true },
             onClickBack = onBack,
-            enableAdd = onAddDialog != null,
+            enableAdd = onAddDialog != null && userPermissions[0],
             enableSearch = searchProperties != null)
         contentBefore.invoke(this)
         SwipeRefresh(
@@ -180,32 +179,32 @@ fun <T : GetId> SrmListWithCrudActions(
                                 onClickDelete = { deleteDialog = true },
                                 onClickMore = { moreDialog = true },
                                 onClickAdd = { addDialog = true },
-                                enableAdd = addDialogContent != null,
-                                enableEdit = editDialogContent != null,
-                                enableMore = moreDialogContent != null,
-                                enableDelete = onDelete != null,
+                                enableAdd = addDialogContent != null && userPermissions[1],
+                                enableEdit = editDialogContent != null && userPermissions[2],
+                                enableMore = moreDialogContent != null && userPermissions[3],
+                                enableDelete = onDelete != null && userPermissions[4],
                             )
                         }
                     }
 
                     crudDialogContent.apply {
                         this.addDialogContent?.let {
-                            if (addDialog && userPermissions[1]) {
+                            if (addDialog) {
                                 SrmDialog(onDismissRequest = { addDialog = false }) { it.invoke(this, i) }
                             }
                         }
                         editDialogContent?.let {
-                            if (editDialog && userPermissions[2]) {
+                            if (editDialog) {
                                 SrmDialog(onDismissRequest = { editDialog = false }) { it.invoke(this, i) }
                             }
                         }
                         moreDialogContent?.let {
-                            if (moreDialog && userPermissions[3]) {
+                            if (moreDialog) {
                                 SrmDialog(onDismissRequest = { moreDialog = false }) { it.invoke(this, i) }
                             }
                         }
                         onDelete?.let {
-                            if (deleteDialog && userPermissions[4]) {
+                            if (deleteDialog) {
                                 SrmDeleteDialog(onDismissRequest = { deleteDialog = false }) {
                                     it.invoke(i)
                                 }
@@ -243,7 +242,7 @@ fun <T : GetId> SrmListWithCrudActions(
     }
 
     onAddDialog?.let {
-        if (dialogAddState && userPermissions[0]) {
+        if (dialogAddState) {
             SrmDialog(onDismissRequest = { dialogAddState = false }, content = it)
         }
     }

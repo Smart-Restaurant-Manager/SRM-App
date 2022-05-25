@@ -84,7 +84,11 @@ fun LoginForm(
                 .padding(0.dp, 20.dp),
         )
 
-        SrmCheckBox(text = "Guardar usuario") { saveUsernameAndPassword = it }
+        SrmCheckBox(
+            text = "Guardar usuario",
+            modifier = Modifier
+                .padding(30.dp, 0.dp),
+        ) { saveUsernameAndPassword = it }
 
         SrmButton(
             onClick = { viewmodel.login(username, password) },

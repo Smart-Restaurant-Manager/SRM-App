@@ -7,6 +7,7 @@ import com.srm.srmapp.data.UserSession
 import com.srm.srmapp.repository.authentication.AuthInterface
 import com.srm.srmapp.repository.bookings.BookingInterface
 import com.srm.srmapp.repository.orders.OrdersInterface
+import com.srm.srmapp.repository.predictions.PredictionsInterface
 import com.srm.srmapp.repository.recipes.RecipeInterface
 import com.srm.srmapp.repository.stock.StockInterface
 import dagger.Module
@@ -150,5 +151,12 @@ object AppModule {
     @Singleton
     fun provideBookingInterface(retrofit: Retrofit): BookingInterface {
         return retrofit.create(BookingInterface::class.java)
+    }
+
+
+    @Provides
+    @Singleton
+    fun providePredictionInterface(retrofit: Retrofit): PredictionsInterface {
+        return retrofit.create(PredictionsInterface::class.java)
     }
 }
