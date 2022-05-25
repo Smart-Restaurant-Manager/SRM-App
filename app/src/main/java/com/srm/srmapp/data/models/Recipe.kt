@@ -6,6 +6,7 @@ import com.srm.srmapp.data.dto.recipe.body.RecipeObject
 data class Recipe(
     val type: RecipeType,
     val recipeId: Int = -1,
+    val foodType: Int,
     val name: String,
     val price: Float,
     val available: Boolean = true,
@@ -34,7 +35,12 @@ data class Recipe(
     }
 
     fun toJsonObject() =
-        RecipeObject(name = name, price = price, available = available, type = this.toInt(), food = food.map { it.toRecipeFoodObject() })
+        RecipeObject(name = name,
+            price = price,
+            available = available,
+            foodType = foodType,
+            type = this.toInt(),
+            food = food.map { it.toRecipeFoodObject() })
 
     override fun getId(): Int {
         return recipeId
@@ -54,18 +60,6 @@ data class Recipe(
             RecipeType.COMPLEMENTS -> R.string.complementos
             RecipeType.NONE -> R.string.error_type
         }
-
-        fun getResource(id: Int) = when (id) {
-            0 -> R.string.entrantes
-            1 -> R.string.first_plate
-            2 -> R.string.second_plate
-            3 -> R.string.deserts
-            4 -> R.string.drinks
-            5 -> R.string.complementos
-            else -> R.string.error_type
-        }
-
-        val RECIPE_ERROR = Recipe(Recipe.RecipeType.NONE, -1, "Error", 0f)
     }
 }
 

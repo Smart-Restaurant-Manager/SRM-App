@@ -11,6 +11,8 @@ data class RecipeObject(
     val price: Float, // 14
     @SerializedName("type")
     val type: Int, // 1
+    @SerializedName("food_type")
+    val foodType: Int, // 1
     @SerializedName("available")
     val available: Boolean, // true
     @SerializedName("food")
