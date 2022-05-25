@@ -125,7 +125,7 @@ fun FoodListScreen(
                     if (l.isEmpty())
                         viewmodel.refreshStockList()
                     SrmLazyRow2(l.data?.filter { it.expirationDate <= LocalDate.now() } ?: emptyList()) {
-                        SrmListItem(startText = "Food id${it.foodId} ${it.stockId}", enableSelect = false)
+                        SrmListItem(startText = "Food id ${it.foodId} Stock id ${it.stockId}", enableSelect = false)
                     }
                 }
             }

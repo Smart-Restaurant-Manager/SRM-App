@@ -43,7 +43,7 @@ class AuthRepository @Inject constructor(private val api: AuthInterface, private
 
     suspend fun signup(email: String, name: String, password: String, passwordConfirmation: String): Resource<String> {
         return safeApiCall({
-            val singupObject = SignupObject(email, name, password, passwordConfirmation)
+            val singupObject = SignupObject(email = email, name = name, role = 1, password = password, password_confirmation = passwordConfirmation)
             api.signup(singupObject)
         }) { response ->
             "User created with id ${response.data.id}"
