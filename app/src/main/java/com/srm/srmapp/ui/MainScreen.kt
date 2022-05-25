@@ -52,7 +52,7 @@ fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
                 SrmTextButton(onClick = {
                     userSession.clearUsernameAndPassowrd()
                     userSession.logout()
-                    navigator.navigateUp()
+                    navigator.navigate(LoginFormDestination)
                     popupState = false
                 }, text = "Logout")
             }
