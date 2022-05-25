@@ -77,7 +77,7 @@ fun PredictionScreen(
             SrmButton(
                 onClick = {
                     val prediction = PredictionObject(date = date, festive = festivo_o_no)
-                    //viewmodel.postPrediction(prediction)
+                    viewmodel.postPrediction(prediction)
                 },
                 text = stringResource(id = R.string.send),
             )
