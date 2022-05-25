@@ -16,6 +16,8 @@ data class RecipeResponse(
         val type: String, // recipes
         @SerializedName("id")
         val id: Int, // 811
+        @SerializedName("food_type")
+        val foodType: Int, // 811
         @SerializedName("attributes")
         val attributes: Attributes,
     ) {
@@ -67,6 +69,7 @@ fun RecipeResponse.Data.toRecipe() = Recipe(
     type = parseRecipeType(),
     recipeId = id,
     name = attributes.name,
+    foodType = foodType,
     price = attributes.price,
     available = attributes.available,
     food = attributes.food.map {

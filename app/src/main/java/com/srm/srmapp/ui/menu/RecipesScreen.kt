@@ -60,6 +60,12 @@ fun RecipeScreen(
         moreDialogContent = {
             val rec by viewmodel.recipeFood.observeAsState(Resource.Empty())
             if (rec.isEmpty()) viewmodel.getRecipeFoodBy(it.recipeId)
+            SrmInfoList(infoList = listOf(
+                Pair("Nombre", it.name),
+                Pair("Id", it.recipeId.toString()),
+                Pair("Precio", it.price.format(2)),
+                Pair("Tipo", Food.TYPES[it.foodType]),
+            ))
             SrmLazyRow(itemListResource = rec) { item ->
                 SrmListItem(startText = "Ingrediente: ${item.name}\n\nCantidad: ${item.quantity}  ${item.unit}", enableSelect = false)
             }
@@ -96,6 +102,7 @@ fun RecipeDialog(
     recipeState: Recipe? = null,
 ) {
     var name by remember { mutableStateOf(recipeState?.name ?: "") }
+    var type by remember { mutableStateOf(recipeState?.foodType?.let { Food.TYPES.getOrNull(it) } ?: Food.TYPES.first()) }
     var precio by remember { mutableStateOf(recipeState?.price?.format(2) ?: "") }
     var selectedFood = remember { recipeState?.food?.associate { Pair(it.foodId, it.quantity) } ?: emptyMap() }
     var available by remember { mutableStateOf(recipeState?.available ?: false) }
@@ -103,6 +110,9 @@ fun RecipeDialog(
     SrmTextField(value = name, label = stringResource(R.string.food_name), onValueChange = { name = it })
     SrmTextField(value = precio, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         label = stringResource(R.string.price), onValueChange = { precio = it })
+    SrmDropDownMenu(text = type, options = Food.TYPES, onClick = { type = it }) {
+        SrmText(text = it)
+    }
     SrmCheckBox(text = stringResource(if (available) R.string.available else R.string.unavailable), checkState = available) { available = it }
 
     SrmQuantitySelector(
@@ -118,6 +128,7 @@ fun RecipeDialog(
             recipeId = recipeState?.recipeId ?: -1,
             type = recipeType,
             name = name,
+            foodType = Food.TYPES.indexOf(type),
             price = precio.toFloatOrNull() ?: 0f,
             food = selectedFood.toList().map { Recipe.RecipeFood(foodId = it.first, quantity = it.second) },
             available = available)
