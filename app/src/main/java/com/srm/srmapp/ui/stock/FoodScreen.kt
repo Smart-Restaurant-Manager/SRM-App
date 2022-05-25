@@ -72,18 +72,19 @@ fun FoodListScreen(
                     onClick = {
                         editDialog = true
                     },
-                    enableSelect = true,
+                    enableSelect = viewmodel.getRole() == 0,
                     endContent = {
-
-                        var deleteDialog by remember { mutableStateOf(false) }
-                        SrmIconButton(painter = painterResource(id = R.drawable.ic_baseline_delete_24)) {
-                            deleteDialog = true
-                        }
-
-                        if (deleteDialog)
-                            SrmDeleteDialog(onDismissRequest = { deleteDialog = false }) {
-                                viewmodel.deleteStock(item)
+                        if (viewmodel.getRole() == 0) { // enable only if manager
+                            var deleteDialog by remember { mutableStateOf(false) }
+                            SrmIconButton(painter = painterResource(id = R.drawable.ic_baseline_delete_24)) {
+                                deleteDialog = true
                             }
+
+                            if (deleteDialog)
+                                SrmDeleteDialog(onDismissRequest = { deleteDialog = false }) {
+                                    viewmodel.deleteStock(item)
+                                }
+                        }
                     })
                 if (editDialog) {
                     StockDialog(buttonText = stringResource(R.string.EditarStock),

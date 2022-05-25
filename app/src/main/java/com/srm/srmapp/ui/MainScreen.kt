@@ -30,12 +30,18 @@ import kotlin.system.exitProcess
 @Composable
 @com.ramcosta.composedestinations.annotation.Destination
 fun ManagerScreen(navigator: DestinationsNavigator, userSession: UserSession) {
-    val buttonNames = listOf(
-        Pair(R.string.reservas) { navigator.navigate(BookingScreenDestination()) },
-        Pair(R.string.food) { navigator.navigate(FoodListScreenDestination()) },
-        Pair(R.string.menu) { navigator.navigate(MenuScreenDestination()) },
-        Pair(R.string.pedidos) { navigator.navigate(OrderScreenDestination()) },
-        Pair(R.string.predictions) { navigator.navigate(PredictionScreenDestination()) })
+    val buttonNames = remember {
+        val l = mutableListOf(
+            Pair(R.string.reservas) { navigator.navigate(BookingScreenDestination()) },
+            Pair(R.string.food) { navigator.navigate(FoodListScreenDestination()) },
+            Pair(R.string.menu) { navigator.navigate(MenuScreenDestination()) },
+            Pair(R.string.pedidos) { navigator.navigate(OrderScreenDestination()) },
+        )
+
+        if (userSession.getRole() == 0)
+            l.add(Pair(R.string.predictions) { navigator.navigate(PredictionScreenDestination()) })
+        l.toList()
+    }
 
     var popupState by remember { mutableStateOf(false) }
 
