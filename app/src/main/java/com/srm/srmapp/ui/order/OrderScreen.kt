@@ -116,7 +116,7 @@ fun OrderDialogContent(
     buttonText: String,
     onClick: (Order) -> Unit,
 ) {
-    var selectedFood = remember { orderState?.recipeList?.associate { Pair(it.recipeId, it.quantity.toFloat()) } ?: emptyMap() }
+    var selectedFood = remember { orderState?.recipeList?.associate { Pair(it.recipeId, it.quantity) } ?: emptyMap() }
     var status by remember { mutableStateOf(orderState?.status ?: Order.Status.None()) }
     var bookingId by remember { mutableStateOf(orderState?.bookingId?.toString() ?: "") }
 
@@ -147,7 +147,12 @@ fun OrderDialogContent(
             bookingId = orderState?.bookingId ?: bookingId.toInt(),
             booking = null,
             status = status,
-            recipeList = selectedFood.toList().map { Order.OrderRecipe(recipeId = it.first, quantity = it.second) }
+            recipeList = selectedFood.toList()
+                .map {
+                    Order.OrderRecipe(recipeId = it.first,
+                        quantity = it.second,
+                        price = recipeList.find { q -> q.recipeId == it.first }?.price ?: 0f)
+                }
         )
         onClick.invoke(order)
     }, text = buttonText)
