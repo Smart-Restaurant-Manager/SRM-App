@@ -114,6 +114,22 @@ fun FoodListScreen(
         listItemEndText = { "${it.type}\n${it.foodId}" },
         crudDialogContent = crudDialogContent,
         searchProperties = searchProperties,
+        contentBefore = {
+            var dialog by remember { mutableStateOf(false) }
+            SrmButton(onClick = {
+                dialog = true
+            }, text = "Aliments caducats")
+            if (dialog) {
+                SrmDialog(onDismissRequest = { dialog = false }) {
+                    val l by viewmodel.stockList.observeAsState(Resource.Empty())
+                    if (l.isEmpty())
+                        viewmodel.refreshStockList()
+                    SrmLazyRow2(l.data?.filter { it.expirationDate <= LocalDate.now() } ?: emptyList()) {
+                        SrmListItem(startText = "Food id${it.foodId} ${it.stockId}", enableSelect = false)
+                    }
+                }
+            }
+        },
         baseViewModel = viewmodel
     )
 }

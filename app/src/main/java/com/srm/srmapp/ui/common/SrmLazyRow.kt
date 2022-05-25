@@ -27,7 +27,20 @@ fun <T> SrmLazyRow(itemListResource: Resource<List<T>>, itemContent: @Composable
                 } else {
                     SrmText(text = "No content")
                 }
-            }?: SrmText(text = "No content")
+            } ?: SrmText(text = "No content")
         }
+    }
+}
+
+@Composable
+fun <T> SrmLazyRow2(l: List<T>, itemContent: @Composable() (LazyItemScope.(item: T) -> Unit)) {
+    if (l.isNotEmpty()) {
+        LazyColumn(modifier = Modifier
+            .heightIn(0.dp, 300.dp)
+            .fillMaxWidth()) {
+            items(l, itemContent = itemContent)
+        }
+    } else {
+        SrmText(text = "No content")
     }
 }
