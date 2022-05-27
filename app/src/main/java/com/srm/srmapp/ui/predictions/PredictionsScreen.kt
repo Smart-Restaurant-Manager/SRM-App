@@ -3,7 +3,6 @@ package com.srm.srmapp.ui.predictions
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Checkbox
 import androidx.compose.runtime.*
@@ -21,7 +20,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
 import com.srm.srmapp.data.dto.predictions.PredictionObject
-import com.srm.srmapp.data.models.Predictions
 import com.srm.srmapp.ui.common.SrmButton
 import com.srm.srmapp.ui.common.SrmHeader
 import com.srm.srmapp.ui.common.SrmText

@@ -8,8 +8,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class PredictionsViewModel @Inject constructor(private val predictionRepository: PredictionsRepository, userSession: UserSession) :
+class PredictionsViewModel @Inject constructor(
+    private val predictionRepository: PredictionsRepository,
+    userSession: UserSession) :
     BaseViewModel(userSession) {
+
+
+
     fun postPrediction(predictions: PredictionObject) {
         fetchResource(_status, onSuccess = {
         }) {
