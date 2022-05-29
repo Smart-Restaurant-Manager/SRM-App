@@ -1,16 +1,10 @@
 package com.srm.srmapp.ui.predictions
 
-import android.os.Handler
-import android.os.Looper
-import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Checkbox
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -20,12 +14,11 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.srm.srmapp.R
-import com.srm.srmapp.data.dto.predictions.PredictionObject
-import com.srm.srmapp.data.models.Predictions
-import com.srm.srmapp.ui.common.SrmButton
-import com.srm.srmapp.ui.common.SrmHeader
-import com.srm.srmapp.ui.common.SrmText
-import com.srm.srmapp.ui.common.SrmTextField
+import com.srm.srmapp.ui.common.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import kotlin.time.Duration.Companion.minutes
 
 
 @Composable
@@ -33,7 +26,7 @@ import com.srm.srmapp.ui.common.SrmTextField
 fun PredictionScreen(
     navigator: DestinationsNavigator,
     viewmodel: PredictionsViewModel,
-){
+) {
     val poppinsFontFamily = FontFamily(
         Font(R.font.poppins_light, FontWeight.Light),
         Font(R.font.poppins_regular, FontWeight.Normal),
@@ -42,8 +35,6 @@ fun PredictionScreen(
         Font(R.font.poppins_bold, FontWeight.Bold)
     )
     SrmHeader(title = stringResource(R.string.predictions)) { navigator.navigateUp() }
-    var date by remember { mutableStateOf("08/07/2022") }
-    var festivo_o_no by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -51,52 +42,48 @@ fun PredictionScreen(
             .fillMaxHeight(),
         verticalArrangement = Arrangement.Center,
         //horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        SrmTextField(
-            value = date,
-            label = stringResource(id = R.string.date),
-            onValueChange = { date = it },
-            modifier = Modifier.padding(0.dp, 0.dp),
-        )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(10.dp, 10.dp)
-        ) {
-            SrmText(text = stringResource(id = R.string.festivo_o_no), fontFamily = poppinsFontFamily, fontWeight = FontWeight.Normal)
-            Checkbox(
-                checked = festivo_o_no, onCheckedChange = { festivo_o_no = it },
-                modifier = Modifier.padding(20.dp)
-            )
+    ) {
 
+        var date by remember { mutableStateOf(LocalDateTime.now()) }
+        var isFestivo by remember { mutableStateOf(false) }
+        var enabled by rememberSaveable { mutableStateOf(true) }
+        val scope = rememberCoroutineScope()
+        SrmCheckBox(text = stringResource(id = R.string.festivo_o_no), onCheckedChange = {
+            isFestivo = it
+        })
 
-        }
+        SrmDateTimeEditor(value = date, label = "Dia", onValueChange = {
+            date = it
+        }, onErrorAction = { })
+
         Row(
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(10.dp, 10.dp)
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
+
             SrmButton(
                 onClick = {
-                    val prediction = PredictionObject(date = date, festive = festivo_o_no)
-                    viewmodel.postPrediction(prediction)
+                    viewmodel.postPrediction(date, isFestivo)
                 },
                 text = stringResource(id = R.string.send),
             )
-            var enabled  by rememberSaveable { mutableStateOf(true) }
-            val context = LocalContext.current
+
             SrmButton(
                 onClick = {
                     enabled = false
-                    Toast.makeText(context, "Reentrenando el modelo", Toast.LENGTH_SHORT).show()
-                    Handler(Looper.getMainLooper()).postDelayed({
+                    scope.launch {
+                        delay(5.minutes)
                         enabled = true
-                        Toast.makeText(context, "Modelo reentrenado", Toast.LENGTH_SHORT).show()
-                    }, 300000)
+                    }
                 },
                 text = stringResource(id = R.string.retraining),
-                modifier = Modifier.padding(30.dp,0.dp),
                 enabled = enabled
             )
 
         }
+
+        if (!enabled)
+            SrmText(text = "Reentrenado")
     }
 }

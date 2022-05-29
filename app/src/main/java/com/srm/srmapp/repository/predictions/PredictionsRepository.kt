@@ -11,6 +11,6 @@ class PredictionsRepository @Inject constructor(private val api: PredictionsInte
     suspend fun postPrediction(predictions: PredictionObject) = safeApiCall({
         api.postPrediction(predictions)
     }) {
-        "Nueva predicción realizada"
+        it
     }
 }
