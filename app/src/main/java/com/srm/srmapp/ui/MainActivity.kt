@@ -40,7 +40,9 @@ class MainActivity : ComponentActivity() {
                     hiltViewModel<OrderViewModel>(this@MainActivity),
                     hiltViewModel<PredictionsViewModel>(this@MainActivity),
                     hiltViewModel<RecipeViewmodel>(this@MainActivity),
-                    hiltViewModel<BookingViewModel>(this@MainActivity))
+                    hiltViewModel<BookingViewModel>(this@MainActivity),
+                    hiltViewModel<PredictionsViewModel>(this@MainActivity))
+
 
                 val status = viewmodels.map { Pair(it.status.observeAsState(Resource.Empty())) { it.clearStatus() } }
 
@@ -75,6 +77,8 @@ class MainActivity : ComponentActivity() {
                     dependency(hiltViewModel<PredictionsViewModel>(this@MainActivity))
                     dependency(hiltViewModel<BookingViewModel>(this@MainActivity))
                     dependency(hiltViewModel<RecipeViewmodel>(this@MainActivity))
+                    dependency(hiltViewModel<PredictionsViewModel>(this@MainActivity))
+
                 })
             }
         }
