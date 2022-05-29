@@ -97,7 +97,7 @@ fun SrmDateEditor(value: LocalDate?, label: String, onErrorAction: () -> Unit = 
             isError = false
             onValueChange.invoke(dateOut)
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         isError = isError,
         errorMessage = pattern)
 }
@@ -123,7 +123,7 @@ fun SrmTimeEditor(value: LocalTime?, label: String, onErrorAction: () -> Unit, o
             isError2 = false
             onValueChange.invoke(dateOut)
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         isError = isError2,
         errorMessage = pattern)
 }
@@ -151,7 +151,7 @@ fun SrmDateTimeEditor(value: LocalDateTime?, label: String, onErrorAction: () ->
             isError2 = false
             onValueChange.invoke(dateOut)
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         isError = isError2,
         errorMessage = pattern.lowercase())
 }
