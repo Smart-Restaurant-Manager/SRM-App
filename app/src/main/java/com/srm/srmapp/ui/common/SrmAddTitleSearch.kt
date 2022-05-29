@@ -63,7 +63,7 @@ fun SrmAddTitleSearch(
             },
             text = title,
             textAlign = TextAlign.Center,
-            fontSize = 25.sp,
+            fontSize = 30.sp,
             softWrap = true,
             fontFamily = poppinsFontFamily,
             fontWeight = FontWeight.Bold,

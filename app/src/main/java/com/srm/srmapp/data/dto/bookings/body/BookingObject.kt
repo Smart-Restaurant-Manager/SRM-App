@@ -1,9 +1,11 @@
 package com.srm.srmapp.data.dto.bookings.body
 
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDateTime
 
+@Keep
 data class BookingObject(
     @SerializedName("name")
     val name: String, // a

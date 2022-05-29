@@ -26,10 +26,6 @@ fun SrmCheckBox(
         .height(60.dp)
         .fillMaxWidth()
         .padding(start = paddingStart, end = paddingEnd)
-        .clickable(enabled = enabled, onClick = {
-            checked = !checked
-            onCheckedChange.invoke(checked)
-        })
     ) {
         val (a, b) = createRefs()
         Checkbox(
@@ -53,6 +49,10 @@ fun SrmCheckBox(
                     end.linkTo(parent.end)
                     centerVerticallyTo(parent)
                 }
+                .clickable(enabled = enabled, onClick = {
+                    checked = !checked
+                    onCheckedChange.invoke(checked)
+                })
                 .fillMaxWidth(0.8f))
     }
 }
