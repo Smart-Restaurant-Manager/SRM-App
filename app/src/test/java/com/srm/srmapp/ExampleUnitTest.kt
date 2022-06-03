@@ -1,7 +1,5 @@
 package com.srm.srmapp
 
-import com.srm.srmapp.AppModule.BASE_URL
-import com.srm.srmapp.data.dto.auth.body.LoginObject
 import com.srm.srmapp.data.dto.auth.response.UserResponse
 import com.srm.srmapp.data.dto.bookings.body.BookingObject
 import com.srm.srmapp.data.dto.bookings.response.toBookingList
@@ -11,7 +9,6 @@ import com.srm.srmapp.data.dto.stock.response.toFoodList
 import com.srm.srmapp.data.dto.stock.response.toStockList
 import com.srm.srmapp.data.models.*
 import com.srm.srmapp.repository.BaseRepository
-import com.srm.srmapp.repository.authentication.AuthInterface
 import com.srm.srmapp.repository.bookings.BookingInterface
 import com.srm.srmapp.repository.orders.OrdersInterface
 import com.srm.srmapp.repository.orders.OrdersRepository
@@ -20,6 +17,7 @@ import com.srm.srmapp.repository.recipes.RecipeRepository
 import com.srm.srmapp.repository.stock.StockInterface
 import com.srm.srmapp.repository.stock.StockRepository
 import kotlinx.coroutines.CoroutineScope
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.junit.Test
@@ -55,63 +53,40 @@ class ExampleUnitTest {
     }
 
 
-    private var token: String = ""
-
-    // set token to add authorization header
-    // set to blank to remove authorization header
-    private val retrofit: (String) -> Retrofit = { token ->
-        val interceptor = AppModule.httpInterceptor(if (token.isNotBlank()) "Bearer $token" else "")
-
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(AppModule.provideGsonConverter()))
-            .client(OkHttpClient.Builder()
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(AppModule.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create(AppModule.provideGsonConverter()))
+        .client(
+            OkHttpClient.Builder()
+                .addInterceptor(Interceptor {
+                    val re = it.request()
+                        .newBuilder()
+                        .addHeader("Accept", "application/json")
+                        .addHeader("Content-Type", "application/json")
+                    re.addHeader("Authorization", "Bearer 13|8GYAzCaYhsBiIrhrKMegHJt2VmRkxWyLEk7uFrEZ")
+                    val req = re.build()
+                    it.proceed(req)
+                })
+                .addInterceptor(HttpLoggingInterceptor()
+                    .setLevel(if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+                    else HttpLoggingInterceptor.Level.NONE))
                 .followRedirects(false)
                 .followSslRedirects(false)
-                .addInterceptor(interceptor)
-                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS))
-                .build())
-            .build()
-    }
+                .build()
+        )
+        .build()
 
-    private val authapi = retrofit(token).create(AuthInterface::class.java)
-
-    init {
-        Timber.plant(Timber.DebugTree())
-        token = runBlocking {
-            authapi.login(LoginObject("123@123", "123", "123"))
-        }.body()?.data?.token ?: ""
-    }
-
-
-    @Test
-    fun testLoginLogout() {
-        val response = runBlocking {
-            authapi.login(LoginObject("123@123", "123", "123"))
-        }
-        val data = response.body()?.data?.token
-        assert(data != null)
-        val response2 = runBlocking {
-            authapi.logout("Bearer $data")
-        }
-        assert(response2.isSuccessful)
-    }
-
-    private val stockapi = retrofit(token).create(StockInterface::class.java)
+    private val stockapi = retrofit.create(StockInterface::class.java)
 
     @Test
     fun testStockApi() {
-        val food = Food("test", -1, "test", "l")
+        val food = Food("Alimentos carnicos", -1, "test", "l")
 
         // insert food
-        assert(runBlocking {
-            stockapi.postFood(food.toJsonObject())
-        }.isSuccessful)
+        assert(runBlocking { stockapi.postFood(food.toJsonObject()) }.isSuccessful)
 
         // get food list
-        val response = runBlocking {
-            stockapi.getFood()
-        }
+        val response = runBlocking { stockapi.getFood() }
         assert(response.isSuccessful)
 
         val foodlistRes = response.body()?.toFoodList()
@@ -125,7 +100,7 @@ class ExampleUnitTest {
             stockapi.putFood(lastId, food.toJsonObject())
         }.isSuccessful)
 
-        val stock = Stock(-1, lastId, 1f, LocalDate.now()).toJsonObject()
+        val stock = Stock(-1, lastId, 1000f, LocalDate.now().plusYears(1)).toJsonObject()
         // insert stock
         assert(runBlocking {
             stockapi.postStock(stockObject = stock)
@@ -168,7 +143,7 @@ class ExampleUnitTest {
         // assert(runBlocking { stockRepository.putFood(food) }.isSuccess())
 
 
-        val stock = Stock(-1, foodLast, 1f, LocalDate.now())
+        val stock = Stock(-1, foodLast, 1000f, LocalDate.now())
 
         assert(runBlocking { stockRepository.postStock(stock).isSuccess() })
         val stockRes = runBlocking {
@@ -186,11 +161,12 @@ class ExampleUnitTest {
 
     }
 
-    private val recipeApi = retrofit(token).create(RecipeInterface::class.java)
+    private val recipeApi = retrofit.create(RecipeInterface::class.java)
+
+    private val recipeModel = Recipe(name = "Unit Test", type = Recipe.RecipeType.NONE, recipeId = 1, price = 1f, available = true, foodType = 0)
 
     @Test
     fun testRecipe() {
-        val recipeModel = Recipe(name = "Unit Test", type = Recipe.RecipeType.NONE, recipeId = 1, price = 1f)
         assert(runBlocking {
             recipeApi.postRecipe(recipeModel.toJsonObject())
         }.isSuccessful)
@@ -213,7 +189,6 @@ class ExampleUnitTest {
 
     @Test
     fun testRecipeRepository() {
-        val recipeModel = Recipe(name = "Unit Test", type = Recipe.RecipeType.NONE, recipeId = 1, price = 1f)
 
         assert(runBlocking { recipeRepository.postRecipe(recipeModel).isSuccess() })
         val recipeListRes = runBlocking { recipeRepository.getRecipes() }
@@ -230,7 +205,7 @@ class ExampleUnitTest {
     }
 
 
-    private val orderApi = retrofit(token).create(OrdersInterface::class.java)
+    private val orderApi = retrofit.create(OrdersInterface::class.java)
 
     private fun createBooking(): Int {
         val bookingObject = BookingObject(name = "Unit Test", email = "Uni@a", phone = "1", date = LocalDateTime.now(), people = 1, table = "1")
@@ -249,9 +224,46 @@ class ExampleUnitTest {
     }
 
     private fun createRecipe(): Int {
-        val recipeModel = Recipe(name = "a", type = Recipe.RecipeType.NONE, recipeId = 1, price = 1f)
+
+        // create food
+        val food = Food("Alimentos carnicos", -1, "test", "l")
+
+        // insert food
+        assert(runBlocking { stockapi.postFood(food.toJsonObject()) }.isSuccessful)
+
+        // get food list
+        val response = runBlocking { stockapi.getFood() }
+        assert(response.isSuccessful)
+
+        val foodlistRes = response.body()?.toFoodList()
+
+        assert(foodlistRes != null)
+        foodlistRes!!
+        val lastId = foodlistRes.last().foodId
+
+        // add stock
+        val stock = Stock(-1, lastId, 1000f, LocalDate.now().plusYears(1)).toJsonObject()
+        // insert stock
+        assert(runBlocking {
+            stockapi.postStock(stockObject = stock)
+        }.isSuccessful)
+
+        // get stock
+        val stockRes = runBlocking {
+            stockapi.getFoodStock(lastId)
+        }
+
+        assert(stockRes.isSuccessful)
+        val a = stockRes.body()?.toStockList()
+        assert(a!!.size == 1)
+
         val r = runBlocking {
-            assert(recipeApi.postRecipe(recipeModel.toJsonObject()).isSuccessful)
+            assert(recipeApi.postRecipe(Recipe(name = "Unit Test",
+                type = Recipe.RecipeType.NONE,
+                recipeId = 1,
+                price = 1f,
+                available = true,
+                foodType = 0, food = listOf(Recipe.RecipeFood(foodId = lastId, quantity = 1.0f))).toJsonObject()).isSuccessful)
             val res = recipeApi.getRecipes()
             assert(res.isSuccessful)
             res
@@ -266,7 +278,7 @@ class ExampleUnitTest {
         val recipeId = createRecipe()
         val orderJson =
             Order(bookingId = id,
-                recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1, price = 1.0, type = 0, name = "name"))).toJsonObject()
+                recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1.0f, price = 12.0f, type = 0, name = "name"))).toJsonObject()
 
         assert(runBlocking { orderApi.postOrder(orderJson).isSuccessful })
 
@@ -292,7 +304,7 @@ class ExampleUnitTest {
         val bookingId = createBooking()
         val recipeId = createRecipe()
         val order = Order(bookingId = bookingId,
-            recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1, price = 1.0, type = 0, name = "name")))
+            recipeList = listOf(Order.OrderRecipe(recipeId = recipeId, quantity = 1.0f, price = 1.0f, type = 0, name = "name")))
 
         assert(runBlocking { orderRepository.postOrder(order).isSuccess() })
 
@@ -315,7 +327,7 @@ class ExampleUnitTest {
         assert(runBlocking { orderRepository.getOrderByStatus(Order.Status.InProcess()).isSuccess() })
     }
 
-    private val bookingApi = retrofit(token).create(BookingInterface::class.java)
+    private val bookingApi = retrofit.create(BookingInterface::class.java)
 
     @Test
     fun testBooking() {
@@ -380,18 +392,12 @@ class ExampleUnitTest {
     }
 
     private val safeCallObject = object : BaseRepository() {
-        val unauthorized = retrofit("").create(TestInterface::class.java)
-        val authorized = retrofit(token).create(TestInterface::class.java)
+        val authorized = retrofit.create(TestInterface::class.java)
     }
 
     @Test
     fun testSafeCall() {
         safeCallObject.apply {
-            val error404 = runBlocking { safeApiCall({ unauthorized.getError404() }) { "" } }
-            assert(error404.isError() && error404.errorCode == 404)
-
-            val error401 = runBlocking { safeApiCall({ unauthorized.getUser() }) { "" } }
-            assert(error401.isError() && error401.errorCode == 401)
 
             val success1 = runBlocking { safeApiCall({ authorized.getUser() }) { "" } }
             assert(success1.isSuccess())
